@@ -1,0 +1,19 @@
+{
+  "name": "precourser",
+  "version": "1.0.0",
+  "description": "an app for all your course needs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/melyshu/precourser.git"
+  },
+  "author": "Mel Shu <mshu@princeton.edu>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/melyshu/precourser/issues"
+  },
+  "homepage": "https://github.com/melyshu/precourser#readme"
+}

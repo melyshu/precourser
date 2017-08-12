@@ -1,3 +1,11 @@
+# client dependency directory
+client/node_modules
+
+
+##################
+# DEFAULTS BELOW #
+##################
+
 # Logs
 logs
 *.log
@@ -56,4 +64,3 @@ typings/
 
 # dotenv environment variables file
 .env
-
