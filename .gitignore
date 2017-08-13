@@ -1,6 +1,9 @@
 # client dependency directory
 client/node_modules
 
+# css files (using scss instead)
+*.css
+
 
 ##################
 # DEFAULTS BELOW #
