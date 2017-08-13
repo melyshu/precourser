@@ -1,0 +1,25 @@
+{
+  "extends": [
+    "react-app",
+    "prettier"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "parser": "babel-eslint",
+  "globals": {
+    "React": true
+  },
+  "ecmaFeatures": {
+    "jsx": true,
+  },
+  "plugins": [
+    "react",
+    "prettier"
+  ],
+  "rules" : {
+    "prettier/prettier": ["warn", {"singleQuote": true}]
+  }
+}
