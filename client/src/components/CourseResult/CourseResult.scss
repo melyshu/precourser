@@ -1,0 +1,30 @@
+.CourseResult:hover {
+  background: #777;
+  cursor: pointer;
+
+  .CourseResult-title {
+    white-space: normal;
+    overflow: visible;
+  }
+}
+
+.CourseResult-top {
+  font-size: 70%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.CourseResult-bottom {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.CourseResult-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

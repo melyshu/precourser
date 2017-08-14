@@ -1,0 +1,25 @@
+.MenuPane {
+  flex: 1 1 100px;
+  width: 100px;
+  background: #444;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.MenuPane-search {
+  flex: 0 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.MenuPane-searchbox {
+  flex: 1 1 auto;
+}
+
+.MenuPane-results {
+  overflow-y: auto;
+}
