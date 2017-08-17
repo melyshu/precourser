@@ -8,7 +8,14 @@ class MenuPane extends Component {
     const courseResults = [];
     for (let i = 0; i < courses.length; i++) {
       const course = courses[i];
-      courseResults.push(<CourseResult course={course} />);
+      courseResults.push(
+        <CourseResult
+          key={course._id}
+          course={course}
+          onAddCourseToSchedule={this.props.onAddCourseToSchedule}
+          onRemoveCourseFromSchedule={this.props.onRemoveCourseFromSchedule}
+        />
+      );
     }
 
     return (

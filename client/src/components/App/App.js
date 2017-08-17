@@ -7,24 +7,29 @@ import DisplayPane from '../DisplayPane/DisplayPane';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.fetchJson(`/api/semester/all`).then(semesters => {
-      this.setState({
-        semester: semesters[0]._id,
-        semesters: semesters
-      });
-    });
     this.state = {
       search: '',
       courses: [],
-      semester: null,
-      semesters: []
+      selectedSemester: null,
+      semesters: [],
+      selectedSchedule: { courses: [] },
+      schedules: []
     };
+
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleSemesterChange = this.handleSemesterChange.bind(this);
+    this.handleScheduleChange = this.handleScheduleChange.bind(this);
+    this.handleScheduleCreate = this.handleScheduleCreate.bind(this);
+    this.handleScheduleRename = this.handleScheduleRename.bind(this);
+    this.handleScheduleDelete = this.handleScheduleDelete.bind(this);
+    this.handleAddCourseToSchedule = this.handleAddCourseToSchedule.bind(this);
+    this.handleRemoveCourseFromSchedule = this.handleRemoveCourseFromSchedule.bind(
+      this
+    );
   }
 
-  fetchJson(string) {
-    return fetch(string)
+  fetchJson(string, init) {
+    return fetch(string, init)
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
           return response;
@@ -42,30 +47,100 @@ class App extends Component {
     if (event.target.value.length < 3) return;
 
     this.fetchJson(
-      `/api/course/semester/${this.state.semester}/search/${event.target.value}`
+      `/api/course/semester/${this.state.selectedSemester}/search/${event.target
+        .value}`
     ).then(courses => {
       this.setState({ courses: courses });
     });
   }
 
   handleSemesterChange(semester) {
-    this.setState({ semester: semester });
+    this.setState({ selectedSemester: semester });
+    this.fetchJson(`/api/schedule/semester/${semester}`).then(object =>
+      this.setState(object)
+    );
+  }
+
+  handleScheduleChange(scheduleId) {
+    this.fetchJson(`/api/schedule/${scheduleId}`).then(object =>
+      this.setState(object)
+    );
+  }
+
+  handleScheduleCreate(name) {
+    this.fetchJson(
+      `/api/schedule/semester/${this.state.selectedSemester}/name/${name}`,
+      { method: 'POST' }
+    ).then(object => this.setState(object));
+  }
+
+  handleScheduleRename(name) {
+    this.fetchJson(
+      `/api/schedule/${this.state.selectedSchedule._id}/name/${name}`,
+      { method: 'PUT' }
+    ).then(object => this.setState(object));
+  }
+
+  handleScheduleDelete() {
+    this.fetchJson(`/api/schedule/${this.state.selectedSchedule._id}`, {
+      method: 'DELETE'
+    }).then(object => this.setState(object));
+  }
+
+  handleAddCourseToSchedule(id) {
+    this.fetchJson(
+      `/api/schedule/${this.state.selectedSchedule._id}/course/${id}`,
+      { method: 'PUT' }
+    ).then(object => this.setState(object));
+  }
+
+  handleRemoveCourseFromSchedule(id) {
+    this.fetchJson(
+      `/api/schedule/${this.state.selectedSchedule._id}/course/${id}`,
+      { method: 'DELETE' }
+    ).then(object => this.setState(object));
+  }
+
+  componentDidMount() {
+    this.fetchJson(`/api/startup`).then(object => this.setState(object));
   }
 
   render() {
+    const courses = this.state.courses.slice();
+    const coursesInSchedule = [];
+    for (let i = 0; i < this.state.selectedSchedule.courses.length; i++) {
+      console.log('i am in here');
+      coursesInSchedule.push(this.state.selectedSchedule.courses[i]._id);
+    }
+    for (let i = 0; i < courses.length; i++) {
+      if (coursesInSchedule.indexOf(courses[i]._id) > -1) {
+        courses[i].inSchedule = true;
+      } else {
+        courses[i].inSchedule = false;
+      }
+    }
+
     return (
       <div className="App">
         <Navbar
           semesters={this.state.semesters}
-          semester={this.state.semester}
+          selectedSemester={this.state.selectedSemester}
           onSemesterChange={this.handleSemesterChange}
+          schedules={this.state.schedules}
+          selectedSchedule={this.state.selectedSchedule}
+          onScheduleChange={this.handleScheduleChange}
+          onScheduleCreate={this.handleScheduleCreate}
+          onScheduleRename={this.handleScheduleRename}
+          onScheduleDelete={this.handleScheduleDelete}
         />
         <div className="App-page">
           <MenuPane
             onSearchChange={this.handleSearchChange}
-            results={this.state.courses}
+            onAddCourseToSchedule={this.handleAddCourseToSchedule}
+            onRemoveCourseFromSchedule={this.handleRemoveCourseFromSchedule}
+            results={courses}
           />
-          <DisplayPane />
+          <DisplayPane selectedSchedule={this.state.selectedSchedule} />
         </div>
       </div>
     );

@@ -1,0 +1,17 @@
+.NavbarInput {
+  padding: 10px;
+  background: #333;
+  width: 15em;
+}
+
+.NavbarInput-cancel,
+.NavbarInput-submit, {
+  white-space: nowrap;
+  line-height: 40px;
+  padding: 0 15px;
+
+  &:hover, &:focus {
+    cursor: pointer;
+    background: #777;
+  }
+}

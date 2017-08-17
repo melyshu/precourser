@@ -1,0 +1,23 @@
+.NavbarItem {
+  flex: 0 0 auto;
+  position: relative;
+  color: #fff;
+}
+
+.NavbarItem-display {
+  white-space: nowrap;
+  line-height: 40px;
+  padding: 0 15px;
+
+  &:hover, &:focus {
+    cursor: pointer;
+    background: #777;
+  }
+}
+
+.NavbarItem-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #333;
+}

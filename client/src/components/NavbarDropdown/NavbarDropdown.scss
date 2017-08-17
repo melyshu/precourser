@@ -1,0 +1,20 @@
+.NavbarDropdown {
+  background: #333;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.NavbarDropdown-item {
+  line-height: 40px;
+  white-space: nowrap;
+  padding: 0 15px;
+
+  &:hover {
+    cursor: pointer;
+    background: #777;
+  }
+
+  &.NavbarDropdown-selected {
+    background: #777;
+  }
+}

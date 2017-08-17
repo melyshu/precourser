@@ -1,86 +1,88 @@
 import React, { Component } from 'react';
 import './Navbar.css';
+import NavbarItem from '../NavbarItem/NavbarItem';
+import NavbarDropdown from '../NavbarDropdown/NavbarDropdown';
+import NavbarInput from '../NavbarInput/NavbarInput';
 
 class Navbar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false
-    };
-    this.handleFocus = this.handleFocus.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
-  }
-
-  handleFocus(event) {
-    console.log('hi');
-    this.setState({ open: true });
-  }
-
-  handleBlur(event) {
-    this.setState({ open: false });
-  }
-
   render() {
-    const compare = function(a, b) {
-      if (a._id > b._id) return -1;
-      if (a._id < b._id) return 1;
-      return 0;
-    };
-    const semesters = this.props.semesters.sort(compare);
-    const thisSemester = this.props.semester;
-    let displayedSemester;
-    const semesterOptions = [];
+    const semesters = this.props.semesters;
+    const selectedSemester = this.props.selectedSemester;
+    let selectedSemesterLabel;
+
+    const semesterValues = [];
+    const semesterLabels = [];
     for (let i = 0; i < semesters.length; i++) {
       const semester = semesters[i];
-
-      if (semester._id === thisSemester) {
-        displayedSemester = semester.name;
-
-        semesterOptions.push(
-          <li key={semester._id} className="Navbar-semester-option selected">
-            {semester.name}
-          </li>
-        );
-      } else {
-        semesterOptions.push(
-          <li
-            key={semester._id}
-            className="Navbar-semester-option"
-            onClick={() => {
-              this.props.onSemesterChange(semester._id);
-              this.handleBlur();
-            }}
-          >
-            {semester.name}
-          </li>
-        );
-      }
+      semesterValues.push(semester._id);
+      semesterLabels.push(semester.name);
+      if (semester._id === selectedSemester)
+        selectedSemesterLabel = semester.name;
     }
 
-    if (!displayedSemester) displayedSemester = 'Loading...';
+    const schedules = this.props.schedules;
+    let selectedSchedule;
+    let selectedScheduleLabel;
+    if (this.props.selectedSchedule) {
+      selectedSchedule = this.props.selectedSchedule._id;
+      selectedScheduleLabel = this.props.selectedSchedule.name;
+    }
 
-    let dropdown;
-    if (this.state.open)
-      dropdown = (
-        <ul className="Navbar-semester-dropdown">
-          {semesterOptions}
-        </ul>
-      );
+    const scheduleValues = [];
+    const scheduleLabels = [];
+    for (let i = 0; i < schedules.length; i++) {
+      const schedule = schedules[i];
+      scheduleValues.push(schedule._id);
+      scheduleLabels.push(schedule.name);
+    }
 
     return (
-      <div className="Navbar">
+      <nav className="Navbar">
         <div className="Navbar-brand">precourser</div>
-        <button
-          className="Navbar-semester"
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-        >
-          <div className="Navbar-semester-current">
-            {displayedSemester}
-          </div>
-          {dropdown}
-        </button>
-      </div>
+        <NavbarItem display={selectedSemesterLabel}>
+          <NavbarDropdown
+            values={semesterValues}
+            labels={semesterLabels}
+            selectedValue={selectedSemester}
+            onSelect={this.props.onSemesterChange}
+          />
+        </NavbarItem>
+        <NavbarItem display={selectedScheduleLabel}>
+          <NavbarDropdown
+            values={scheduleValues}
+            labels={scheduleLabels}
+            selectedValue={selectedSchedule}
+            onSelect={this.props.onScheduleChange}
+          />
+        </NavbarItem>
+        <NavbarItem display="plus">
+          <NavbarInput
+            prompt="Create a new schedule:"
+            defaultValue="New Schedule"
+            onSubmit={this.props.onScheduleCreate}
+            verb="Create"
+          />
+        </NavbarItem>
+        <NavbarItem display="pencil">
+          <NavbarInput
+            prompt="Rename your schedule:"
+            defaultValue={selectedScheduleLabel}
+            onSubmit={this.props.onScheduleRename}
+            verb="Rename"
+          />
+        </NavbarItem>
+        <NavbarItem display="bin">
+          <NavbarInput
+            prompt={
+              "Are you sure you want to delete the schedule '" +
+              selectedScheduleLabel +
+              "'?"
+            }
+            onSubmit={this.props.onScheduleDelete}
+            verb="Delete"
+          />
+        </NavbarItem>
+      </nav>
     );
   }
 }

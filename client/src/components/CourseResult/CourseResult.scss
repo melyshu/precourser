@@ -1,11 +1,31 @@
-.CourseResult:hover {
-  background: #777;
-  cursor: pointer;
+.CourseResult {
+  display:flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: stretch;
 
-  .CourseResult-title {
-    white-space: normal;
-    overflow: visible;
+  &:hover {
+    background: #777;
+    cursor: pointer;
   }
+}
+
+.CourseResult-main {
+  padding: 4px 6px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.CourseResult-buttons {
+  flex: 0 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  align-items: stretch;
 }
 
 .CourseResult-top {
@@ -27,4 +47,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.CourseResult-add {
+  &:hover {
+    background: #555;
+  }
 }

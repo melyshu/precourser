@@ -1,0 +1,32 @@
+API ENDPOINTS
+
+GET    /api/startup
+
+GET    /api/semester/all
+
+GET    /api/course/semester/:semester/search/:query
+GET    /api/course/:id
+
+GET    /api/instructor/semester/:semester/search/:query
+GET    /api/instructor/:id
+
+GET    /api/save/course/semester/:semester
+PUT    /api/save/course/:course
+DELETE /api/save/course/:course
+GET    /api/save/instructor/semester/:semester
+PUT    /api/save/instructor/:instructor
+DELETE /api/save/instructor/:instructor
+
+POST   /api/schedule/semester/:semester/name/:name
+PUT    /api/schedule/:id/name/:name
+GET    /api/schedule/semester/:semester
+PUT    /api/schedule/:schedule/course/:course
+DELETE /api/schedule/:schedule/course/:course
+PUT    /api/schedule/:schedule/section/:section
+DELETE /api/schedule/:schedule/section/:section
+PUT    /api/schedule/:schedule/name/:name
+GET    /api/schedule/:schedule
+DELETE /api/schedule/:schedule
+
+GET    /api/department/all
+GET    /api/department/:dept
