@@ -1,25 +1,37 @@
+@import '../../color.scss';
+
 .MenuPane {
+  background: $white;
+  color: $light;
+
   flex: 1 1 100px;
   width: 100px;
-  background: #444;
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: stretch;
 }
 
-.MenuPane-search {
-  flex: 0 0 auto;
+.MenuPane-content {
+  padding: 10px 10px 15px;
+  flex: 1 1 auto;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: stretch;
 }
 
-.MenuPane-searchbox {
-  flex: 1 1 auto;
+.MenuPane-input {
+  flex: 0 0 auto;
+}
+
+.MenuPane-caption {
+  text-align: right;
+  font-size: 0.7rem;
+  margin-bottom: 10px;
 }
 
 .MenuPane-results {
+  flex: 1 1 auto;
   overflow-y: auto;
 }

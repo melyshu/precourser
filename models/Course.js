@@ -13,16 +13,44 @@ const courseSchema = new mongoose.Schema({
   semester: { type: String, ref: 'Semester', required: 'semester required' },
   courseId: { type: String, index: true, required: 'courseId required' },
 
-  department: { type: String, trim: true, uppercase: true, ref: 'Department', required: 'department required' },
-  catalogNumber: { type: String, trim: true, uppercase: true, required: 'catalogNumber required' },
-  crossListings: [{
-    _id: false,
-    department: { type: String, trim: true, uppercase: true, ref: 'Department', required: 'crossListings.department required' },
-    catalogNumber: { type: String, trim: true, uppercase: true, required: 'crossListings.catalogNumber required' }
-  }],
+  department: {
+    type: String,
+    trim: true,
+    uppercase: true,
+    ref: 'Department',
+    required: 'department required'
+  },
+  catalogNumber: {
+    type: String,
+    trim: true,
+    uppercase: true,
+    required: 'catalogNumber required'
+  },
+  crossListings: [
+    {
+      _id: false,
+      department: {
+        type: String,
+        trim: true,
+        uppercase: true,
+        ref: 'Department',
+        required: 'crossListings.department required'
+      },
+      catalogNumber: {
+        type: String,
+        trim: true,
+        uppercase: true,
+        required: 'crossListings.catalogNumber required'
+      }
+    }
+  ],
 
   title: { type: String, trim: true, required: 'title required' },
-  rawAttributes: { type: String, trim: true, required: 'rawAttributes required' },
+  rawAttributes: {
+    type: String,
+    trim: true,
+    required: 'rawAttributes required'
+  },
   banner: { type: String, trim: true },
   description: { type: String, trim: true },
   // a very small number of courses do NOT have a description:
@@ -33,8 +61,18 @@ const courseSchema = new mongoose.Schema({
   _instructorNames: [{ type: String, trim: true }],
 
   distribution: { type: String, trim: true, uppercase: true },
-  pdf: { type: String, trim: true, uppercase: true, enum: ['PDF', 'PDFO', 'NPDF'] },
-  audit: { type: String, trim: true, uppercase: true, enum: ['AUDIT', 'NAUDIT'] },
+  pdf: {
+    type: String,
+    trim: true,
+    uppercase: true,
+    enum: ['PDF', 'PDFO', 'NPDF']
+  },
+  audit: {
+    type: String,
+    trim: true,
+    uppercase: true,
+    enum: ['AUDIT', 'NAUDIT']
+  },
 
   rating: Number,
   ratingDescription: { type: String, trim: true },
@@ -42,11 +80,13 @@ const courseSchema = new mongoose.Schema({
   recent: Boolean,
 
   evaluations: {
-    numeric: [{
-      _id: false,
-      field: { type: String, required: 'evaluations.numeric.field required' },
-      score: { type: Number, required: 'evaluations.numeric.score required' }
-    }],
+    numeric: [
+      {
+        _id: false,
+        field: { type: String, required: 'evaluations.numeric.field required' },
+        score: { type: Number, required: 'evaluations.numeric.score required' }
+      }
+    ],
     written: [String]
   },
 
@@ -56,23 +96,31 @@ const courseSchema = new mongoose.Schema({
   seatsTotal: Number,
 
   assignments: String,
-  grading: [{
-    _id: false,
-    component: { type: String, trim: true, required: 'grading.component required' },
-    percent: { type: Number, required: 'grading.percent required' }
-  }],
-  readings: [{
-    _id: false,
-    title: { type: String, trim: true, required: 'readings.title required' },
-    author: { type: String, trim: true, required: 'readings.author required' }
-  }],
+  grading: [
+    {
+      _id: false,
+      component: {
+        type: String,
+        trim: true,
+        required: 'grading.component required'
+      },
+      percent: { type: Number, required: 'grading.percent required' }
+    }
+  ],
+  readings: [
+    {
+      _id: false,
+      title: { type: String, trim: true, required: 'readings.title required' },
+      author: { type: String, trim: true, required: 'readings.author required' }
+    }
+  ],
   reservedSeats: [String],
 
   prerequisites: { type: String, trim: true },
   equivalentCourses: { type: String, trim: true },
   otherInformation: { type: String, trim: true },
   otherRequirements: { type: String, trim: true },
-  website: { type: String, trim: true },
+  website: { type: String, trim: true }
 });
 
 /*
@@ -84,36 +132,64 @@ courseSchema.virtual('sections', {
 });
 */
 
-courseSchema.statics.minimalSelector = '_id department catalogNumber title sections';
+courseSchema.statics.minimalSelector =
+  '_id department catalogNumber title sections';
 courseSchema.statics.findMinimalById = function(id) {
   return this.findById(id).select(this.minimalSelector).lean().exec();
 };
 
-courseSchema.statics.briefSelector = '-rawAttributes -evaluations -sections -readings -reservedSeats -prerequisites -equivalentCourses -otherInformation -otherRequirements -_instructorNames';
+courseSchema.statics.briefSelector =
+  '-rawAttributes -evaluations -readings -reservedSeats -prerequisites -equivalentCourses -otherInformation -otherRequirements -_instructorNames';
 courseSchema.statics.findBriefById = function(id) {
   return this.findById(id).select(this.briefSelector).lean().exec();
 };
 
 courseSchema.statics.findBriefByIdsAndSemester = function(ids, semester) {
-  return this.find({_id: {$in: ids}, semester: semester}).select(this.briefSelector).lean().exec();
+  return this.find({ _id: { $in: ids }, semester: semester })
+    .select(this.briefSelector)
+    .lean()
+    .exec();
 };
 
-courseSchema.statics.findBriefByInstructorAndSemester = function(instructor, semester) {
-  return this.find({instructors: instructor, semester: semester}).select(this.briefSelector).lean().exec();
+courseSchema.statics.findBriefByInstructorAndSemester = function(
+  instructor,
+  semester
+) {
+  return this.find({ instructors: instructor, semester: semester })
+    .select(this.briefSelector)
+    .lean()
+    .exec();
 };
 
 courseSchema.statics.findBriefByInstructor = function(instructor) {
-  return this.find({instructors: instructor}).select(this.briefSelector).lean().exec();
-}
+  return this.find({ instructors: instructor })
+    .select(this.briefSelector)
+    .lean()
+    .exec();
+};
+
+courseSchema.query.getFullAndExec = function() {
+  return this.select(mongoose.model('Course').fullSelector)
+    .populate('instructors sections')
+    .lean()
+    .exec();
+};
 
 courseSchema.statics.fullSelector = '-_instructorNames';
-courseSchema.statics.findFullById = function(id) {
-  return this.findById(id).select(this.fullSelector).populate('instructors sections').lean().exec();
+courseSchema.statics.findFullById = function(courseId) {
+  return this.findById(courseId).getFullAndExec().then(function(course) {
+    if (!course) return null;
+    return { selectedCourse: course };
+  });
 };
 
 courseSchema.statics.findFullByInstructor = function(instructor) {
-  return this.find({instructors: instructor}).select(this.fullSelector).populate('instructors sections').lean().exec();
-}
+  return this.find({ instructors: instructor })
+    .select(this.fullSelector)
+    .populate('instructors sections')
+    .lean()
+    .exec();
+};
 
 courseSchema.statics.search = function(semester, string) {
   const catalogNumberQueries = [];
@@ -163,21 +239,21 @@ courseSchema.statics.search = function(semester, string) {
 
   const queryDocument = {};
   if (departmentQueries.length > 0)
-    queryDocument.department = {$in: departmentQueries};
+    queryDocument.department = { $in: departmentQueries };
   if (catalogNumberQueries.length > 0)
-    queryDocument.catalogNumber = {$in: catalogNumberQueries};
+    queryDocument.catalogNumber = { $in: catalogNumberQueries };
   if (titleQueries.length > 0)
-    queryDocument.title = {$regex: new RegExp(titleQueries.join('|'), 'i')};
-  if (pdfQueries.length > 0)
-    queryDocument.pdf = {$in: pdfQueries};
-  if (auditQueries.length > 0)
-    queryDocument.audit = {$in: auditQueries};
-  if (semester === 'all')
-    queryDocument.recent = true;
-  else
-    queryDocument.semester = semester;
+    queryDocument.title = { $regex: new RegExp(titleQueries.join('|'), 'i') };
+  if (pdfQueries.length > 0) queryDocument.pdf = { $in: pdfQueries };
+  if (auditQueries.length > 0) queryDocument.audit = { $in: auditQueries };
+  if (semester === 'all') queryDocument.recent = true;
+  else queryDocument.semester = semester;
 
-  return this.find(queryDocument).select(this.briefSelector).lean().exec();
+  return this.find(queryDocument)
+    .select(this.briefSelector)
+    .populate('sections')
+    .lean()
+    .exec();
 };
 
 const Course = mongoose.model('Course', courseSchema);

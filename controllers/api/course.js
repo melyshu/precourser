@@ -6,42 +6,21 @@ const Course = require('../../models/Course.js');
 const router = express.Router();
 
 // search
-router.get('/semester/:semester/search/:query', function(req, res) {
-  const semester = req.params.semester;
+router.get('/semester/:semesterId/search/:query', function(req, res) {
+  const semesterId = req.params.semesterId;
   const query = req.params.query;
 
-  Course.search(semester, query)
-    .then(function(courses) {
-      if (!courses) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.json(courses);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
-    });
+  req.object = Course.search(semesterId, query).then(function(courses) {
+    if (!courses) return null;
+    return { searchedCourses: courses };
+  });
 });
 
 // retrieval
-router.get('/:id', function(req, res) {
-  const id = req.params.id;
+router.get('/:courseId', function(req, res) {
+  const courseId = req.params.courseId;
 
-  Course.findFullById(id)
-    .then(function(course) {
-      if (course === null) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.json(course);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
-    });
+  req.object = Course.findFullById(courseId);
 });
 
 module.exports = router;

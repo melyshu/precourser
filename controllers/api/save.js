@@ -10,70 +10,47 @@ router.get('/course/semester/:semester', function(req, res) {
   const netid = req.session.netid;
   const semester = req.params.semester;
 
-  User.findSavedCoursesBySemester(netid, semester).then(function(courses) {
-    if (!courses) {
-      res.sendStatus(404);
-      return;
-    }
-
-    res.json(courses);
-  }).catch(function(err) {
-    console.error(err);
-    res.sendStatus(500);
-  });
+  req.object = User.findSavedCoursesBySemester(netid, semester);
 });
 
-// should be put
-router.get('/course/:course/put', function(req, res) {
-  const netid = req.session.netid;
-  const course = req.params.course;
+router.put('/semester/:semesterId/course/:courseId', function(req, res) {
+  const userId = req.session.netid;
+  const semesterId = req.params.semesterId;
+  const courseId = req.params.courseId;
 
-  User.saveCourse(netid, course).then(function(course) {
-    if (course === null) {
-      res.sendStatus(404);
-      return;
-    }
-
-    res.json(course);
-  }).catch(function(err) {
-    console.error(err);
-    res.sendStatus(500);
-  });
+  req.object = User.saveCourseBySemester(userId, courseId, semesterId);
 });
 
-// should be delete
-router.get('/course/:course/delete', function(req, res) {
-  const netid = req.session.netid;
-  const course = req.params.course;
+router.delete('/semester/:semesterId/course/:courseId', function(req, res) {
+  const userId = req.session.netid;
+  const semesterId = req.params.semesterId;
+  const courseId = req.params.courseId;
 
-  User.unsaveCourse(netid, course).then(function(course) {
-    if (course === null) {
-      res.sendStatus(404);
-      return;
-    }
+  req.object = User.unsaveCourseBySemester(userId, courseId, semesterId);
+});
 
-    res.json(course);
-  }).catch(function(err) {
-    console.error(err);
-    res.sendStatus(500);
-  });
+/*
+// save course by id
+router.put('/course/:courseId', function(req, res) {
+  const userId = req.session.netid;
+  const courseId = req.params.courseId;
+
+  req.object = User.saveCourse(userId, courseId);
+});
+
+// unsave course by id
+router.delete('/course/:courseId', function(req, res) {
+  const userId = req.session.netid;
+  const courseId = req.params.courseId;
+
+  req.object = User.unsaveCourse(userId, courseId);
 });
 
 router.get('/instructor/semester/:semester', function(req, res) {
   const netid = req.session.netid;
   const semester = req.params.semester;
 
-  User.findSavedInstructorsBySemester(netid, semester).then(function(instructors) {
-    if (!instructors) {
-      res.sendStatus(404);
-      return;
-    }
-
-    res.json(instructors);
-  }).catch(function(err) {
-    console.error(err);
-    res.sendStatus(500);
-  });
+  req.object = User.findSavedInstructorsBySemester(netid, semester);
 });
 
 // should be put
@@ -81,17 +58,7 @@ router.get('/instructor/:instructor/put', function(req, res) {
   const netid = req.session.netid;
   const instructor = req.params.instructor;
 
-  User.saveInstructor(netid, instructor).then(function(instructor) {
-    if (instructor === null) {
-      res.sendStatus(404);
-      return;
-    }
-
-    res.json(instructor);
-  }).catch(function(err) {
-    console.error(err);
-    res.sendStatus(500);
-  });
+  req.object = User.saveInstructor(netid, instructor);
 });
 
 // should be delete
@@ -99,19 +66,9 @@ router.get('/instructor/:instructor/delete', function(req, res) {
   const netid = req.session.netid;
   const instructor = req.params.instructor;
 
-  User.unsaveInstructor(netid, instructor).then(function(instructor) {
-    if (instructor === null) {
-      res.sendStatus(404);
-      return;
-    }
-
-    res.json(instructor);
-  }).catch(function(err) {
-    console.error(err);
-    res.sendStatus(500);
-  });
+  req.object = User.unsaveInstructor(netid, instructor);
 });
-
+*/
 
 
 

@@ -7,7 +7,6 @@ const router = express.Router();
 
 router.get('/:semester/:query', function(req, res) {
   if (req.params.query === undefined || req.params.semester === undefined) {
-    console.log('hello')
     res.sendStatus(400);
     return;
   }

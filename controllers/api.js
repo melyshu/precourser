@@ -9,6 +9,23 @@ const auth = require('./auth.js');
 router.use(function(req, res, next) {
   req.session.netid = 'mshu';
   next();
+  if (req.object) {
+    req.object
+      .then(function(object) {
+        if (!object) {
+          res.sendStatus(404);
+          return;
+        }
+
+        res.json(object);
+      })
+      .catch(function(err) {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  } else {
+    req.sendStatus(418);
+  }
 });
 
 router.use('/startup', require('./api/startup.js'));

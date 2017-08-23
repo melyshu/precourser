@@ -18,82 +18,26 @@ const scheduleSchema = new mongoose.Schema({
   public: Boolean
 });
 
-scheduleSchema.statics.createByUserSemesterAndName = function(
-  userId,
-  semesterId,
-  name
-) {
-  const userPromise = mongoose.model('User').findById(userId).lean().exec();
-  const semesterPromise = mongoose.model('Semester').findBriefById(semesterId);
+//
+// HELPER FUNCTIONS
 
-  return Promise.join(userPromise, semesterPromise, function(user, semester) {
-    if (!user || !semester) return null;
+// removes unnecessary whitespace
+const clean = function(string) {
+  return string.trim().replace(/\s+/g, ' ');
+};
 
-    const now = new Date();
-    const schedule = {
-      name: name,
-      user: user._id,
-      semester: semester._id,
-      courses: [],
-      sections: [],
-      public: false,
-      created: now,
-      lastModified: now
-    };
-
-    return mongoose.model('Schedule').create(schedule);
+// query helper to return a promise with a full, lean schedule
+scheduleSchema.query.getFullAndExec = function() {
+  return this.populate({
+    path: 'courses',
+    select: mongoose.model('Course').minimalSelector,
+    populate: { path: 'sections' }
   })
-    .then(function(schedule) {
-      if (!schedule) return null;
-      return mongoose
-        .model('Schedule')
-        .findBriefByUserAndSemester(userId, semesterId);
-    })
-    .then(function(schedules) {
-      if (!schedules || schedules.length < 1) return null;
-      const id = schedules[schedules.length - 1]._id;
-
-      // need to find again to know the _id assigned by mongo!
-      return mongoose
-        .model('Schedule')
-        .findFullByUserAndId(userId, id)
-        .then(function(schedule) {
-          if (!schedule) return null;
-
-          return {
-            selectedSchedule: schedule,
-            schedules: schedules
-          };
-        });
-    });
+    .lean()
+    .exec();
 };
 
-scheduleSchema.statics.renameByUserAndId = function(userId, id, name) {
-  return this.findOneAndUpdate(
-    { _id: id, user: userId },
-    { name: name },
-    { new: true }
-  ).then(function(schedule) {
-    if (!schedule) return null;
-
-    return mongoose.model('Schedule').findByUserAndId(userId, id);
-  });
-};
-
-scheduleSchema.statics.removeByUserAndId = function(userId, id) {
-  return this.findOneAndRemove({ _id: id, user: userId }).then(function(
-    schedule
-  ) {
-    if (!schedule) {
-      return null;
-    }
-
-    return mongoose
-      .model('Schedule')
-      .findByUserAndSemester(userId, schedule.semester);
-  });
-};
-
+// returns a promise with an array of brief, lean schedules
 scheduleSchema.statics.briefSelector = '_id name';
 scheduleSchema.statics.findBriefByUserAndSemester = function(
   userId,
@@ -109,138 +53,260 @@ scheduleSchema.statics.findBriefByUserAndSemester = function(
     .exec();
 };
 
+//
+// API FUNCTIONS
+
+scheduleSchema.statics.createByUserSemesterAndName = function(
+  userId,
+  semesterId,
+  name
+) {
+  // check that user and semester both exist and that name is valid
+  const userPromise = mongoose.model('User').count({ _id: userId }).exec();
+  const semesterPromise = mongoose
+    .model('Semester')
+    .count({ _id: semesterId })
+    .exec();
+  const cleanName = clean(name);
+
+  return Promise.join(userPromise, semesterPromise, function(
+    userCount,
+    semesterCount
+  ) {
+    if (!userCount || !semesterCount || !cleanName) return null;
+
+    // create new schedule object
+    const now = new Date();
+
+    const schedule = {
+      name: cleanName,
+      user: userId,
+      semester: semesterId,
+      courses: [],
+      sections: [],
+      public: false,
+      created: now,
+      lastModified: now
+    };
+
+    // insert new schedule and retrieve
+    return mongoose
+      .model('Schedule')
+      .findOneAndUpdate({ name: '' }, schedule, { upsert: true, new: true })
+      .getFullAndExec();
+  }).then(function(schedule) {
+    if (!schedule) return null;
+
+    // retrieve new list of schedules
+    return mongoose
+      .model('Schedule')
+      .findBriefByUserAndSemester(userId, semesterId)
+      .then(function(schedules) {
+        if (!schedules) return null;
+
+        return { selectedSchedule: schedule, schedules: schedules };
+      });
+  });
+};
+
+scheduleSchema.statics.renameByUserAndId = function(userId, scheduleId, name) {
+  const cleanName = clean(name);
+
+  return this.findOneAndUpdate(
+    { _id: scheduleId, user: userId },
+    { name: cleanName },
+    { new: true }
+  )
+    .getFullAndExec()
+    .then(function(schedule) {
+      if (!schedule) return null;
+      return { selectedSchedule: schedule };
+    });
+};
+
 scheduleSchema.statics.findByUserAndSemester = function(userId, semesterId) {
   return this.findBriefByUserAndSemester(userId, semesterId).then(function(
     schedules
   ) {
     if (!schedules) return null;
+
     if (schedules.length === 0) {
       return mongoose
         .model('Schedule')
         .createByUserSemesterAndName(userId, semesterId, 'New Schedule');
     }
 
-    const id = schedules[0]._id;
+    const scheduleId = schedules[0]._id;
     return mongoose
       .model('Schedule')
-      .findFullByUserAndId(userId, id)
+      .findOne({ _id: scheduleId, user: userId })
+      .getFullAndExec()
       .then(function(schedule) {
-        return {
-          schedules: schedules,
-          selectedSchedule: schedule
-        };
+        if (!schedule) return null;
+        return { schedules: schedules, selectedSchedule: schedule };
       });
   });
 };
 
-scheduleSchema.statics.findByUserAndId = function(userId, id) {
-  return this.findFullByUserAndId(userId, id).then(function(schedule) {
-    if (!schedule) return;
+scheduleSchema.statics.findByUserAndId = function(userId, scheduleId) {
+  return this.findOne({ _id: scheduleId, user: userId })
+    .getFullAndExec()
+    .then(function(schedule) {
+      if (!schedule) return;
+      return { selectedSchedule: schedule };
+    });
+};
 
-    return {
-      selectedSchedule: schedule
-    };
+scheduleSchema.statics.deleteByUserAndId = function(userId, scheduleId) {
+  return this.findOneAndRemove({ _id: scheduleId, user: userId }).then(function(
+    schedule
+  ) {
+    if (!schedule) {
+      return null;
+    }
+
+    return mongoose
+      .model('Schedule')
+      .findByUserAndSemester(userId, schedule.semester);
   });
 };
 
-scheduleSchema.statics.findFullByUserAndId = function(userId, id) {
-  return this.findOne({ _id: id, user: userId })
-    .populate({
-      path: 'courses',
-      select: mongoose.model('Course').minimalSelector,
-      populate: {
-        path: 'sections'
-      }
-    })
-    .populate({
-      path: 'sections',
-      select: '_id'
-    })
-    .lean()
-    .exec();
-};
-
-scheduleSchema.statics.addCourseByUserAndId = function(userId, id, courseId) {
+scheduleSchema.statics.addCourseByUserAndId = function(
+  userId,
+  scheduleId,
+  courseId
+) {
   return mongoose
     .model('Course')
-    .findMinimalById(courseId)
-    .then(function(course) {
-      if (!course) return null;
+    .count({ _id: courseId })
+    .then(function(count) {
+      if (!count) return null;
 
       return mongoose
         .model('Schedule')
         .findOneAndUpdate(
-          { _id: id, user: userId },
+          { _id: scheduleId, user: userId },
           {
             $set: { lastModified: new Date() },
-            $addToSet: { courses: course._id }
+            $addToSet: { courses: courseId }
           },
           { new: true }
         )
-        .then(function(schedule) {
-          if (!schedule) return null;
-
-          return mongoose.model('Schedule').findFullByUserAndId(userId, id);
-        });
+        .getFullAndExec();
     })
     .then(function(schedule) {
       if (!schedule) return null;
-      return {
-        selectedSchedule: schedule
-      };
+      return { selectedSchedule: schedule };
     });
 };
 
 scheduleSchema.statics.removeCourseByUserAndId = function(
   userId,
-  id,
+  scheduleId,
   courseId
 ) {
   return mongoose
     .model('Course')
-    .findMinimalById(courseId)
-    .then(function(course) {
-      if (!course) return null;
+    .count({ _id: courseId })
+    .then(function(count) {
+      if (!count) return null;
+
+      const coursePrefixRegex = '^' + courseId;
 
       return mongoose
         .model('Schedule')
         .findOneAndUpdate(
-          { _id: id, user: userId },
+          { _id: scheduleId, user: userId },
           {
             $set: { lastModified: new Date() },
             $pull: {
-              sections: { $in: course.sections },
+              sections: { $regex: coursePrefixRegex },
               courses: courseId
             }
           },
           { new: true }
         )
+        .getFullAndExec();
+    })
+    .then(function(schedule) {
+      if (!schedule) return null;
+      return { selectedSchedule: schedule };
+    });
+};
+
+scheduleSchema.statics.addSectionByUserAndId = function(
+  userId,
+  scheduleId,
+  sectionId
+) {
+  return mongoose
+    .model('Section')
+    .count({ _id: sectionId })
+    .then(function(count) {
+      if (!count) return null;
+
+      const courseId = sectionId.substr(0, 10);
+      const sectionPrefixRegex = '^' + sectionId.substr(0, 11);
+
+      return mongoose
+        .model('Schedule')
+        .findOneAndUpdate(
+          { _id: scheduleId, user: userId },
+          { $pull: { sections: { $regex: sectionPrefixRegex } } }
+        )
+        .lean()
         .then(function(schedule) {
           if (!schedule) return null;
 
-          return mongoose.model('Schedule').findFullByUserAndId(userId, id);
+          return mongoose
+            .model('Schedule')
+            .findOneAndUpdate(
+              { _id: scheduleId, user: userId },
+              {
+                $set: { lastModified: new Date() },
+                $addToSet: { courses: courseId, sections: sectionId }
+              },
+              { new: true }
+            )
+            .getFullAndExec();
         });
     })
     .then(function(schedule) {
       if (!schedule) return null;
-      return {
-        selectedSchedule: schedule
-      };
+      return { selectedSchedule: schedule };
     });
 };
 
-/*
-scheduleSchema.statics.findByUserSemester = function(user, semester) {
-  return this.find({
-    user: user,
-    semester: semester
-  }).populate('courses sections');
-};
+scheduleSchema.statics.removeSectionByUserAndId = function(
+  userId,
+  scheduleId,
+  sectionId
+) {
+  return mongoose
+    .model('Section')
+    .count({ _id: sectionId })
+    .then(function(count) {
+      if (!count) return null;
 
-scheduleSchema.statics.findFullById = function(id) {
-  return this.findById(id).populate('courses sections');
+      return mongoose
+        .model('Schedule')
+        .findOneAndUpdate(
+          { _id: scheduleId, user: userId },
+          {
+            $set: { lastModified: new Date() },
+            $pull: {
+              sections: sectionId
+            }
+          },
+          { new: true }
+        )
+        .getFullAndExec();
+    })
+    .then(function(schedule) {
+      if (!schedule) return null;
+      return { selectedSchedule: schedule };
+    });
 };
-*/
 
 const Schedule = mongoose.model('Schedule', scheduleSchema);
 

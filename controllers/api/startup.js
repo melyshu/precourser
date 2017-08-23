@@ -1,38 +1,38 @@
 const config = require('../../config.js');
 const express = require('express');
+const Promise = require('bluebird');
 
-const Semester = require.main.require('./models/Semester.js');
-const Schedule = require.main.require('./models/Schedule.js');
+const User = require('../../models/User.js');
+const Semester = require('../../models/Semester.js');
+const Schedule = require('../../models/Schedule.js');
 
 const router = express.Router();
 
 router.get('/', function(req, res) {
   const userId = req.session.netid;
 
-  Semester.findFull()
-    .then(function(semesters) {
-      const semesterId = semesters[0]._id || null;
+  req.object = Semester.findFull().then(function(semesterObject) {
+    if (!semesterObject || semesterObject.semesters.length === 0) return null;
+    const semesterId = semesterObject.semesters[0]._id;
 
-      return Schedule.findByUserAndSemester(userId, semesterId).then(function(
-        object
-      ) {
-        object.semesters = semesters;
-        object.selectedSemester = semesterId;
-        return object;
-      });
-    })
-    .then(function(object) {
-      if (!object) {
-        res.sendStatus(404);
-        return;
-      }
+    const schedulePromise = Schedule.findByUserAndSemester(userId, semesterId);
+    const userPromise = User.findFullBySemester(userId, semesterId);
 
-      res.json(object);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
+    return Promise.join(schedulePromise, userPromise, function(
+      scheduleObject,
+      userObject
+    ) {
+      if (!scheduleObject || !userObject) return null;
+
+      return {
+        selectedSemester: semesterId,
+        semesters: semesterObject.semesters,
+        selectedSchedule: scheduleObject.selectedSchedule,
+        schedules: scheduleObject.schedules,
+        user: userObject.user
+      };
     });
+  });
 });
 
 module.exports = router;

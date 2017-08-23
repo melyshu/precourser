@@ -1,148 +1,86 @@
 const config = require('../../config.js');
 const express = require('express');
 
-const Course = require.main.require('./models/Course.js');
-const Schedule = require.main.require('./models/Schedule.js');
+const Schedule = require('../../models/Schedule.js');
 
 const router = express.Router();
 
-router.post('/semester/:semester/name/:name', function(req, res) {
-  const netid = req.session.netid;
-  const semester = req.params.semester;
+// create new schedule given semester and name
+router.post('/semester/:semesterId/name/:name', function(req, res) {
+  const userId = req.session.netid;
+  const semesterId = req.params.semesterId;
   const name = req.params.name;
 
-  Schedule.createByUserSemesterAndName(netid, semester, name)
-    .then(function(object) {
-      if (!object) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.json(object);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
-    });
+  req.object = Schedule.createByUserSemesterAndName(userId, semesterId, name);
 });
 
-router.put('/:id/name/:name', function(req, res) {
-  const netid = req.session.netid;
-  const id = req.params.id;
+// get all schedules by semester
+router.get('/semester/:semesterId', function(req, res) {
+  const userId = req.session.netid;
+  const semesterId = req.params.semesterId;
+
+  req.object = Schedule.findByUserAndSemester(userId, semesterId);
+});
+
+// rename schedule given id and name
+router.put('/:scheduleId/name/:name', function(req, res) {
+  const userId = req.session.netid;
+  const scheduleId = req.params.scheduleId;
   const name = req.params.name;
 
-  Schedule.renameByUserAndId(netid, id, name)
-    .then(function(object) {
-      if (!object) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.json(object);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
-    });
+  req.object = Schedule.renameByUserAndId(userId, scheduleId, name);
 });
 
-router.get('/semester/:semester', function(req, res) {
-  const user = req.session.netid;
-  const semester = req.params.semester;
-
-  Schedule.findByUserAndSemester(user, semester)
-    .then(function(object) {
-      if (!object) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.json(object);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
-    });
-});
-
-router.delete('/:schedule', function(req, res) {
+// get schedule by id
+router.get('/:scheduleId', function(req, res) {
   const userId = req.session.netid;
-  const id = req.params.schedule;
+  const scheduleId = req.params.scheduleId;
 
-  Schedule.removeByUserAndId(userId, id)
-    .then(function(object) {
-      if (!object) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.json(object);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
-    });
+  req.object = Schedule.findByUserAndId(userId, scheduleId);
 });
 
-router.get('/:schedule', function(req, res) {
+// delete schedule by id
+router.delete('/:scheduleId', function(req, res) {
   const userId = req.session.netid;
-  const id = req.params.schedule;
+  const scheduleId = req.params.scheduleId;
 
-  Schedule.findByUserAndId(userId, id)
-    .then(function(object) {
-      if (!object) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.json(object);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
-    });
+  req.object = Schedule.deleteByUserAndId(userId, scheduleId);
 });
 
-//should be put
-router.put('/:schedule/course/:course', function(req, res) {
+// add course to schedule by ids
+router.put('/:scheduleId/course/:courseId', function(req, res) {
   const userId = req.session.netid;
-  const id = req.params.schedule;
-  const courseId = req.params.course;
+  const scheduleId = req.params.scheduleId;
+  const courseId = req.params.courseId;
 
-  Schedule.addCourseByUserAndId(userId, id, courseId)
-    .then(function(object) {
-      if (object === null) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.json(object);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
-    });
+  req.object = Schedule.addCourseByUserAndId(userId, scheduleId, courseId);
 });
 
-// should be delete
-router.delete('/:schedule/course/:course', function(req, res) {
+// remove course from schedule by ids
+router.delete('/:scheduleId/course/:courseId', function(req, res) {
   const userId = req.session.netid;
-  const id = req.params.schedule;
-  const courseId = req.params.course;
+  const scheduleId = req.params.scheduleId;
+  const courseId = req.params.courseId;
 
-  Schedule.removeCourseByUserAndId(userId, id, courseId)
-    .then(function(object) {
-      if (object === null) {
-        res.sendStatus(404);
-        return;
-      }
+  req.object = Schedule.removeCourseByUserAndId(userId, scheduleId, courseId);
+});
 
-      res.json(object);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
-    });
+// add section to schedule by ids
+router.put('/:scheduleId/section/:sectionId', function(req, res) {
+  const userId = req.session.netid;
+  const scheduleId = req.params.scheduleId;
+  const sectionId = req.params.sectionId;
+
+  req.object = Schedule.addSectionByUserAndId(userId, scheduleId, sectionId);
+});
+
+// remove section from schedule by ids
+router.delete('/:scheduleId/section/:sectionId', function(req, res) {
+  const userId = req.session.netid;
+  const scheduleId = req.params.scheduleId;
+  const sectionId = req.params.sectionId;
+
+  req.object = Schedule.removeSectionByUserAndId(userId, scheduleId, sectionId);
 });
 
 module.exports = router;

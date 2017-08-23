@@ -1,17 +1,51 @@
+@import '../../color.scss';
+
 .NavbarInput {
-  padding: 10px;
-  background: #333;
-  width: 15em;
+  padding: 10px 15px;
+  width: 13em;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.NavbarInput-prompt,
+.NavbarInput-input {
+  flex: 0 0 auto;
+  margin-bottom: 10px;
+}
+
+.NavbarInput-buttons {
+  flex: 0 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: stretch;
 }
 
 .NavbarInput-cancel,
 .NavbarInput-submit, {
-  white-space: nowrap;
+  flex: 1 1 auto;
+  text-align: center;
   line-height: 40px;
-  padding: 0 15px;
 
-  &:hover, &:focus {
+  &:hover {
+    color: $white;
     cursor: pointer;
-    background: #777;
+  }
+}
+
+.NavbarInput-cancel {
+  &:hover {
+    background: $light;
+  }
+}
+
+.NavbarInput-submit {
+  color :$orange;
+
+  &:hover {
+    background: $orange;
   }
 }

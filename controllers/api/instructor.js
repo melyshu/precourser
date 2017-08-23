@@ -10,34 +10,14 @@ router.get('/semester/:semester/search/:query', function(req, res) {
   const semester = req.params.semester;
   const query = req.params.query;
 
-  Instructor.search(semester, query).then(function(instructors) {
-    if (!instructors) {
-      res.sendStatus(404);
-      return;
-    }
-
-    res.json(instructors);
-  }).catch(function(err) {
-    console.error(err);
-    res.sendStatus(500);
-  });
+  req.object = Instructor.search(semester, query);
 });
 
 // retrieval
 router.get('/:id', function(req, res) {
   const id = req.params.id;
 
-  Instructor.findFullById(id).then(function(instructor) {
-    if (instructor === null) {
-      res.sendStatus(404);
-      return;
-    }
-
-    res.json(instructor);
-  }).catch(function(err) {
-    console.error(err);
-    res.sendStatus(500);
-  });
+  req.object = Instructor.findFullById(id);
 });
 
 module.exports = router;

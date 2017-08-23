@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import './Navbar.css';
+import Logo from '../../precourser.svg';
 import NavbarItem from '../NavbarItem/NavbarItem';
 import NavbarDropdown from '../NavbarDropdown/NavbarDropdown';
 import NavbarInput from '../NavbarInput/NavbarInput';
+import FaCalendarPlusO from 'react-icons/lib/fa/calendar-plus-o';
+import FaPencil from 'react-icons/lib/fa/pencil';
+import FaTrashO from 'react-icons/lib/fa/trash-o';
+import FaCaretDown from 'react-icons/lib/fa/caret-down';
 
 class Navbar extends Component {
   render() {
@@ -36,49 +41,66 @@ class Navbar extends Component {
       scheduleLabels.push(schedule.name);
     }
 
+    const semesterDisplay = (
+      <span>
+        {selectedSemesterLabel}
+        <FaCaretDown />
+      </span>
+    );
+
+    const scheduleDisplay = (
+      <span>
+        {selectedScheduleLabel}
+        <FaCaretDown />
+      </span>
+    );
+
     return (
       <nav className="Navbar">
-        <div className="Navbar-brand">precourser</div>
-        <NavbarItem display={selectedSemesterLabel}>
+        <div className="Navbar-brand">
+          <img src={Logo} alt="precourser logo" className="Navbar-logo" />
+          <span>precourser</span>
+        </div>
+        <NavbarItem display={semesterDisplay}>
           <NavbarDropdown
             values={semesterValues}
             labels={semesterLabels}
             selectedValue={selectedSemester}
-            onSelect={this.props.onSemesterChange}
+            onSelect={this.props.onChangeSemester}
           />
         </NavbarItem>
-        <NavbarItem display={selectedScheduleLabel}>
+        <NavbarItem display={scheduleDisplay}>
           <NavbarDropdown
             values={scheduleValues}
             labels={scheduleLabels}
             selectedValue={selectedSchedule}
-            onSelect={this.props.onScheduleChange}
+            onSelect={this.props.onChangeSchedule}
           />
         </NavbarItem>
-        <NavbarItem display="plus">
-          <NavbarInput
-            prompt="Create a new schedule:"
-            defaultValue="New Schedule"
-            onSubmit={this.props.onScheduleCreate}
-            verb="Create"
-          />
-        </NavbarItem>
-        <NavbarItem display="pencil">
+        <NavbarItem display={<FaPencil />}>
           <NavbarInput
             prompt="Rename your schedule:"
             defaultValue={selectedScheduleLabel}
-            onSubmit={this.props.onScheduleRename}
+            onSubmit={this.props.onRenameSchedule}
             verb="Rename"
           />
         </NavbarItem>
-        <NavbarItem display="bin">
+        <NavbarItem display={<FaCalendarPlusO />}>
+          <NavbarInput
+            prompt="Create a new schedule:"
+            defaultValue="New Schedule"
+            onSubmit={this.props.onCreateSchedule}
+            verb="Create"
+          />
+        </NavbarItem>
+        <NavbarItem display={<FaTrashO />}>
           <NavbarInput
             prompt={
               "Are you sure you want to delete the schedule '" +
               selectedScheduleLabel +
               "'?"
             }
-            onSubmit={this.props.onScheduleDelete}
+            onSubmit={this.props.onDeleteSchedule}
             verb="Delete"
           />
         </NavbarItem>

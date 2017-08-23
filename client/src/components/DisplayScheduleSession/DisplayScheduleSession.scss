@@ -1,0 +1,9 @@
+.DisplayScheduleSession {
+  position: absolute;
+  border: 1px red solid;
+  font-size: 50%;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

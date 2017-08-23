@@ -25,7 +25,14 @@ semesterSchema.statics.findFullById = function(id) {
 };
 
 semesterSchema.statics.findFull = function() {
-  return this.find().select(this.fullSelector).sort('-_id').lean().exec();
+  return this.find()
+    .select(this.fullSelector)
+    .sort('-_id')
+    .lean()
+    .then(function(semesters) {
+      if (!semesters) return null;
+      return { semesters: semesters };
+    });
 };
 
 const Semester = mongoose.model('Semester', semesterSchema);

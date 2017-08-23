@@ -1,56 +1,134 @@
+@import '../../color.scss';
+
 .CourseResult {
-  display:flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: stretch;
-
-  &:hover {
-    background: #777;
-    cursor: pointer;
-  }
-}
-
-.CourseResult-main {
+  font-size: 0.8rem;
+  border: 1px solid $white;
   padding: 4px 6px;
-  flex: 1 1 auto;
+
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: stretch;
-  overflow: hidden;
+
+  &:hover {
+    border: 1px solid $orange;
+
+    .CourseResult-button {
+      height: 40px;
+    }
+
+    .CourseResult-title {
+      max-height: 4rem;
+      white-space: normal;
+    }
+  }
 }
 
-.CourseResult-buttons {
+.CourseResult-main {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.CourseResult-top,
+.CourseResult-middle,
+.CourseResult-bottom {
   flex: 0 0 auto;
   display: flex;
   flex-flow: row nowrap;
+}
+
+.CourseResult-top {
+  font-size: 0.6rem;
+  justify-content: flex-start;
+  align-items: flex-end;
+
+  * {
+    margin-left: 0.3rem;
+  }
+
+  .CourseResult-listing {
+    font-size: 0.65rem;
+    margin-left: 0;
+    font-weight: bolder;
+    color: $darkest;
+  }
+
+  .CourseResult-crosslistings {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 0 1 auto;
+  }
+
+  .CourseResult-distribution {
+    font-weight: bolder;
+    color: $info;
+  }
+
+  .CourseResult-success {
+    font-weight: bolder;
+    color: $success;
+  }
+
+  .CourseResult-warning {
+    font-weight: bolder;
+    color: $warning;
+  }
+
+  .CourseResult-danger {
+    font-weight: bolder;
+    color: $danger;
+  }
+}
+
+.CourseResult-middle {
+  .CourseResult-title {
+    transition: max-height 0.3s ease;
+    max-height: 1rem;
+    line-height: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.CourseResult-bottom {
+  font-size: 0.6rem;
   justify-content: flex-end;
   align-items: stretch;
 }
 
-.CourseResult-top {
-  font-size: 70%;
+.CourseResult-buttons {
+  color: $light;
+
+  flex: 0 0 auto;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: stretch;
+  justify-content: flex-end;
+  align-items: center;
 }
 
-.CourseResult-bottom {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: stretch;
-}
-
-.CourseResult-title {
-  white-space: nowrap;
+.CourseResult-button {
+  text-align: center;
+  transition: height 0.3s ease;
   overflow: hidden;
-  text-overflow: ellipsis;
-}
+  height: 0px;
+  width: 40px;
 
-.CourseResult-add {
   &:hover {
-    background: #555;
+    color: $white;
+    background: $orange;
+    cursor: pointer;
+  }
+
+  &.CourseResult-unsave {
+    color: $orange;
+
+    &:hover {
+      color: $white;
+      background: $light;
+    }
   }
 }

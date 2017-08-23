@@ -1,0 +1,28 @@
+@import '../../color.scss';
+
+.Tabs {
+  background: $lightest;
+
+  text-align: center;
+  line-height: 40px;
+
+  flex: 0 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.Tabs-tab {
+  flex: 0 1 40px;
+
+  &:hover {
+    color: $orange;
+    cursor: pointer;
+  }
+
+  &.Tabs-selected {
+    background: $orange;
+    color: $white;
+  }
+}

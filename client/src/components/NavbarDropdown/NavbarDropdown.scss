@@ -1,5 +1,7 @@
+@import '../../color.scss';
+
 .NavbarDropdown {
-  background: #333;
+  background: $white;
   max-height: 50vh;
   overflow-y: auto;
 }
@@ -11,10 +13,11 @@
 
   &:hover {
     cursor: pointer;
-    background: #777;
+    color: $orange;
   }
 
   &.NavbarDropdown-selected {
-    background: #777;
+    color: $orange;
+    font-weight: bolder;
   }
 }

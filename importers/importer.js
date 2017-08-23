@@ -99,6 +99,15 @@ Example timing:
   CourseUpdate took 21 mins
   ---------------------
   buildDatabase took 253 mins
+
+2017-08-19T07:43:05.209Z - warn: Departments took 0 mins
+2017-08-19T07:43:05.210Z - warn: Semester took 4 mins
+2017-08-19T07:43:05.211Z - warn: CourseDetail took 119 mins
+2017-08-19T07:43:05.212Z - warn: CourseEvaluation took 99 mins
+2017-08-19T07:43:05.212Z - warn: Instructor took 16 mins
+2017-08-19T07:43:05.213Z - warn: CourseUpdate took 26 mins
+2017-08-19T07:43:05.214Z - warn: ---------------------
+2017-08-19T07:43:05.223Z - warn: buildDatabase took 265 mins
 */
 const buildDatabase = function() {
   let startDepartments = new Date();

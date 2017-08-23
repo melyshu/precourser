@@ -53,9 +53,13 @@ class NavbarItem extends Component {
       );
     }
 
+    const className = this.state.expanded
+      ? 'NavbarItem-display NavbarItem-active'
+      : 'NavbarItem-display';
+
     return (
       <div className="NavbarItem" ref={this.setRef}>
-        <div className="NavbarItem-display" onClick={this.toggle} tabIndex="0">
+        <div className={className} onClick={this.toggle} tabIndex="0">
           {this.props.display}
         </div>
         {dropdown}

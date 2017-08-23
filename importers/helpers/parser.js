@@ -73,7 +73,7 @@ const parseTime = function(string) {
   const tokens = string.split(' ');
   const numbers = tokens[0].split(':');
   if (tokens[1] === 'pm') minutes += 60 * 12;
-  minutes += parseInt(numbers[0], 10) * 60;
+  minutes += parseInt(numbers[0], 10) % 12 * 60;
   minutes += parseInt(numbers[1], 10);
   return minutes;
 };

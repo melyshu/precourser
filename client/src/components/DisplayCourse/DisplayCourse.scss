@@ -1,0 +1,8 @@
+.DisplayCourse {
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow-y: auto;
+}

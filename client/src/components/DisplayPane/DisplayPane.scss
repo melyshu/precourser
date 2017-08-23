@@ -1,4 +1,8 @@
 .DisplayPane {
   flex: 4 4 0;
   background: #ccc;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
 }

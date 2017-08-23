@@ -1,6 +1,12 @@
+@import '../../color.scss';
+
 .Navbar {
+  color: $light;
+  background: $white;
+  border-bottom: 1px solid $orange;
+
+  z-index: 100;
   flex: 0 0 auto;
-  background: #222;
   height: 40px;
   display: flex;
   flex-flow: row nowrap;
@@ -8,9 +14,19 @@
   align-items: stretch;
 }
 
+.Navbar-logo {
+  height: 30px;
+  width: 30px;
+  padding: 0 10px;
+}
+
 .Navbar-brand {
   flex: 0 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
   color: #ee964b;
-  padding: 0 20px;
+  padding: 0 20px 0 0;
   line-height: 40px;
 }
