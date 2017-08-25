@@ -19,7 +19,8 @@ class App extends Component {
       schedules: [],
       user: { savedCourses: [] },
       hoveredCourseTimeout: null,
-      hoveredCourse: null
+      hoveredCourse: null,
+      hoveredSection: null
     };
 
     this.fetchJsonAndSetState = this.fetchJsonAndSetState.bind(this);
@@ -43,6 +44,8 @@ class App extends Component {
     this.handleUnsaveCourse = this.handleUnsaveCourse.bind(this);
     this.handleMouseOverCourse = this.handleMouseOverCourse.bind(this);
     this.handleMouseOutCourse = this.handleMouseOutCourse.bind(this);
+    this.handleMouseOverSection = this.handleMouseOverSection.bind(this);
+    this.handleMouseOutSection = this.handleMouseOutSection.bind(this);
     this.handleSelectCourse = this.handleSelectCourse.bind(this);
     this.handleUnselectCourse = this.handleUnselectCourse.bind(this);
   }
@@ -170,6 +173,14 @@ class App extends Component {
     );
   }
 
+  handleMouseOverSection(sectionId) {
+    this.setState({ hoveredSection: sectionId });
+  }
+
+  handleMouseOutSection(sectionId) {
+    this.setState({ hoveredSection: null });
+  }
+
   handleSelectCourse(courseId) {
     this.fetchJsonAndSetState(`/api/course/${courseId}`);
   }
@@ -183,34 +194,39 @@ class App extends Component {
   }
 
   render() {
-    const searchedCourses = this.state.searchedCourses.slice();
-    const savedCourses = this.state.user.savedCourses.slice();
+    const searchedCourses = this.state.searchedCourses;
+    const savedCourses = this.state.user.savedCourses;
+    const selectedCourse = this.state.selectedCourse;
+    const selectedSchedule = this.state.selectedSchedule;
+    const selectedScheduleCourses = selectedSchedule.courses;
+    const hoveredCourse = this.state.hoveredCourse;
+    const colors = {};
 
-    const coursesInSchedule = [];
-    for (let i = 0; i < this.state.selectedSchedule.courses.length; i++) {
-      coursesInSchedule.push(this.state.selectedSchedule.courses[i]._id);
+    // assign colors
+    for (let i = 0; i < selectedScheduleCourses.length; i++) {
+      colors[selectedScheduleCourses[i]._id] = 'color' + i % 10;
     }
-    const coursesInUser = [];
-    for (let i = 0; i < this.state.user.savedCourses.length; i++) {
-      coursesInUser.push(this.state.user.savedCourses[i]._id);
+    if (hoveredCourse && !colors[hoveredCourse._id]) {
+      colors[hoveredCourse._id] = 'color' + selectedScheduleCourses.length % 10;
     }
-    const selectedCourseId = this.state.selectedCourse
-      ? this.state.selectedCourse._id
-      : null;
+
+    // set flags
+    const coursesInSchedule = selectedScheduleCourses.map(course => course._id);
+    const coursesInUser = savedCourses.map(course => course._id);
+    const selectedCourseId = selectedCourse ? selectedCourse._id : null;
 
     for (let i = 0; i < searchedCourses.length; i++) {
-      searchedCourses[i].inSchedule =
-        coursesInSchedule.indexOf(searchedCourses[i]._id) > -1;
-      searchedCourses[i].saved =
-        coursesInUser.indexOf(searchedCourses[i]._id) > -1;
-      searchedCourses[i].selected = searchedCourses[i]._id === selectedCourseId;
+      const course = searchedCourses[i];
+      course.inSchedule = coursesInSchedule.indexOf(course._id) > -1;
+      course.saved = coursesInUser.indexOf(course._id) > -1;
+      course.selected = course._id === selectedCourseId;
     }
 
     for (let i = 0; i < savedCourses.length; i++) {
-      savedCourses[i].inSchedule =
-        coursesInSchedule.indexOf(savedCourses[i]._id) > -1;
-      savedCourses[i].saved = coursesInUser.indexOf(savedCourses[i]._id) > -1;
-      savedCourses[i].selected = savedCourses[i]._id === selectedCourseId;
+      const course = savedCourses[i];
+      course.inSchedule = coursesInSchedule.indexOf(course._id) > -1;
+      course.saved = true;
+      course.selected = course._id === selectedCourseId;
     }
 
     return (
@@ -220,7 +236,7 @@ class App extends Component {
           selectedSemester={this.state.selectedSemester}
           onChangeSemester={this.handleChangeSemester}
           schedules={this.state.schedules}
-          selectedSchedule={this.state.selectedSchedule}
+          selectedSchedule={selectedSchedule}
           onChangeSchedule={this.handleChangeSchedule}
           onCreateSchedule={this.handleCreateSchedule}
           onRenameSchedule={this.handleRenameSchedule}
@@ -240,13 +256,19 @@ class App extends Component {
             onUnselectCourse={this.handleUnselectCourse}
             searchedCourses={searchedCourses}
             savedCourses={savedCourses}
+            selectedScheduleCourses={selectedScheduleCourses}
+            colors={colors}
           />
           <DisplayPane
-            selectedCourse={this.state.selectedCourse}
-            hoveredCourse={this.state.hoveredCourse}
-            selectedSchedule={this.state.selectedSchedule}
+            selectedCourse={selectedCourse}
+            hoveredCourse={hoveredCourse}
+            hoveredSection={this.state.hoveredSection}
+            selectedSchedule={selectedSchedule}
             onAddSectionToSchedule={this.handleAddSectionToSchedule}
             onRemoveSectionFromSchedule={this.handleRemoveSectionFromSchedule}
+            onMouseOverSection={this.handleMouseOverSection}
+            onMouseOutSection={this.handleMouseOutSection}
+            colors={colors}
           />
         </div>
       </div>

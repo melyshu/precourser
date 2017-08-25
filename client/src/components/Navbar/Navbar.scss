@@ -1,32 +1,36 @@
-@import '../../color.scss';
+@import '../../common.scss';
+
+$block: 2.5rem;
 
 .Navbar {
   color: $light;
   background: $white;
-  border-bottom: 1px solid $orange;
+  border-bottom: $border solid $orange;
+  font-size: 1rem;
+  box-shadow: 0 0 $shadow 0 $orange;
 
   z-index: 100;
   flex: 0 0 auto;
-  height: 40px;
+  height: $block;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
   align-items: stretch;
-}
 
-.Navbar-logo {
-  height: 30px;
-  width: 30px;
-  padding: 0 10px;
-}
+  .Navbar-logo {
+    height: 0.8*$block;
+    width: 0.8*$block;
+    padding: 0 0.5*$padding;
+  }
 
-.Navbar-brand {
-  flex: 0 0 auto;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  color: #ee964b;
-  padding: 0 20px 0 0;
-  line-height: 40px;
+  .Navbar-brand {
+    flex: 0 0 auto;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    color: #ee964b;
+    padding: 0 $padding 0 0;
+    line-height: $block;
+  }
 }

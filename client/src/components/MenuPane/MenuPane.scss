@@ -1,8 +1,10 @@
-@import '../../color.scss';
+@import '../../common.scss';
 
 .MenuPane {
   background: $white;
   color: $light;
+  box-shadow: 0 0 $shadow 0 $darkest;
+  z-index: 50;
 
   flex: 1 1 100px;
   width: 100px;
@@ -10,28 +12,35 @@
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: stretch;
-}
 
-.MenuPane-content {
-  padding: 10px 10px 15px;
-  flex: 1 1 auto;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-  align-items: stretch;
-}
+  .MenuPane-content {
+    padding: 0 0 0;
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
 
-.MenuPane-input {
-  flex: 0 0 auto;
-}
+    .MenuPane-input {
+      margin: 0 0 0;
+      border: none;
+      border-bottom: $border solid $lightest;
+      line-height: $block;
+      padding: 0 $padding;
+      flex: 0 0 auto;
+    }
 
-.MenuPane-caption {
-  text-align: right;
-  font-size: 0.7rem;
-  margin-bottom: 10px;
-}
+    .MenuPane-caption {
+      padding: $padding $padding;
+      text-align: right;
+      font-size: 0.7rem;
+    }
 
-.MenuPane-results {
-  flex: 1 1 auto;
-  overflow-y: auto;
+    .MenuPane-results {
+      padding: 0 0 $padding;
+      flex: 1 1 auto;
+      overflow-y: auto;
+    }
+  }
+
 }

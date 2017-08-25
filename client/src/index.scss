@@ -1,5 +1,7 @@
+@import './color.scss';
+
 html {
-  font-size: 15px;
+  font-size: 14px; // definition of 1rem
 }
 
 :focus {
@@ -24,4 +26,14 @@ button {
   border: none;
   text-align: inherit;
   padding: 0;
+}
+
+
+
+$colors: $md-deep-purple, $md-blue, $md-red, $md-yellow, $md-green,
+  $md-blue-grey, $md-brown, $md-cyan, $md-amber, $md-purple;
+
+.colorhover {
+  background: $white;
+  border: $border solid $orange;
 }

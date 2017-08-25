@@ -1,51 +1,50 @@
-@import '../../color.scss';
+@import '../../common.scss';
 
 .NavbarInput {
-  padding: 10px 15px;
-  width: 13em;
+  padding: 1rem 1rem;
+  width: 13rem;
 
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: stretch;
-}
 
-.NavbarInput-prompt,
-.NavbarInput-input {
-  flex: 0 0 auto;
-  margin-bottom: 10px;
-}
-
-.NavbarInput-buttons {
-  flex: 0 0 auto;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: stretch;
-}
-
-.NavbarInput-cancel,
-.NavbarInput-submit, {
-  flex: 1 1 auto;
-  text-align: center;
-  line-height: 40px;
-
-  &:hover {
-    color: $white;
-    cursor: pointer;
+  .NavbarInput-prompt,
+  .NavbarInput-input {
+    flex: 0 0 auto;
+    margin-bottom: $padding;
   }
-}
 
-.NavbarInput-cancel {
-  &:hover {
-    background: $light;
-  }
-}
+  .NavbarInput-buttons {
+    flex: 0 0 auto;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: stretch;
 
-.NavbarInput-submit {
-  color :$orange;
+    .NavbarInput-cancel,
+    .NavbarInput-submit {
+      flex: 1 1 auto;
+      text-align: center;
+      line-height: $block;
+    }
 
-  &:hover {
-    background: $orange;
+    .NavbarInput-cancel {
+      color: $light;
+      &:hover {
+        color: $white;
+        background: $light;
+        cursor: pointer;
+      }
+    }
+
+    .NavbarInput-submit {
+      color: $orange;
+      &:hover {
+        color: $white;
+        background: $orange;
+        cursor: pointer;
+      }
+    }
   }
 }

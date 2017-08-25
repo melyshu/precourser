@@ -1,13 +1,36 @@
+@import '../../common.scss';
+
 .DisplayScheduleDay {
   flex: 1 1 0;
-  border: 1px #abcdef solid;
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
   align-items: stretch;
+
+  &.DisplayScheduleDay-labels {
+    flex: 0 0 2rem;
+  }
+
+  .DisplayScheduleDay-header {
+    font-size: 0.7rem;
+    text-align: center;
+    line-height: 1rem;
+    height: 1rem;
+  }
 }
 
 .DisplayScheduleDay-body {
   flex: 1 1 0;
   position: relative;
+  margin: 0 0.2rem 0 0;
+}
+
+.DisplayScheduleDay-cell {
+  text-align: center;
+  font-size: 0.6rem;
+
+  position: absolute;
+  left: 0;
+  right: -0.2rem;
+  border-top: 0.5px solid $lightest;
 }

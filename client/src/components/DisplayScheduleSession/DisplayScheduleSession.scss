@@ -1,9 +1,76 @@
+@import '../../common.scss';
+
+// mixin for different colors
+@mixin DisplayScheduleSession-color($color) {
+  border-color: $color //mix($color, $white, 30%);
+  background-color: $white;
+  color: $darkest;
+
+  &.selected,
+  &.hovered {
+    border-color: $color;
+    background-color: $color;
+    color: if(lightness($color) > 60%, $darkest, $white);
+  }
+
+  &.selected.hovered {
+    border-color: mix($color, $white, 30%);
+    background-color: mix($color, $white, 30%);
+  }
+}
+
 .DisplayScheduleSession {
   position: absolute;
-  border: 1px red solid;
-  font-size: 50%;
+  font-size: 0.4rem;
+  padding: 0 $border;
+  overflow: hidden;
+
+  @for $i from 1 through length($colors) {
+    $j: $i - 1;
+    &.DisplayScheduleSession-color#{$j} {
+      @include DisplayScheduleSession-color(nth($colors, $i));
+    }
+  }
+
+  border: $border solid $white;
+
 
   &:hover {
     cursor: pointer;
+  }
+
+  .DisplayScheduleSession-top {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    .DisplayScheduleSession-listing {
+      margin-right: 0.1rem;
+    }
+
+    .DisplayScheduleSession-section {
+      flex: 1 1 auto;
+      margin-right: 0.1rem;
+    }
+
+    .DisplayScheduleSession-seats {
+    }
+  }
+
+  .DisplayScheduleSession-bottom {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    .DisplayScheduleSession-location {
+      flex: 1 1 auto;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+
   }
 }

@@ -4,65 +4,11 @@ import FaInfoCircle from 'react-icons/lib/fa/info-circle';
 import FaStar from 'react-icons/lib/fa/star';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaMinus from 'react-icons/lib/fa/minus';
+//import FaCalendarO from 'react-icons/lib/fa/calendar-o';
 
 class CourseResult extends Component {
   render() {
     const course = this.props.course;
-
-    const top = [];
-    top.push(
-      <span className="CourseResult-listing">
-        {course.department + course.catalogNumber}
-      </span>
-    );
-
-    if (course.crossListings.length) {
-      let crossListings = '';
-      for (let i = 0; i < course.crossListings.length; i++) {
-        const crossListing = course.crossListings[i];
-        crossListings +=
-          ' / ' + crossListing.department + crossListing.catalogNumber;
-      }
-      top.push(
-        <span className="CourseResult-crosslistings">
-          {crossListings}
-        </span>
-      );
-    }
-
-    if (course.distribution) {
-      top.push(
-        <span className="CourseResult-distribution">
-          {course.distribution}
-        </span>
-      );
-    }
-
-    if (course.pdf) {
-      const className =
-        course.pdf === 'PDF'
-          ? 'CourseResult-success'
-          : course.pdf === 'PDFO'
-            ? 'CourseResult-warning'
-            : 'CourseResult-danger';
-      top.push(
-        <span className={className}>
-          {course.pdf}
-        </span>
-      );
-    }
-
-    if (course.audit) {
-      const className =
-        course.audit === 'AUDIT'
-          ? 'CourseResult-success'
-          : 'CourseResult-danger';
-      top.push(
-        <span className={className}>
-          {course.audit}
-        </span>
-      );
-    }
 
     const selectButtonIcon = <FaInfoCircle />;
     const selectButtonClassName = course.selected
@@ -88,15 +34,51 @@ class CourseResult extends Component {
       ? this.props.onRemoveCourseFromSchedule
       : this.props.onAddCourseToSchedule;
 
+    const color = this.props.colors[course._id];
+
+    const mainClassName =
+      'CourseResult-main' + (color ? ' CourseResult-' + color : '');
+
     return (
       <li
         className="CourseResult"
         onMouseOver={this.props.onMouseOverCourse.bind(null, course)}
         onMouseOut={this.props.onMouseOutCourse.bind(null, course)}
       >
-        <div className="CourseResult-main">
+        <div className={mainClassName}>
           <div className="CourseResult-top">
-            {top}
+            <span className="CourseResult-listing">
+              {course.department + course.catalogNumber}
+            </span>
+            {course.crossListings.map(crossListing =>
+              <span
+                key={crossListing.department}
+                className="CourseResult-crosslisting"
+              >
+                {crossListing.department + crossListing.catalogNumber}
+              </span>
+            )}
+            {course.distribution
+              ? <span className="CourseResult-distribution">
+                  {course.distribution}
+                </span>
+              : null}
+            {course.pdf
+              ? <span className={'CourseResult-' + course.pdf.toLowerCase()}>
+                  {course.pdf}
+                </span>
+              : null}
+            {course.audit
+              ? <span className={'CourseResult-' + course.audit.toLowerCase()}>
+                  {course.audit.slice(0, -4)}
+                </span>
+              : null}
+            <span className="CourseResult-stretch" />
+            {course.saved
+              ? <span className="CourseResult-saved">
+                  <FaStar />
+                </span>
+              : null}
           </div>
           <div className="CourseResult-middle">
             <span className="CourseResult-title">

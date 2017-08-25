@@ -1,27 +1,29 @@
-@import '../../color.scss';
+@import '../../common.scss';
 
 .NavbarItem {
   flex: 0 0 auto;
   position: relative;
-}
 
-.NavbarItem-display {
-  white-space: nowrap;
-  line-height: 40px;
-  padding: 0 10px;
+  .NavbarItem-display {
+    white-space: nowrap;
+    line-height: $block;
+    padding: 0 0.5*$padding;
 
-  &:hover, &.NavbarItem-active {
-    background: $white;
-    color: $orange;
+    &:hover, &.NavbarItem-active {
+      background: $white;
+      color: $orange;
 
-    cursor: pointer;
+      cursor: pointer;
+    }
   }
-}
 
-.NavbarItem-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: $white;
-  border: 1px solid $orange;
+  .NavbarItem-dropdown {
+    z-index: 60;
+    box-shadow: 0 0 $shadow 0 $darkest;
+
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: $white;
+  }
 }

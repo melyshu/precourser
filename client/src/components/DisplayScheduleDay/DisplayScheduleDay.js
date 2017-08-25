@@ -7,6 +7,7 @@ class DisplayScheduleDay extends Component {
     super(props);
 
     this.renderSessions = this.renderSessions.bind(this);
+    this.renderCells = this.renderCells.bind(this);
   }
 
   // position the sessions
@@ -220,11 +221,15 @@ class DisplayScheduleDay extends Component {
           <DisplayScheduleSession
             onAddSectionToSchedule={this.props.onAddSectionToSchedule}
             onRemoveSectionFromSchedule={this.props.onRemoveSectionFromSchedule}
+            onMouseOverSection={this.props.onMouseOverSection}
+            onMouseOutSection={this.props.onMouseOutSection}
+            hoveredSection={this.props.hoveredSection}
             key={entry.session.section._id}
             session={entry.session}
             position={position}
             minTime={this.props.minTime}
             maxTime={this.props.maxTime}
+            colors={this.props.colors}
           />
         );
       }
@@ -233,13 +238,47 @@ class DisplayScheduleDay extends Component {
     return returnedSessions;
   }
 
+  renderCells(labels) {
+    const cells = [];
+    const minTime = this.props.minTime;
+    const maxTime = this.props.maxTime;
+    for (let i = 0; i < 24; i++) {
+      if (i * 60 < minTime || i * 60 > maxTime) continue;
+      const topTime = Math.max(i * 60, minTime);
+      const bottomTime = Math.min((i + 1) * 60, maxTime);
+      const top = (topTime - minTime) / (maxTime - minTime) * 100 + '%';
+      const bottom = (maxTime - bottomTime) / (maxTime - minTime) * 100 + '%';
+      const style = { top: top, bottom: bottom };
+      cells.push(
+        <div key={i} className="DisplayScheduleDay-cell" style={style}>
+          {labels ? (i - 1) % 12 + 1 : ''}
+        </div>
+      );
+    }
+
+    return cells;
+  }
+
   render() {
-    const displayScheduleSessions = this.renderSessions();
+    const labels = this.props.labels;
+    const displayScheduleSessions = labels ? null : this.renderSessions();
+    const cells = this.renderCells(labels);
+    const className = labels
+      ? 'DisplayScheduleDay DisplayScheduleDay-labels'
+      : 'DisplayScheduleDay';
+
+    const day =
+      ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][
+        this.props.day
+      ] || '';
 
     return (
-      <div className="DisplayScheduleDay">
-        <div className="DisplayScheduleDay-header" />
+      <div className={className}>
+        <div className="DisplayScheduleDay-header">
+          {day}
+        </div>
         <div className="DisplayScheduleDay-body">
+          {cells}
           {displayScheduleSessions}
         </div>
       </div>

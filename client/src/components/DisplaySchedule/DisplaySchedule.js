@@ -16,13 +16,15 @@ class DisplaySchedule extends Component {
     const sessionsByDay = [[], [], [], [], [], []];
     const hoveredCourse = this.props.hoveredCourse;
     const selectedCourses = this.props.selectedSchedule.courses.slice();
-    let hoveredCourseSelected = false;
-    for (let i = 0; i < selectedCourses.length; i++) {
-      if (hoveredCourse && selectedCourses[i]._id === hoveredCourse._id)
-        hoveredCourseSelected = true;
+
+    if (hoveredCourse) {
+      let hoveredCourseSelected = false;
+      for (let i = 0; i < selectedCourses.length; i++) {
+        hoveredCourseSelected |= hoveredCourse._id === selectedCourses[i]._id;
+      }
+      if (!hoveredCourseSelected) selectedCourses.push(hoveredCourse);
     }
-    if (hoveredCourse && !hoveredCourseSelected)
-      selectedCourses.push(hoveredCourse);
+
     const selectedSections = this.props.selectedSchedule.sections;
 
     for (let i = 0; i < selectedCourses.length; i++) {
@@ -77,18 +79,39 @@ class DisplaySchedule extends Component {
     } // each course
 
     const displayScheduleDays = [];
+    displayScheduleDays.push(
+      <DisplayScheduleDay
+        key={-1}
+        minTime={MIN_TIME}
+        maxTime={MAX_TIME}
+        labels={true}
+      />
+    );
     for (let i = 1; i < 6; i++) {
       displayScheduleDays.push(
         <DisplayScheduleDay
           key={i}
+          day={i}
           sessions={sessionsByDay[i]}
           minTime={MIN_TIME}
           maxTime={MAX_TIME}
           onAddSectionToSchedule={this.props.onAddSectionToSchedule}
           onRemoveSectionFromSchedule={this.props.onRemoveSectionFromSchedule}
+          onMouseOverSection={this.props.onMouseOverSection}
+          onMouseOutSection={this.props.onMouseOutSection}
+          hoveredSection={this.props.hoveredSection}
+          colors={this.props.colors}
         />
       );
     }
+    displayScheduleDays.push(
+      <DisplayScheduleDay
+        key={-2}
+        minTime={MIN_TIME}
+        maxTime={MAX_TIME}
+        labels={true}
+      />
+    );
 
     return displayScheduleDays;
   }

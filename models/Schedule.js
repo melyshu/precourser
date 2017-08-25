@@ -30,7 +30,7 @@ const clean = function(string) {
 scheduleSchema.query.getFullAndExec = function() {
   return this.populate({
     path: 'courses',
-    select: mongoose.model('Course').minimalSelector,
+    select: mongoose.model('Course').briefSelector,
     populate: { path: 'sections' }
   })
     .lean()

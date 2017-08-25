@@ -12,9 +12,13 @@ class DisplayPane extends Component {
       content = (
         <DisplaySchedule
           hoveredCourse={this.props.hoveredCourse}
+          hoveredSection={this.props.hoveredSection}
           selectedSchedule={this.props.selectedSchedule}
           onAddSectionToSchedule={this.props.onAddSectionToSchedule}
           onRemoveSectionFromSchedule={this.props.onRemoveSectionFromSchedule}
+          onMouseOverSection={this.props.onMouseOverSection}
+          onMouseOutSection={this.props.onMouseOutSection}
+          colors={this.props.colors}
         />
       );
     }

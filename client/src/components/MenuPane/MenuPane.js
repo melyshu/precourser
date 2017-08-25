@@ -4,6 +4,7 @@ import CourseResult from '../CourseResult/CourseResult';
 import Tabs from '../Tabs/Tabs';
 import FaSearch from 'react-icons/lib/fa/search';
 import FaStar from 'react-icons/lib/fa/star';
+import FaCalendarO from 'react-icons/lib/fa/calendar-o';
 
 class MenuPane extends Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class MenuPane extends Component {
   }
 
   render() {
-    const tabLabels = [<FaSearch />, <FaStar />];
+    const tabLabels = [<FaSearch />, <FaStar />, <FaCalendarO />];
 
     let input;
     if (this.state.tab === 0) {
@@ -34,7 +35,9 @@ class MenuPane extends Component {
     const courses =
       this.state.tab === 0
         ? this.props.searchedCourses
-        : this.props.savedCourses;
+        : this.state.tab === 1
+          ? this.props.savedCourses
+          : this.props.selectedScheduleCourses;
 
     const courseResults = [];
     for (let i = 0; i < courses.length; i++) {
@@ -51,11 +54,15 @@ class MenuPane extends Component {
           onMouseOutCourse={this.props.onMouseOutCourse}
           onSelectCourse={this.props.onSelectCourse}
           onUnselectCourse={this.props.onUnselectCourse}
+          colors={this.props.colors}
         />
       );
     }
 
-    const noun = this.state.tab === 0 ? ' Search Result' : ' Saved Course';
+    const noun =
+      this.state.tab === 0
+        ? ' Search Result'
+        : this.state.tab === 1 ? ' Saved Course' : ' Selected Course';
     const plural = courses.length === 1 ? '' : 's';
     let caption = courses.length + noun + plural;
 

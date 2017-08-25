@@ -1,4 +1,4 @@
-@import '../../color.scss';
+@import '../../common.scss';
 
 .NavbarDropdown {
   background: $white;
@@ -7,9 +7,9 @@
 }
 
 .NavbarDropdown-item {
-  line-height: 40px;
+  line-height: $block;
   white-space: nowrap;
-  padding: 0 15px;
+  padding: 0 $padding;
 
   &:hover {
     cursor: pointer;

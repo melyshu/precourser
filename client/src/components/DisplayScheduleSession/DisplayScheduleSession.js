@@ -18,25 +18,48 @@ class DisplayScheduleSession extends Component {
       top: top,
       bottom: bottom,
       left: this.props.position.left,
-      right: this.props.position.right,
-      background: selected ? 'blue' : ''
+      right: this.props.position.right
     };
 
     const handleClick = selected
       ? this.props.onRemoveSectionFromSchedule.bind(null, section._id)
       : this.props.onAddSectionToSchedule.bind(null, section._id);
 
+    const hovered = section._id === this.props.hoveredSection;
+    const color = this.props.colors[course._id];
+    const className =
+      'DisplayScheduleSession' +
+      (color ? ' DisplayScheduleSession-' + color : '') +
+      (selected ? ' selected' : '') +
+      (hovered ? ' hovered' : '');
+
     return (
       <div
-        className="DisplayScheduleSession"
+        className={className}
         style={style}
         onClick={handleClick}
+        onMouseOver={this.props.onMouseOverSection.bind(null, section._id)}
+        onMouseOut={this.props.onMouseOutSection.bind(null, section._id)}
       >
-        <div>
-          {course.department + course.catalogNumber + section.name}
+        <div className="DisplayScheduleSession-top">
+          <span className="DisplayScheduleSession-listing">
+            {course.department + course.catalogNumber}
+          </span>
+          <span className="DisplayScheduleSession-section">
+            {section.name}
+          </span>
+          <span className="DisplayScheduleSession-seats">
+            {(section.seatsTaken >= 0 ? section.seatsTaken : '-') +
+              '\u00a0/ ' +
+              (section.seatsTotal >= 0 ? section.seatsTotal : '-')}
+          </span>
         </div>
-        <div>
-          {meeting.building + ' ' + meeting.buildingNumber}
+        <div className="DisplayScheduleSession-bottom">
+          <span className="DisplayScheduleSession-location">
+            {meeting.building && meeting.buildingNumber
+              ? meeting.building + ' ' + meeting.buildingNumber
+              : ''}
+          </span>
         </div>
       </div>
     );
