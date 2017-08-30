@@ -3,6 +3,7 @@ import './App.css';
 import Navbar from '../Navbar/Navbar';
 import MenuPane from '../MenuPane/MenuPane';
 import DisplayPane from '../DisplayPane/DisplayPane';
+import SidePane from '../SidePane/SidePane';
 
 const TIMEOUT_DELAY = 250;
 
@@ -18,7 +19,6 @@ class App extends Component {
       selectedSchedule: { courses: [] },
       schedules: [],
       user: { savedCourses: [] },
-      hoveredCourseTimeout: null,
       hoveredCourse: null,
       hoveredSection: null
     };
@@ -210,23 +210,11 @@ class App extends Component {
       colors[hoveredCourse._id] = 'color' + selectedScheduleCourses.length % 10;
     }
 
-    // set flags
-    const coursesInSchedule = selectedScheduleCourses.map(course => course._id);
-    const coursesInUser = savedCourses.map(course => course._id);
-    const selectedCourseId = selectedCourse ? selectedCourse._id : null;
-
-    for (let i = 0; i < searchedCourses.length; i++) {
-      const course = searchedCourses[i];
-      course.inSchedule = coursesInSchedule.indexOf(course._id) > -1;
-      course.saved = coursesInUser.indexOf(course._id) > -1;
-      course.selected = course._id === selectedCourseId;
-    }
-
-    for (let i = 0; i < savedCourses.length; i++) {
-      const course = savedCourses[i];
-      course.inSchedule = coursesInSchedule.indexOf(course._id) > -1;
-      course.saved = true;
-      course.selected = course._id === selectedCourseId;
+    // make semester lookup
+    const semesters ={};
+    for (let i = 0; i < this.state.semesters.length; i++) {
+      const semester = this.state.semesters[i];
+      semesters[semester._id] = semester;
     }
 
     return (
@@ -257,9 +245,11 @@ class App extends Component {
             searchedCourses={searchedCourses}
             savedCourses={savedCourses}
             selectedScheduleCourses={selectedScheduleCourses}
+            selectedCourse={selectedCourse}
             colors={colors}
           />
           <DisplayPane
+            savedCourses={savedCourses}
             selectedCourse={selectedCourse}
             hoveredCourse={hoveredCourse}
             hoveredSection={this.state.hoveredSection}
@@ -268,7 +258,10 @@ class App extends Component {
             onRemoveSectionFromSchedule={this.handleRemoveSectionFromSchedule}
             onMouseOverSection={this.handleMouseOverSection}
             onMouseOutSection={this.handleMouseOutSection}
+            onSelectCourse={this.handleSelectCourse}
+            onUnselectCourse={this.handleUnselectCourse}
             colors={colors}
+            semesters={semesters}
           />
         </div>
       </div>

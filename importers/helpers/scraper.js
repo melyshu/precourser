@@ -4,30 +4,32 @@ Exported functions:
 
   ------
 
-  scrapeSemester(id)
+  scrapeSemester(semesterId)
     imports the semester detail from ./hardcode/SEMESTERS.js
     scrapes the list of courses for that semester into the database
 
   scrapeDepartments()
     imports the departments from ./hardcode/SEMESTERS.js
 
-  scrapeCourseDetail(id)
+  scrapeCourseDetail(courseId)
     scrapes the course offering data into the database
 
-  scrapeCourseDetail(id)
+  scrapeCourseDetail(courseId)
     REQUIRES THE COURSE DETAIL TO BE IN THE DATABASE ALREADY
     scrapes the course evaluation data into the database
     relies on the course detail for document validation
 
-  scrapeInstructor(id)
+  scrapeInstructor(instructorId)
     REQUIRES ALL COURSE DETAILS TO BE IN THE DATABASE ALREADY
     scrapes the instructor page data into the database
     relies on course details for some instructor names
 
-  scrapeCourseUpdate(id)
+  scrapeCourseUpdate(courseId)
     REQUIRES ALL COURSE DETAILS AND EVALUATIONS TO BE IN THE DATABASE ALREADY
     assigns [new, recent, rating, ratingDescription] based on what is in the
       database already
+    copies over evaluations from most recent and relevant semester if this
+      semester doesn't have any
 
   ------
 
@@ -62,11 +64,11 @@ doesn't already exist).
 Returns a Promise (with the saved object). An error is thrown if the semester
 has not been hardcoded into ./hardcode/SEMESTERS.js.
 */
-const scrapeSemester = function(id) {
+const scrapeSemester = function(semesterId) {
   return rp({
     uri:
       'https://registrar.princeton.edu/course-offerings/search_results.xml?submit=Search&term=' +
-      id,
+      semesterId,
     transform: cheerio.load
   })
     .then(function($) {
@@ -74,14 +76,14 @@ const scrapeSemester = function(id) {
     })
     .then(function(courseIds) {
       const SEMESTERS = require('./hardcode/SEMESTERS.js');
-      const semester = SEMESTERS.find(s => s._id === id);
+      const semester = SEMESTERS.find(semester => semester._id === semesterId);
 
       if (!semester) {
         // didn't find it hardcoded ... go and hardcode!
         logger.log(
           'error',
           'Could not find semester %s in importers/helpers/hardcode/SEMESTERS.js',
-          id
+          semesterId
         );
         throw new Error(
           'Could not find semester %s in importers/helpers/hardcode/SEMESTERS.js'
@@ -142,9 +144,9 @@ new objects if they don't already exist).
 Returns a Promise (with the saved objects). The Promise is resolved in the case
 that the course is not real.
 */
-const scrapeCourseDetail = function(id) {
-  const term = id.substring(0, 4);
-  const courseId = id.substring(4);
+const scrapeCourseDetail = function(courseId) {
+  const semesterId = courseId.substring(0, 4);
+  const systemId = courseId.substring(4);
 
   /*
   Fetch webpage and parse
@@ -152,18 +154,22 @@ const scrapeCourseDetail = function(id) {
   return rp({
     uri:
       'https://registrar.princeton.edu/course-offerings/course_details.xml?courseid=' +
-      courseId +
+      systemId +
       '&term=' +
-      term,
+      semesterId,
     transform: cheerio.load
   })
     .then(function($) {
-      return parser.parseCourseOfferingsPage($, id);
+      return parser.parseCourseOfferingsPage($, courseId);
     })
     .then(function(object) {
       // object is undefined if course is not real
       if (!object) {
-        logger.log('debug', 'scrapeCourseDetail: course %s is not real', id);
+        logger.log(
+          'debug',
+          'scrapeCourseDetail: course %s is not real',
+          courseId
+        );
         return Promise.resolve('unreal');
       }
 
@@ -217,9 +223,9 @@ is NOT detected by this script, so running this script on a course in such
 a semester will import the WRONG evaluation data. (The data will be from a
 previous semester.)
 */
-const scrapeCourseEvaluation = function(id) {
-  const term = id.substring(0, 4);
-  const courseId = id.substring(4);
+const scrapeCourseEvaluation = function(courseId) {
+  const semesterId = courseId.substring(0, 4);
+  const systemId = courseId.substring(4);
 
   /*
   Fetch webpage and parse
@@ -227,9 +233,9 @@ const scrapeCourseEvaluation = function(id) {
   return rp({
     uri:
       'https://reg-captiva.princeton.edu/chart/index.php?terminfo=' +
-      term +
+      semesterId +
       '&courseinfo=' +
-      courseId,
+      systemId,
     transform: cheerio.load
   })
     .then(function($) {
@@ -241,17 +247,18 @@ const scrapeCourseEvaluation = function(id) {
         logger.log(
           'debug',
           'scrapeCourseDetail: course %s does not have evaluations',
-          id
+          courseId
         );
         return Promise.resolve();
       }
 
       // update evaluations field
       const course = {
+        lastModified: new Date(),
         evaluations: evaluations
       };
 
-      return Course.findByIdAndUpdate(id, course, {
+      return Course.findByIdAndUpdate(courseId, course, {
         new: true,
         upsert: false,
         runValidators: true
@@ -269,9 +276,9 @@ doesn't already exist).
 Returns a Promise (with the saved objects). The Promise is resolved in the case
 that the instructor is not real (does not have enough information).
 */
-const scrapeInstructor = function(id) {
+const scrapeInstructor = function(instructorId) {
   const courseData = Course.find({
-    instructors: id
+    instructors: instructorId
   })
     .sort({
       _id: -1
@@ -283,13 +290,13 @@ const scrapeInstructor = function(id) {
         logger.log(
           'debug',
           'scrapeInstructor: instructor %s is not in any courses',
-          id
+          instructorId
         );
         return Promise.resolve();
       }
 
       const recentCourse = courses[0];
-      const index = recentCourse.instructors.indexOf(id);
+      const index = recentCourse.instructors.indexOf(instructorId);
       const fullName = recentCourse._instructorNames[index];
 
       return fullName;
@@ -297,10 +304,11 @@ const scrapeInstructor = function(id) {
 
   const webpageData = rp({
     uri:
-      'https://registrar.princeton.edu/course-offerings/dirinfo.xml?uid=' + id,
+      'https://registrar.princeton.edu/course-offerings/dirinfo.xml?uid=' +
+      instructorId,
     transform: cheerio.load
   }).then(function($) {
-    return parser.parseInstructorPage($, id);
+    return parser.parseInstructorPage($, instructorId);
   });
 
   return Promise.join(courseData, webpageData, function(
@@ -316,34 +324,35 @@ const scrapeInstructor = function(id) {
     ) {
       // construct from course page info
       if (courseFullName && courseFullName !== courseFullName.toLowerCase()) {
+        // if instructor exists but name is lowercase...
         if (instructor) {
           // move netid to email field
-          instructor._id = id;
+          instructor._id = instructorId;
           instructor.email = instructor.fullName + '@princeton.edu';
           instructor.fullName = courseFullName;
           logger.log(
             'debug',
             'scrapeInstructor: The instructor %s had their name switched to email',
-            id
+            instructorId
           );
         } else {
-          // only name
+          // instructor does not exist from scraped page... so only have their name
           instructor = {
-            _id: id,
+            _id: instructorId,
             fullName: courseFullName
           };
         }
         logger.log(
           'debug',
           'scrapeInstructor: The instructor %s had their name saved from the course page.',
-          id
+          instructorId
         );
       } else {
         // truly not enough information
         logger.log(
           'debug',
           'scrapeInstructor: The instructor %s did not have enough information to be saved.',
-          id
+          instructorId
         );
         return Promise.resolve('unreal');
       }
@@ -374,14 +383,22 @@ and tries to assign to the original course object as best as possible the
 following fields:
   course.rating
   course.ratingDescription
+In addition, copies the most recent and relevant evaluation data if it does not
+exist for this semester of the course. Assigns to the the field
+  course.evaluations.description
+and tries to assign to the fields, if necessary:
+  course.evaluations.semester
+  course.evaluations.numeric
+  course.evaluations.written
 
 Returns a Promise (resolved to the saved course).
 
 NOTE: All courses must be in the database before running this.
 */
-const scrapeCourseUpdate = function(id) {
+const scrapeCourseUpdate = function(courseId) {
   // Returns an object with score and description most relevant to the given course
-  // Returns undefined if the course has no numeric evaluations
+  // Returns undefined if the course has no numeric evaluations, or if the
+  // evaluations are from another semester
   const getCourseRating = function(course) {
     // order of importance: the first one found will be extracted
     const ORDER = [
@@ -394,9 +411,14 @@ const scrapeCourseUpdate = function(id) {
       'Papers, Reports, Problem Sets, Examinations'
     ];
 
-    // return undefined if no numeric evaluations
+    // return undefined if no numeric evaluations or evaluations from past semester
     const numeric = course.evaluations.numeric;
-    if (numeric.length < 1) return undefined;
+    if (!numeric || !numeric.length) return undefined;
+    if (
+      course.evaluations.semester &&
+      course.evaluations.semester !== course.semester
+    )
+      return undefined;
 
     // find first match
     for (let i = 0; i < ORDER.length; i++) {
@@ -431,15 +453,15 @@ const scrapeCourseUpdate = function(id) {
   };
 
   // Begin the actual work... finding a suitable rating for this course!
-  return Course.findById(id)
+  return Course.findById(courseId)
     .then(function(course) {
       const thisInstructors = course.instructors;
       const thisId = course._id;
-      const courseUpdate = {};
+      const courseUpdate = { evaluations: course.evaluations };
 
       // find all semesters of this course
       return Course.find({
-        courseId: course.courseId
+        systemId: course.systemId
       })
         .sort({
           _id: -1
@@ -450,6 +472,9 @@ const scrapeCourseUpdate = function(id) {
 
           const length = courses.length;
           let recentRating; // holds the most recent applicable rating
+          let recentSemester; // holds the semester of the above rating
+          let recentNumeric; // the numeric evaluations
+          let recentWritten; // the written evaluations
 
           // iterate through courses from recent to past
           for (let i = 0; i < length; i++) {
@@ -469,6 +494,9 @@ const scrapeCourseUpdate = function(id) {
               if (rating) {
                 courseUpdate.rating = rating.score;
                 courseUpdate.ratingDescription = rating.description;
+                courseUpdate.evaluations.description =
+                  'Course evaluations from this semester';
+                courseUpdate.evaluations.semester = thatCourse.semester;
                 return courseUpdate;
               }
 
@@ -481,7 +509,12 @@ const scrapeCourseUpdate = function(id) {
             if (!rating) continue;
 
             // save for most recent rating
-            if (!recentRating) recentRating = rating;
+            if (!recentRating) {
+              recentRating = rating;
+              recentSemester = thatCourse.semester;
+              recentNumeric = thatCourse.evaluations.numeric;
+              recentWritten = thatCourse.evaluations.written;
+            }
 
             // done if instructors intersect!
             const thatInstructors = thatCourse.instructors;
@@ -489,7 +522,12 @@ const scrapeCourseUpdate = function(id) {
               courseUpdate.rating = rating.score;
               courseUpdate.ratingDescription =
                 rating.description +
-                ' from the last time an instructor taught this course';
+                ' from the last time an instructor taught the course';
+              courseUpdate.evaluations.description =
+                'Course evaluations from the last semester an instructor taught the course';
+              courseUpdate.evaluations.semester = thatCourse.semester;
+              courseUpdate.evaluations.numeric = thatCourse.evaluations.numeric;
+              courseUpdate.evaluations.written = thatCourse.evaluations.written;
               return courseUpdate;
             }
           }
@@ -500,16 +538,25 @@ const scrapeCourseUpdate = function(id) {
             courseUpdate.ratingDescription =
               recentRating.description +
               ' from the last time the course was taught';
+            courseUpdate.evaluations.description =
+              'Course evaluations from the last semester the course was taught';
+            courseUpdate.evaluations.semester = recentSemester;
+            courseUpdate.evaluations.numeric = recentNumeric;
+            courseUpdate.evaluations.written = recentWritten;
             return courseUpdate;
           }
 
           // otherwise... bad luck, just return the new / recent information
+          courseUpdate.evaluations.description =
+            'No course evaluations available';
           return courseUpdate;
         });
     })
     .then(function(courseUpdate) {
+      courseUpdate.lastModified = new Date();
+
       // put update through to database
-      return Course.findByIdAndUpdate(id, courseUpdate, {
+      return Course.findByIdAndUpdate(courseId, courseUpdate, {
         new: true,
         upsert: false,
         runValidators: true

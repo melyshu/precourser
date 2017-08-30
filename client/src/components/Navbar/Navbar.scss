@@ -3,8 +3,8 @@
 $block: 2.5rem;
 
 .Navbar {
-  color: $light;
-  background: $white;
+  color: $default;
+  background: $empty;
   border-bottom: $border solid $orange;
   font-size: 1rem;
   box-shadow: 0 0 $shadow 0 $orange;
@@ -29,7 +29,7 @@ $block: 2.5rem;
     flex-flow: row nowrap;
     justify-content: flex-start;
     align-items: center;
-    color: #ee964b;
+    color: $orange;
     padding: 0 $padding 0 0;
     line-height: $block;
   }

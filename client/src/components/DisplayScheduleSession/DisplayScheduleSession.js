@@ -25,13 +25,24 @@ class DisplayScheduleSession extends Component {
       ? this.props.onRemoveSectionFromSchedule.bind(null, section._id)
       : this.props.onAddSectionToSchedule.bind(null, section._id);
 
-    const hovered = section._id === this.props.hoveredSection;
+    const sectionHovered = section._id === this.props.hoveredSection;
+    const sectionTypeHovered =
+      this.props.hoveredSection &&
+      section._id.substring(0, 11) ===
+        this.props.hoveredSection.substring(0, 11);
+    const courseHovered =
+      this.props.hoveredCourse && course._id === this.props.hoveredCourse._id;
+
     const color = this.props.colors[course._id];
     const className =
       'DisplayScheduleSession' +
       (color ? ' DisplayScheduleSession-' + color : '') +
-      (selected ? ' selected' : '') +
-      (hovered ? ' hovered' : '');
+      (selected ? ' DisplayScheduleSession-selected' : '') +
+      (sectionHovered ? ' DisplayScheduleSession-section-hovered' : '') +
+      (courseHovered ? ' DisplayScheduleSession-course-hovered' : '') +
+      (sectionTypeHovered
+        ? ' DisplayScheduleSession-section-type-hovered'
+        : '');
 
     return (
       <div

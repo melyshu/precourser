@@ -2,12 +2,12 @@
 
 // mixin for different colors
 @mixin CourseResult-color($color) {
-  border-color: $color
+  border-color: $color; // mix($color, $white, 70%);
 }
 
 .CourseResult {
   font-size: 0.8rem;
-  border: $border solid $white;
+  border: $border solid $empty;
   padding: 5*$border 8*$border;
 
   display: flex;
@@ -16,7 +16,7 @@
   align-items: stretch;
 
   &:hover {
-    border: $border solid $orange;
+    border-color: $orange;
 
     .CourseResult-buttons {
       margin-top: 5*$border;
@@ -26,14 +26,15 @@
       height: $block;
     }
 
-    .CourseResult-main .CourseResult-middle .CourseResult-title {
+    .CourseResult-main .CourseSummary-title {
       max-height: 4rem;
       white-space: normal;
     }
   }
 
   .CourseResult-main {
-    border-left: ($padding - 6*$border)/2 solid $white;
+    font-size: 1em;
+    border-left: ($padding - 6*$border)/2 solid $empty;
     padding-left: ($padding - 6*$border)/2;
 
     display: flex;
@@ -48,88 +49,13 @@
       }
     }
 
-    .CourseResult-top,
-    .CourseResult-middle,
-    .CourseResult-bottom {
-      flex: 0 0 auto;
-      display: flex;
-      flex-flow: row nowrap;
+    .CourseSummary-title {
+      transition: max-height 0.6s ease;
+      max-height: 1.3em;
     }
-
-    .CourseResult-top {
-      font-size: 0.6rem;
-      justify-content: flex-start;
-      align-items: flex-end;
-
-      * {
-        margin-left: 5*$border;
-      }
-
-      .CourseResult-listing {
-        font-size: 0.65rem;
-        margin-left: 0;
-        font-weight: bolder;
-        color: $darkest;
-      }
-
-      .CourseResult-crosslisting {
-        color: $darkest;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        flex: 0 1 auto;
-
-        &::before {
-          content: "/";
-          margin-right: 5*$border;
-        }
-      }
-
-      .CourseResult-distribution {
-        color: $info;
-      }
-
-      .CourseResult-pdf,
-      .CourseResult-audit {
-        color: $success;
-      }
-
-      .CourseResult-pdfo {
-        color: $warning;
-      }
-
-      .CourseResult-npdf,
-      .CourseResult-naudit {
-        color: $danger;
-      }
-
-      .CourseResult-stretch {
-        flex: 1 1 0;
-      }
-
-      .CourseResult-saved {
-        color: $orange;
-      }
-    } // CourseResult-top
-
-    .CourseResult-middle {
-      .CourseResult-title {
-        transition: max-height 0.6s ease;
-        max-height: 1rem;
-        line-height: 1rem;
-        overflow: hidden;
-      }
-    }
-
-    .CourseResult-bottom {
-      font-size: 0.6rem;
-      justify-content: flex-end;
-      align-items: stretch;
-    }
-  } // CourseResult-main
+  }
 
   .CourseResult-buttons {
-    color: $light;
     margin-top: 0;
     transition: margin-top 0.3s ease;
 
@@ -149,7 +75,7 @@
     width: $block;
 
     &:hover {
-      color: $white;
+      color: $empty;
       background: $orange;
       cursor: pointer;
     }
@@ -158,8 +84,8 @@
       color: $orange;
 
       &:hover {
-        color: $white;
-        background: $light;
+        color: $empty;
+        background: $default;
       }
     }
   }

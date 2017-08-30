@@ -10,7 +10,6 @@
     padding: 0 0.5*$padding;
 
     &:hover, &.NavbarItem-active {
-      background: $white;
       color: $orange;
 
       cursor: pointer;
@@ -19,11 +18,11 @@
 
   .NavbarItem-dropdown {
     z-index: 60;
-    box-shadow: 0 0 $shadow 0 $darkest;
+    box-shadow: 0 0 $shadow 0 $full;
 
     position: absolute;
     top: 100%;
     left: 0;
-    background: $white;
+    background: $empty;
   }
 }

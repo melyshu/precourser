@@ -1,0 +1,23 @@
+@import '../../common.scss';
+
+.DisplayCourseEvaluations {
+  .DisplayCourseEvaluations-title {
+    text-transform: uppercase;
+    font-size: 0.6em;
+    color: $default;
+  }
+
+  .DisplayCourseEvaluations-content {
+    margin-bottom: $padding;
+  }
+
+  .DisplayCourseEvaluations-score {
+    font-size: 0.7em;
+    text-align: right;
+  }
+
+  .DisplayCourseEvaluations-written {
+    font-size: 0.8em;
+    margin-bottom: $padding;
+  }
+}

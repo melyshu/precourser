@@ -1,0 +1,88 @@
+@import '../../common.scss';
+
+.CourseSummary {
+  .CourseSummary-top,
+  .CourseSummary-middle,
+  .CourseSummary-bottom {
+    flex: 0 0 auto;
+    display: flex;
+    flex-flow: row nowrap;
+
+    .CourseSummary-stretch {
+      flex: 1 1 0;
+    }
+  }
+
+  .CourseSummary-top {
+    font-size: 0.65em;
+    justify-content: flex-start;
+    align-items: flex-end;
+
+    * {
+      margin-left: 5*$border;
+      white-space: nowrap;
+    }
+
+    .CourseSummary-listing {
+      font-size: 1.1em; // on top of the 0.6em;
+      margin-left: 0;
+      font-weight: bolder;
+      color: $full;
+    }
+
+    .CourseSummary-crosslistings {
+      margin-left: 0;
+      flex: 0 1 auto;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: $full;
+    }
+
+    .CourseSummary-distribution {
+      color: $info;
+    }
+
+    .CourseSummary-pdf,
+    .CourseSummary-audit {
+      color: $success;
+    }
+
+    .CourseSummary-pdfo {
+      color: $warning;
+    }
+
+    .CourseSummary-npdf,
+    .CourseSummary-naudit {
+      color: $danger;
+    }
+
+    .CourseSummary-xpdf,
+    .CourseSummary-xaudit {
+      order: 1;
+      color: $half;
+    }
+
+    .CourseSummary-stretch {
+      order: 2;
+    }
+
+    .CourseSummary-saved {
+      order: 3;
+      color: $orange;
+    }
+  } // CourseSummary-top
+
+  .CourseSummary-middle {
+    .CourseSummary-title {
+      line-height: 1.3em;
+      overflow: hidden;
+    }
+  }
+
+  .CourseSummary-bottom {
+    font-size: 0.6em;
+    justify-content: flex-end;
+    align-items: stretch;
+  }
+}

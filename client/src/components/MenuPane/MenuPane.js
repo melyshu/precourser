@@ -4,7 +4,8 @@ import CourseResult from '../CourseResult/CourseResult';
 import Tabs from '../Tabs/Tabs';
 import FaSearch from 'react-icons/lib/fa/search';
 import FaStar from 'react-icons/lib/fa/star';
-import FaCalendarO from 'react-icons/lib/fa/calendar-o';
+import FaCalendar from 'react-icons/lib/fa/calendar';
+import FaThLarge from 'react-icons/lib/fa/th-large';
 
 class MenuPane extends Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class MenuPane extends Component {
   }
 
   render() {
-    const tabLabels = [<FaSearch />, <FaStar />, <FaCalendarO />];
+    const tabLabels = [<FaSearch />, <FaStar />, <FaCalendar />, <FaThLarge />];
 
     let input;
     if (this.state.tab === 0) {
@@ -28,6 +29,7 @@ class MenuPane extends Component {
           className="MenuPane-input"
           type="text"
           onChange={this.props.onChangeSearch}
+          placeholder="search"
         />
       );
     }
@@ -55,6 +57,9 @@ class MenuPane extends Component {
           onSelectCourse={this.props.onSelectCourse}
           onUnselectCourse={this.props.onUnselectCourse}
           colors={this.props.colors}
+          selectedScheduleCourses={this.props.selectedScheduleCourses}
+          savedCourses={this.props.savedCourses}
+          selectedCourse={this.props.selectedCourse}
         />
       );
     }

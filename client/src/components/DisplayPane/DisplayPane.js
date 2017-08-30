@@ -7,7 +7,15 @@ class DisplayPane extends Component {
   render() {
     let content;
     if (this.props.selectedCourse) {
-      content = <DisplayCourse selectedCourse={this.props.selectedCourse} />;
+      content = (
+        <DisplayCourse
+          semesters={this.props.semesters}
+          selectedCourse={this.props.selectedCourse}
+          onSelectCourse={this.props.onSelectCourse}
+          onUnselectCourse={this.props.onUnselectCourse}
+          savedCourses={this.props.savedCourses}
+        />
+      );
     } else {
       content = (
         <DisplaySchedule

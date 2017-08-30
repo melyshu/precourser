@@ -1,7 +1,9 @@
 // Handles configuration information for a lot of modules
 
+const path = require('path');
+
 // load environment variables for development
-require('dotenv').config({ path: '.env' });
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 // database uri
 const mongoDbUri = process.env.MONGODB_URI;

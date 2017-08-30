@@ -11,7 +11,7 @@ const courseSchema = new mongoose.Schema({
   lastModified: { type: Date, required: 'lastModified required' },
 
   semester: { type: String, ref: 'Semester', required: 'semester required' },
-  courseId: { type: String, index: true, required: 'courseId required' },
+  systemId: { type: String, index: true, required: 'systemId required' },
 
   department: {
     type: String,
@@ -65,13 +65,15 @@ const courseSchema = new mongoose.Schema({
     type: String,
     trim: true,
     uppercase: true,
-    enum: ['PDF', 'PDFO', 'NPDF']
+    required: true,
+    enum: ['PDF', 'PDFO', 'NPDF', 'XPDF']
   },
   audit: {
     type: String,
     trim: true,
     uppercase: true,
-    enum: ['AUDIT', 'NAUDIT']
+    required: true,
+    enum: ['AUDIT', 'NAUDIT', 'XAUDIT']
   },
 
   rating: Number,
@@ -80,6 +82,8 @@ const courseSchema = new mongoose.Schema({
   recent: Boolean,
 
   evaluations: {
+    description: { type: String, trim: true },
+    semester: { type: String, ref: 'Semester' },
     numeric: [
       {
         _id: false,
@@ -123,6 +127,13 @@ const courseSchema = new mongoose.Schema({
   website: { type: String, trim: true }
 });
 
+courseSchema.virtual('courses', {
+  ref: 'Course',
+  localField: 'systemId',
+  foreignField: 'systemId',
+  justOne: false
+});
+
 /*
 courseSchema.virtual('sections', {
   ref: 'Section',
@@ -139,7 +150,8 @@ courseSchema.statics.findMinimalById = function(id) {
 };
 
 courseSchema.statics.briefSelector =
-  '-rawAttributes -evaluations -readings -reservedSeats -prerequisites -equivalentCourses -otherInformation -otherRequirements -_instructorNames';
+  '-rawAttributes -banner -description -evaluations -assignments -readings -prerequisites ' +
+  '-equivalentCourses -otherInformation -otherRequirements -_instructorNames';
 courseSchema.statics.findBriefById = function(id) {
   return this.findById(id).select(this.briefSelector).lean().exec();
 };
@@ -171,6 +183,12 @@ courseSchema.statics.findBriefByInstructor = function(instructor) {
 courseSchema.query.getFullAndExec = function() {
   return this.select(mongoose.model('Course').fullSelector)
     .populate('instructors sections')
+    .populate({
+      path: 'courses',
+      select: mongoose.model('Course').briefSelector,
+      populate: { path: 'instructors' },
+      options: { sort: '-semester' }
+    })
     .lean()
     .exec();
 };

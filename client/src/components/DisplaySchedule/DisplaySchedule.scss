@@ -1,9 +1,8 @@
 @import '../../common.scss';
 
 .DisplaySchedule {
-  background: $white;
   flex: 1 1 0;
-  padding: 1rem;
+  padding: $padding;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;

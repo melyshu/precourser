@@ -224,6 +224,7 @@ class DisplayScheduleDay extends Component {
             onMouseOverSection={this.props.onMouseOverSection}
             onMouseOutSection={this.props.onMouseOutSection}
             hoveredSection={this.props.hoveredSection}
+            hoveredCourse={this.props.hoveredCourse}
             key={entry.session.section._id}
             session={entry.session}
             position={position}

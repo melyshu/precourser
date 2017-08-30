@@ -1,7 +1,8 @@
 @import '../../common.scss';
 
 .Tabs {
-  background: $lightest;
+  z-index: 30;
+  background: $half;
 
   text-align: center;
   line-height: $block;
@@ -22,7 +23,7 @@
 
     &.Tabs-selected {
       background: $orange;
-      color: $white;
+      color: $empty;
     }
   }
 }

@@ -14,7 +14,7 @@ const semesterSchema = new mongoose.Schema({
   courses: [{ type: String, ref: 'Course' }] // only used for importing
 });
 
-semesterSchema.statics.briefSelector = '-startDate -endDate';
+semesterSchema.statics.briefSelector = '-startDate -endDate -courses';
 semesterSchema.statics.findBriefById = function(id) {
   return this.findById(id).select(this.briefSelector).lean().exec();
 };

@@ -2,20 +2,30 @@
 
 // mixin for different colors
 @mixin DisplayScheduleSession-color($color) {
-  border-color: $color //mix($color, $white, 30%);
-  background-color: $white;
-  color: $darkest;
+  border-color: $color; //mix($color, $white, 30%);
+  background-color: $empty;
+  color: $full;
 
-  &.selected,
-  &.hovered {
-    border-color: $color;
-    background-color: $color;
-    color: if(lightness($color) > 60%, $darkest, $white);
+  &.DisplayScheduleSession-course-hovered,
+  &.DisplayScheduleSession-section-type-hovered {
+    background-color: mix($color, $empty, 30%);
   }
 
-  &.selected.hovered {
-    border-color: mix($color, $white, 30%);
-    background-color: mix($color, $white, 30%);
+  &.DisplayScheduleSession-selected.DisplayScheduleSession-section-hovered {
+    border-color: mix($color, $empty, 30%);
+    background-color: mix($color, $empty, 30%);
+  }
+
+  &.DisplayScheduleSession-selected,
+  &.DisplayScheduleSession-section-hovered {
+    border-color: $color;
+    background-color: $color;
+    color: if(
+      abs(lightness($color) - lightness($full)) >
+        1.5*abs(lightness($color) - lightness($empty)),
+      $full,
+      $empty
+    );
   }
 }
 
@@ -32,8 +42,7 @@
     }
   }
 
-  border: $border solid $white;
-
+  border: $border solid $empty;
 
   &:hover {
     cursor: pointer;
@@ -70,7 +79,5 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
-
   }
 }

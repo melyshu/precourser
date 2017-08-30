@@ -1,7 +1,18 @@
-@import './color.scss';
+@import './common.scss';
 
 html {
-  font-size: 14px; // definition of 1rem
+  // definition of 1rem
+  font-size: 14px;
+
+  // default color
+  color: $default;
+
+  // default background
+  background: $empty;
+
+  // force words to break
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 :focus {
@@ -28,12 +39,9 @@ button {
   padding: 0;
 }
 
-
+p {
+  margin: 0;
+}
 
 $colors: $md-deep-purple, $md-blue, $md-red, $md-yellow, $md-green,
   $md-blue-grey, $md-brown, $md-cyan, $md-amber, $md-purple;
-
-.colorhover {
-  background: $white;
-  border: $border solid $orange;
-}

@@ -30,10 +30,10 @@
     }
 
     .NavbarInput-cancel {
-      color: $light;
+      color: $default;
       &:hover {
-        color: $white;
-        background: $light;
+        color: $empty;
+        background: $default;
         cursor: pointer;
       }
     }
@@ -41,7 +41,7 @@
     .NavbarInput-submit {
       color: $orange;
       &:hover {
-        color: $white;
+        color: $empty;
         background: $orange;
         cursor: pointer;
       }

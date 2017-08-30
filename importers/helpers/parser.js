@@ -116,19 +116,19 @@ const parseSemesterSearchPage = function($) {
     const $td = $tr.find('td').eq(1);
     const href = $td.find('a').attr('href');
 
-    const courseId = href.substr(-16, 6);
+    const systemId = href.substr(-16, 6);
     const term = href.substr(-4, 4);
-    const id = term + courseId;
+    const courseId = term + systemId;
 
-    courses[id] = 0; // save unique ids
+    courses[courseId] = 0; // save unique ids
   });
 
-  const ids = [];
-  for (let id in courses) {
-    ids.push(id);
+  const courseIds = [];
+  for (let courseId in courses) {
+    courseIds.push(courseId);
   }
 
-  return ids;
+  return courseIds;
 };
 
 /*
@@ -146,14 +146,14 @@ data).
 Returns undefined if the course is not a real course (i.e. it does not have at
 least one section, or it does not have a department / catalogNumber).
 */
-const parseCourseOfferingsPage = function($, id) {
+const parseCourseOfferingsPage = function($, courseId) {
   /*
   id fields
   */
   const course = {
-    _id: id,
-    semester: id.substring(0, 4),
-    courseId: id.substring(4)
+    _id: courseId,
+    semester: courseId.substring(0, 4),
+    systemId: courseId.substring(4)
   };
 
   const $content = $('#timetable');
@@ -330,7 +330,7 @@ const parseCourseOfferingsPage = function($, id) {
   } else if (attributes.includes('P/D/F')) {
     course.pdf = 'PDF';
   } else {
-    // no pdf data
+    course.pdf = 'XPDF'; // no pdf data
   }
   if (attributes.includes('No Audit')) {
     course.audit = 'NAUDIT';
@@ -339,7 +339,7 @@ const parseCourseOfferingsPage = function($, id) {
   } else if (attributes.includes('Audit')) {
     course.audit = 'AUDIT';
   } else {
-    // no audit data
+    course.audit = 'XAUDIT'; // no audit data
   }
 
   /*
@@ -365,8 +365,8 @@ const parseCourseOfferingsPage = function($, id) {
     course._instructorNames.push(clean($instructor.text()));
 
     const path = $instructor.attr('href');
-    const uid = path.substring(path.length - 9, path.length);
-    course.instructors.push(uid);
+    const instructorId = path.substring(path.length - 9, path.length);
+    course.instructors.push(instructorId);
   });
 
   /*
@@ -518,9 +518,9 @@ Returns an Instructor object constructed from the information on the webpage.
 Returns undefined if there is not sufficient information (i.e. no name or the
 error 'No directory information available').
 */
-const parseInstructorPage = function($, id) {
+const parseInstructorPage = function($, instructorId) {
   const instructor = {
-    _id: id
+    _id: instructorId
   };
 
   const fullName = clean($('h2').text());

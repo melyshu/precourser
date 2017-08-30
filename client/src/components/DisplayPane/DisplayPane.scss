@@ -1,6 +1,8 @@
+@import '../../common.scss';
+
 .DisplayPane {
-  flex: 4 4 0;
-  background: #ccc;
+  flex: 1 1 auto;
+
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;

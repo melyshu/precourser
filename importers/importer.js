@@ -38,14 +38,14 @@ const LAST_SEMESTER_WITH_EVALUATIONS = '1174';
 // prettier-ignore
 const SEMESTERS = [ // see ./hardcode/SEMESTERS.js for more details
           '1182',
-  '1174', '1172',
+  '1174', '1172'/*,
   '1164', '1162',
   '1154', '1152',
   '1144', '1142',
   '1134', '1132',
   '1124', '1122',
   '1114', '1112',
-  '1104', '1102'
+  '1104', '1102'*/
 ];
 
 // scraper fine-tuning
@@ -117,54 +117,133 @@ const buildDatabase = function() {
   let startInstructor;
   let startCourseUpdate;
   let finish;
-  return Promise.resolve().then( // import departments
-    scraper.scrapeDepartments
-  ).then(function() { // find all course ids by semester
-    startSemester = new Date();
-    return scraper.scrapeAll(scraper.scrapeSemester, SEMESTERS, 'semester', SEMESTER_INTERVAL, SEMESTER_THREADS);
-  }).then(function() {
-    startCourseDetail = new Date();
-    return Semester.find().lean().then(function(semesters) {
-      let courseIds = [];
-      for (let i = 0; i < semesters.length; i++) {
-        const semester = semesters[i];
-        courseIds = courseIds.concat(semester.courses);
-      }
-      return courseIds;
+  return Promise.resolve()
+    .then(
+      // import departments
+      scraper.scrapeDepartments
+    )
+    .then(function() {
+      // find all course ids by semester
+      startSemester = new Date();
+      return scraper.scrapeAll(
+        scraper.scrapeSemester,
+        SEMESTERS,
+        'semester',
+        SEMESTER_INTERVAL,
+        SEMESTER_THREADS
+      );
+    })
+    .then(function() {
+      startCourseDetail = new Date();
+      return Semester.find().lean().then(function(semesters) {
+        let courseIds = [];
+        for (let i = 0; i < semesters.length; i++) {
+          const semester = semesters[i];
+          courseIds = courseIds.concat(semester.courses);
+        }
+        return courseIds;
+      });
+    })
+    .then(function(courseIds) {
+      // scrape course details
+      return scraper.scrapeAll(
+        scraper.scrapeCourseDetail,
+        courseIds,
+        'courseDetail',
+        COURSE_DETAIL_INTERVAL,
+        COURSE_DETAIL_THREADS
+      );
+    })
+    .then(function() {
+      startCourseEvaluation = new Date();
+      return Course.find({
+        semester: { $lte: LAST_SEMESTER_WITH_EVALUATIONS }
+      })
+        .lean()
+        .distinct('_id');
+    })
+    .then(function(courseIds) {
+      // scrape course evaluations
+      return scraper.scrapeAll(
+        scraper.scrapeCourseEvaluation,
+        courseIds,
+        'courseEvaluation',
+        COURSE_EVALUATION_INTERVAL,
+        COURSE_EVALUATION_THREADS
+      );
+    })
+    .then(function() {
+      startInstructor = new Date();
+      return Course.find().lean().distinct('instructors');
+    })
+    .then(function(instructorIds) {
+      // scrape instructors
+      return scraper.scrapeAll(
+        scraper.scrapeInstructor,
+        instructorIds,
+        'instructor',
+        INSTRUCTOR_INTERVAL,
+        INSTRUCTOR_THREADS
+      );
+    })
+    .then(function() {
+      startCourseUpdate = new Date();
+      return Course.find().lean().distinct('_id');
+    })
+    .then(function(courseIds) {
+      // update course ratings
+      return scraper.scrapeAll(
+        scraper.scrapeCourseUpdate,
+        courseIds,
+        'courseUpdate',
+        COURSE_UPDATE_INTERVAL,
+        COURSE_UPDATE_THREADS
+      );
+    })
+    .then(function() {
+      finish = new Date();
+
+      const formatDelta = function(delta) {
+        return Math.round(delta / 1000 / 60) + ' mins';
+      };
+
+      logger.log(
+        'warn',
+        'Departments took %s',
+        formatDelta(startSemester - startDepartments)
+      );
+      logger.log(
+        'warn',
+        'Semester took %s',
+        formatDelta(startCourseDetail - startSemester)
+      );
+      logger.log(
+        'warn',
+        'CourseDetail took %s',
+        formatDelta(startCourseEvaluation - startCourseDetail)
+      );
+      logger.log(
+        'warn',
+        'CourseEvaluation took %s',
+        formatDelta(startInstructor - startCourseEvaluation)
+      );
+      logger.log(
+        'warn',
+        'Instructor took %s',
+        formatDelta(startCourseUpdate - startInstructor)
+      );
+      logger.log(
+        'warn',
+        'CourseUpdate took %s',
+        formatDelta(finish - startCourseUpdate)
+      );
+      logger.log('warn', '--------------------- ');
+      logger.log(
+        'warn',
+        'buildDatabase took %s',
+        formatDelta(finish - startDepartments)
+      );
     });
-  }).then(function(courseIds) { // scrape course details
-    return scraper.scrapeAll(scraper.scrapeCourseDetail, courseIds, 'courseDetail', COURSE_DETAIL_INTERVAL, COURSE_DETAIL_THREADS);
-  }).then(function() {
-    startCourseEvaluation = new Date();
-    return Course.find({semester: {$lte: LAST_SEMESTER_WITH_EVALUATIONS}}).lean().distinct('_id');
-  }).then(function(courseIds) { // scrape course evaluations
-    return scraper.scrapeAll(scraper.scrapeCourseEvaluation, courseIds, 'courseEvaluation', COURSE_EVALUATION_INTERVAL, COURSE_EVALUATION_THREADS);
-  }).then(function() {
-    startInstructor = new Date();
-    return Course.find().lean().distinct('instructors');
-  }).then(function(instructorIds) { // scrape instructors
-    return scraper.scrapeAll(scraper.scrapeInstructor, instructorIds, 'instructor', INSTRUCTOR_INTERVAL, INSTRUCTOR_THREADS);
-  }).then(function() {
-    startCourseUpdate = new Date();
-    return Course.find().lean().distinct('_id');
-  }).then(function(courseIds) { // update course ratings
-    return scraper.scrapeAll(scraper.scrapeCourseUpdate, courseIds, 'courseUpdate', COURSE_UPDATE_INTERVAL, COURSE_UPDATE_THREADS);
-  }).then(function() {
-    finish = new Date();
-
-    const formatDelta = function(delta) {
-      return Math.round(delta / 1000 / 60) + ' mins';
-    };
-
-    logger.log('warn', 'Departments took %s', formatDelta(startSemester - startDepartments));
-    logger.log('warn', 'Semester took %s', formatDelta(startCourseDetail - startSemester));
-    logger.log('warn', 'CourseDetail took %s', formatDelta(startCourseEvaluation - startCourseDetail));
-    logger.log('warn', 'CourseEvaluation took %s', formatDelta(startInstructor - startCourseEvaluation));
-    logger.log('warn', 'Instructor took %s', formatDelta(startCourseUpdate - startInstructor));
-    logger.log('warn', 'CourseUpdate took %s', formatDelta(finish - startCourseUpdate));
-    logger.log('warn', '--------------------- ');
-    logger.log('warn', 'buildDatabase took %s', formatDelta(finish - startDepartments));
-  });
 };
 
 /*
@@ -195,52 +274,120 @@ const updateDatabase = function() {
   let startInstructor;
   let startCourseUpdate;
   let finish;
-  return Promise.resolve().then( // import departments
-    scraper.scrapeDepartments
-  ).then(function() { // find all course ids in semester
-    startSemester = new Date();
-    return scraper.scrapeAll(scraper.scrapeSemester, [CURRENT_SEMESTER], 'semester', SEMESTER_INTERVAL, SEMESTER_THREADS);
-  }).then(function() {
-    startCourseDetail = new Date();
-    return Semester.findById(CURRENT_SEMESTER).lean().then(function(semester) {
-      return semester.courses;
-    });
-  }).then(function(courseIds) {// scrape course details
-    return scraper.scrapeAll(scraper.scrapeCourseDetail, courseIds, 'courseDetail', COURSE_DETAIL_INTERVAL, COURSE_DETAIL_THREADS);
-  }).then(function() {
-    startInstructor = new Date();
-    return Course.find().lean().distinct('instructors');
-  }).then(function(courseInstructorIds) {
-    return Instructor.find().lean().distinct('_id').then(function(instructorIds) {
-      const newIds = [];
-      for (let i = 0; i < courseInstructorIds; i++) {
-        const id = courseInstructorIds[i];
-        if (instructorIds.indexOf(id) < 0) newIds.push(id);
-      }
-      return newIds;
-    });
-  }).then(function(newInstructorIds) { // scrape any new instructors
-    return scraper.scrapeAll(scraper.scrapeInstructor, newInstructorIds, 'instructor', INSTRUCTOR_INTERVAL, INSTRUCTOR_THREADS);
-  }).then(function() {
-    startCourseUpdate = new Date();
-    return Course.find({new: {$exists: false}}).lean().distinct('_id');
-  }).then(function(courseIds) { // update course ratings as necessary
-    return scraper.scrapeAll(scraper.scrapeCourseUpdate, courseIds, 'courseUpdate', COURSE_UPDATE_INTERVAL, COURSE_UPDATE_THREADS);
-  }).then(function() {
-    finish = new Date();
+  return Promise.resolve()
+    .then(
+      // import departments
+      scraper.scrapeDepartments
+    )
+    .then(function() {
+      // find all course ids in semester
+      startSemester = new Date();
+      return scraper.scrapeAll(
+        scraper.scrapeSemester,
+        [CURRENT_SEMESTER],
+        'semester',
+        SEMESTER_INTERVAL,
+        SEMESTER_THREADS
+      );
+    })
+    .then(function() {
+      startCourseDetail = new Date();
+      return Semester.findById(CURRENT_SEMESTER)
+        .lean()
+        .then(function(semester) {
+          return semester.courses;
+        });
+    })
+    .then(function(courseIds) {
+      // scrape course details
+      return scraper.scrapeAll(
+        scraper.scrapeCourseDetail,
+        courseIds,
+        'courseDetail',
+        COURSE_DETAIL_INTERVAL,
+        COURSE_DETAIL_THREADS
+      );
+    })
+    .then(function() {
+      startInstructor = new Date();
+      return Course.find().lean().distinct('instructors');
+    })
+    .then(function(courseInstructorIds) {
+      return Instructor.find()
+        .lean()
+        .distinct('_id')
+        .then(function(instructorIds) {
+          const newIds = [];
+          for (let i = 0; i < courseInstructorIds; i++) {
+            const id = courseInstructorIds[i];
+            if (instructorIds.indexOf(id) < 0) newIds.push(id);
+          }
+          return newIds;
+        });
+    })
+    .then(function(newInstructorIds) {
+      // scrape any new instructors
+      return scraper.scrapeAll(
+        scraper.scrapeInstructor,
+        newInstructorIds,
+        'instructor',
+        INSTRUCTOR_INTERVAL,
+        INSTRUCTOR_THREADS
+      );
+    })
+    .then(function() {
+      startCourseUpdate = new Date();
+      return Course.find({ new: { $exists: false } }).lean().distinct('_id');
+    })
+    .then(function(courseIds) {
+      // update course ratings as necessary
+      return scraper.scrapeAll(
+        scraper.scrapeCourseUpdate,
+        courseIds,
+        'courseUpdate',
+        COURSE_UPDATE_INTERVAL,
+        COURSE_UPDATE_THREADS
+      );
+    })
+    .then(function() {
+      finish = new Date();
 
-    const formatDelta = function(delta) {
-      return Math.round(delta / 1000 / 60) + ' mins';
-    };
+      const formatDelta = function(delta) {
+        return Math.round(delta / 1000 / 60) + ' mins';
+      };
 
-    logger.log('warn', 'Departments took %s', formatDelta(startSemester - startDepartments));
-    logger.log('warn', 'Semester took %s', formatDelta(startCourseDetail - startSemester));
-    logger.log('warn', 'CourseDetail took %s', formatDelta(startInstructor - startCourseDetail));
-    logger.log('warn', 'Instructor took %s', formatDelta(startCourseUpdate - startInstructor));
-    logger.log('warn', 'CourseUpdate took %s', formatDelta(finish - startCourseUpdate));
-    logger.log('warn', '--------------------- ');
-    logger.log('warn', 'updateDatabase took %s', formatDelta(finish - startDepartments));
-  });
+      logger.log(
+        'warn',
+        'Departments took %s',
+        formatDelta(startSemester - startDepartments)
+      );
+      logger.log(
+        'warn',
+        'Semester took %s',
+        formatDelta(startCourseDetail - startSemester)
+      );
+      logger.log(
+        'warn',
+        'CourseDetail took %s',
+        formatDelta(startInstructor - startCourseDetail)
+      );
+      logger.log(
+        'warn',
+        'Instructor took %s',
+        formatDelta(startCourseUpdate - startInstructor)
+      );
+      logger.log(
+        'warn',
+        'CourseUpdate took %s',
+        formatDelta(finish - startCourseUpdate)
+      );
+      logger.log('warn', '--------------------- ');
+      logger.log(
+        'warn',
+        'updateDatabase took %s',
+        formatDelta(finish - startDepartments)
+      );
+    });
 };
 
 module.exports.buildDatabase = buildDatabase;

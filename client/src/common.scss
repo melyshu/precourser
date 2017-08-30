@@ -19,10 +19,35 @@ $lighter: #bbb;
 $lightest: #ddd;
 $white: #fff;
 
+// standard units
 $shadow: 0.3rem;
 $border: 0.05rem;
 $padding: 1rem;
 $block: 2.5rem;
+
+// standard colours
+//*
+$full: $black;
+$default: $light;
+$half: $lightest;
+$empty: $white;
+//*/
+
+// dark theme
+/*
+$full: $lighter;
+$default: $dark;
+$half: $darkest;
+$empty: $black;
+//*/
+
+// experimental theme
+/*
+$full: $what;
+$default: $blue;
+$half: mix($yellow, $white, 30%);
+$empty: mix($turquoise, $white, 30%);
+//*/
 
 // https://material.io/guidelines/style/color.html#color-color-palette
 $md-red: #f44336;

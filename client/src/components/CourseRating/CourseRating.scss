@@ -1,0 +1,9 @@
+@import '../../common.scss';
+
+.CourseRating {
+  font-weight: bolder;
+
+  &.CourseRating-new {
+    color: $md-light-blue;
+  }
+}

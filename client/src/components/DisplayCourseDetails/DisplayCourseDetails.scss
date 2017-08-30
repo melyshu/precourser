@@ -1,0 +1,36 @@
+@import '../../common.scss';
+
+.DisplayCourseDetails {
+  flex: 1 1 auto;
+  overflow-y: auto;
+
+  .DisplayCourseDetails-field {
+    .DisplayCourseDetails-field-title {
+      text-transform: uppercase;
+      font-size: 0.6em;
+      color: $default;
+    }
+
+    .DisplayCourseDetails-field-content {
+      margin-bottom: $padding;
+
+      .DisplayCourseDetails-grading-percent {
+        font-size: 0.7em;
+        text-align: right;
+      }
+
+      .DisplayCourseDetails-reserved-seat {
+        padding-bottom: 5*$border;
+      }
+
+      .DisplayCourseDetails-reading {
+        padding-bottom: 5*$border;
+
+        .DisplayCourseDetails-reading-author {
+          color: $default;
+          font-size: 0.7em;
+        }
+      }
+    }
+  }
+}
