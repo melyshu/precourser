@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './DisplayCourseDetails.css';
+import CourseRating from '../CourseRating/CourseRating';
 
 class DisplayCourseDetails extends Component {
   renderReservedSeats(reservedSeats) {
@@ -80,8 +81,55 @@ class DisplayCourseDetails extends Component {
     );
   }
 
+  renderEvaluations(evaluations, semesters) {
+    return [
+      <div key="numeric" className="DisplayCourseDetails-field">
+        <div className="DisplayCourseDetails-field-title">
+          {evaluations.semester
+            ? 'Course evaluations from ' + semesters[evaluations.semester].name
+            : 'No course evaluations available'}
+        </div>
+        {evaluations.semester &&
+          <table className="DisplayCourseDetails-field-content">
+            <tbody>
+              {evaluations.numeric.map(item =>
+                <tr
+                  key={item.field}
+                  className="DisplayCourseDetails-evaluations-numeric"
+                >
+                  <td className="DisplayCourseDetails-evaluations-score">
+                    <CourseRating score={item.score} />
+                  </td>
+                  <td className="DisplayCourseDetails-evaluations-field">
+                    {item.field}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>}
+      </div>,
+      evaluations.written && evaluations.written.length
+        ? <div key="written" className="DisplayCourseDetails-field">
+            <div className="DisplayCourseDetails-field-title">Comments</div>
+            <ul className="DisplayCourseDetails-field-content">
+              {evaluations.written.map(item =>
+                <li
+                  key={item}
+                  className="DisplayCourseDetails-evaluations-written"
+                >
+                  {item}
+                </li>
+              )}
+            </ul>
+          </div>
+        : null
+    ];
+  }
+
   render() {
     const selectedCourse = this.props.selectedCourse;
+    const semesters = this.props.semesters;
+
     return (
       <div className="DisplayCourseDetails">
         {this.renderText('Description', selectedCourse.description)}
@@ -99,6 +147,7 @@ class DisplayCourseDetails extends Component {
         )}
         {this.renderReservedSeats(selectedCourse.reservedSeats)}
         {this.renderReadings(selectedCourse.readings)}
+        {this.renderEvaluations(selectedCourse.evaluations, semesters)}
       </div>
     );
   }

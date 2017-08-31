@@ -111,15 +111,16 @@ class CourseRating extends Component {
     let text;
     let style = {};
 
-    if (_new) {
-      className += ' CourseRating-new';
-      text = 'New';
-    } else if (score) {
+    if (score) {
       text = score.toFixed(2);
       style = {
         color: this.getColor(score)
       };
+    } else if (_new) {
+      className += ' CourseRating-new';
+      text = 'New';
     }
+
     return (
       <span className={className} style={style}>
         {text}

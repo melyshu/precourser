@@ -182,11 +182,23 @@ courseSchema.statics.findBriefByInstructor = function(instructor) {
 
 courseSchema.query.getFullAndExec = function() {
   return this.select(mongoose.model('Course').fullSelector)
-    .populate('instructors sections')
+    .populate({
+      path: 'instructors',
+      select: mongoose.model('Instructor').fullSelector,
+      populate: {
+        path: 'courses',
+        select: mongoose.model('Course').briefSelector,
+        options: { sort: '-semester' }
+      }
+    })
+    .populate('sections')
     .populate({
       path: 'courses',
       select: mongoose.model('Course').briefSelector,
-      populate: { path: 'instructors' },
+      populate: {
+        path: 'instructors',
+        select: mongoose.model('Instructor').briefSelector
+      },
       options: { sort: '-semester' }
     })
     .lean()

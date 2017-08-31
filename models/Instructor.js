@@ -13,11 +13,21 @@ const instructorSchema = new mongoose.Schema({
   office: { type: String, trim: true }
 });
 
-instructorSchema.statics.briefSelector = '-position -phone -email -office';
+instructorSchema.virtual('courses', {
+  ref: 'Course',
+  localField: '_id',
+  foreignField: 'instructors',
+  justOne: false
+});
+
+instructorSchema.statics.briefSelector = '_id lastModified fullName';
+
+instructorSchema.statics.fullSelector = '';
+
 instructorSchema.statics.findBriefById = function(id) {
   return this.findById(id).select(this.briefSelector).lean().then(function(instructor) {
     if (!instructor) return null;
-    
+
     return mongoose.model('Course').findBriefByInstructor(instructor._id).then(function(courses) {
       instructor.courses = courses;
       return instructor;

@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import './DisplayCourse.css';
-import Tabs from '../Tabs/Tabs';
-import FaClose from 'react-icons/lib/fa/close';
-import FaInfoCircle from 'react-icons/lib/fa/info-circle';
-import FaTasks from 'react-icons/lib/fa/tasks';
 import CourseSummary from '../CourseSummary/CourseSummary';
 import DisplayCourseDetails from '../DisplayCourseDetails/DisplayCourseDetails';
-import DisplayCourseEvaluations from '../DisplayCourseEvaluations/DisplayCourseEvaluations';
 import SidePane from '../SidePane/SidePane';
 
 class DisplayCourse extends Component {
@@ -25,13 +20,11 @@ class DisplayCourse extends Component {
   }
 
   render() {
-    const tabLabels = [<FaClose />, <FaInfoCircle />, <FaTasks />];
-
+    const semesters = this.props.semesters;
     const selectedCourse = this.props.selectedCourse;
-    const content =
-      this.state.tab === 1
-        ? <DisplayCourseDetails selectedCourse={selectedCourse} />
-        : <DisplayCourseEvaluations selectedCourse={selectedCourse} />;
+    const savedCourses = this.props.savedCourses;
+    const onSelectCourse = this.props.onSelectCourse;
+    const onUnselectCourse = this.props.onUnselectCourse;
 
     return (
       <div className="DisplayCourse">
@@ -39,22 +32,24 @@ class DisplayCourse extends Component {
           <div className="DisplayCourse-header">
             <CourseSummary
               course={selectedCourse}
-              savedCourses={this.props.savedCourses}
+              savedCourses={savedCourses}
+              inInstructor={true}
+              semesters={semesters}
             />
           </div>
           <div className="DisplayCourse-content">
-            {content}
+            <DisplayCourseDetails
+              selectedCourse={selectedCourse}
+              semesters={semesters}
+            />
           </div>
         </div>
         <SidePane
-          onSelectCourse={this.props.onSelectCourse}
-          onUnselectCourse={this.props.onUnselectCourse}
-          tabLabels={tabLabels}
-          onTabClick={this.handleTabClick}
-          tab={this.state.tab}
-          semesters={this.props.semesters}
+          onSelectCourse={onSelectCourse}
+          onUnselectCourse={onUnselectCourse}
+          semesters={semesters}
           selectedCourse={selectedCourse}
-          savedCourses={this.props.savedCourses}
+          savedCourses={savedCourses}
         />
       </div>
     );

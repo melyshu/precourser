@@ -5,13 +5,15 @@ import CourseRating from '../CourseRating/CourseRating';
 
 class CourseSummary extends Component {
   render() {
+    const savedCourses = this.props.savedCourses;
     const course = this.props.course;
     const isSemester = this.props.isSemester;
+    const inInstructor = this.props.inInstructor;
     const semesters = this.props.semesters;
 
     let saved = false;
-    for (let i = 0; i < this.props.savedCourses.length; i++) {
-      saved |= this.props.savedCourses[i]._id === course._id;
+    for (let i = 0; i < savedCourses.length; i++) {
+      saved |= savedCourses[i]._id === course._id;
     }
 
     return (
@@ -22,16 +24,20 @@ class CourseSummary extends Component {
               ? semesters[course.semester].name
               : course.department + course.catalogNumber}
           </span>
-          <span className="CourseSummary-crosslistings">
-            {course.crossListings.map(crossListing =>
-              <span
-                key={crossListing.department}
-                className="CourseSummary-crosslisting"
-              >
-                {'/ ' + crossListing.department + crossListing.catalogNumber}
-              </span>
-            )}
-          </span>
+          {isSemester
+            ? null
+            : <span className="CourseSummary-crosslistings">
+                {course.crossListings.map(crossListing =>
+                  <span
+                    key={crossListing.department}
+                    className="CourseSummary-crosslisting"
+                  >
+                    {'/ ' +
+                      crossListing.department +
+                      crossListing.catalogNumber}
+                  </span>
+                )}
+              </span>}
           {course.distribution
             ? <span className="CourseSummary-distribution">
                 {course.distribution}
@@ -48,6 +54,10 @@ class CourseSummary extends Component {
               </span>
             : null}
           <span className="CourseSummary-stretch" />
+          {inInstructor &&
+            <span className="CourseSummary-semester">
+              {semesters[course.semester].name}
+            </span>}
           {saved
             ? <span className="CourseSummary-saved">
                 <FaStar />

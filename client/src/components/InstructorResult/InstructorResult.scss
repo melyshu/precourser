@@ -1,0 +1,68 @@
+@import '../../common.scss';
+
+.InstructorResult {
+  .InstructorResult-header {
+    border: $border solid $empty;
+    padding: 5*$border 8*$border;
+
+    &:hover {
+      border-color: $orange;
+      cursor: pointer;
+
+      .InstructorResult-bottom {
+        max-height: 4em;
+      }
+    }
+
+    .InstructorResult-top,
+    .InstructorResult-middle {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .InstructorResult-top {
+      .InstructorResult-name {
+        font-size: 0.9em;
+        color: $full;
+      }
+
+      .InstructorResult-count {
+        font-size: 0.7em;
+      }
+    }
+
+    .InstructorResult-middle {
+      font-size: 0.5em;
+
+      .InstructorResult-position {
+        //text-transform: uppercase;
+      }
+    }
+
+    .InstructorResult-bottom {
+      margin: 5*$border;
+      font-size: 0.6em;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s ease;
+
+      .InstructorResult-detail {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  .InstructorResult-courses {
+    transition: max-height 1s ease;
+    max-height: 0;
+    overflow: auto;
+
+    &.InstructorResult-expanded {
+      max-height: 50vh;
+    }
+  }
+}

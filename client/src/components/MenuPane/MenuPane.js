@@ -20,6 +20,8 @@ class MenuPane extends Component {
   }
 
   render() {
+    const semesters = this.props.semesters;
+
     const tabLabels = [<FaSearch />, <FaStar />, <FaCalendar />, <FaThLarge />];
 
     let input;
@@ -60,6 +62,8 @@ class MenuPane extends Component {
           selectedScheduleCourses={this.props.selectedScheduleCourses}
           savedCourses={this.props.savedCourses}
           selectedCourse={this.props.selectedCourse}
+          isSemester={false}
+          semesters={semesters}
         />
       );
     }

@@ -14,7 +14,7 @@
   }
 
   .CourseSummary-top {
-    font-size: 0.65em;
+    font-size: 0.6em;
     justify-content: flex-start;
     align-items: flex-end;
 
@@ -67,15 +67,21 @@
       order: 2;
     }
 
-    .CourseSummary-saved {
+    .CourseSummary-semester {
       order: 3;
+      color: $full;
+    }
+
+    .CourseSummary-saved {
+      order: 4;
       color: $orange;
+      margin-left: 0;
     }
   } // CourseSummary-top
 
   .CourseSummary-middle {
     .CourseSummary-title {
-      line-height: 1.3em;
+      font-size: 0.9em;
       overflow: hidden;
     }
   }
@@ -84,5 +90,9 @@
     font-size: 0.6em;
     justify-content: flex-end;
     align-items: stretch;
+
+    .CourseSummary-semester {
+      margin-left: 5*$border;
+    }
   }
 }

@@ -2,9 +2,10 @@
 
 .DisplayCourseDetails {
   flex: 1 1 auto;
-  overflow-y: auto;
 
   .DisplayCourseDetails-field {
+    margin-bottom: $padding;
+
     .DisplayCourseDetails-field-title {
       text-transform: uppercase;
       font-size: 0.6em;
@@ -12,8 +13,6 @@
     }
 
     .DisplayCourseDetails-field-content {
-      margin-bottom: $padding;
-
       .DisplayCourseDetails-grading-percent {
         font-size: 0.7em;
         text-align: right;
@@ -30,6 +29,16 @@
           color: $default;
           font-size: 0.7em;
         }
+      }
+
+      .DisplayCourseDetails-evaluations-score {
+        font-size: 0.7em;
+        text-align: right;
+      }
+
+      .DisplayCourseDetails-evaluations-written {
+        font-size: 0.8em;
+        margin-bottom: $padding;
       }
     }
   }

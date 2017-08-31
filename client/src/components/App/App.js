@@ -247,6 +247,7 @@ class App extends Component {
             selectedScheduleCourses={selectedScheduleCourses}
             selectedCourse={selectedCourse}
             colors={colors}
+            semesters={semesters}
           />
           <DisplayPane
             savedCourses={savedCourses}

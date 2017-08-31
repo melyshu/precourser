@@ -15,6 +15,14 @@
   justify-content: flex-start;
   align-items: stretch;
 
+  &.CourseResult-selected {
+    background: mix($orange, $white, 10%);
+    border-color: mix($orange, $white, 10%);
+    .CourseResult-main {
+      border-color: mix($orange, $white, 10%);
+    }
+  }
+
   &:hover {
     border-color: $orange;
 
@@ -29,6 +37,18 @@
     .CourseResult-main .CourseSummary-title {
       max-height: 4rem;
       white-space: normal;
+    }
+  }
+
+  &.CourseResult-semester,
+  &.CourseResult-instructor {
+    &:hover {
+      cursor: pointer;
+    }
+
+    .CourseResult-main {
+      border-left: none;
+      padding-left: 0;
     }
   }
 
