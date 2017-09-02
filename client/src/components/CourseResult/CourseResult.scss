@@ -28,10 +28,10 @@
 
     .CourseResult-buttons {
       margin-top: 5*$border;
-    }
 
-    .CourseResult-button {
-      height: $block;
+      .CourseResult-button {
+        height: $block;
+      }
     }
 
     .CourseResult-main .CourseSummary-title {
@@ -40,8 +40,7 @@
     }
   }
 
-  &.CourseResult-semester,
-  &.CourseResult-instructor {
+  &.CourseResult-clickable {
     &:hover {
       cursor: pointer;
     }
@@ -84,28 +83,36 @@
     flex-flow: row nowrap;
     justify-content: flex-end;
     align-items: center;
-  }
 
-  .CourseResult-button {
-    font-size: 1rem;
-    text-align: center;
-    transition: height 0.3s ease;
-    overflow: hidden;
-    height: 0;
-    width: $block;
-
-    &:hover {
-      color: $empty;
-      background: $orange;
-      cursor: pointer;
-    }
-
-    &.CourseResult-unsave {
-      color: $orange;
+    .CourseResult-button {
+      font-size: 1rem;
+      text-align: center;
+      transition: height 0.3s ease;
+      overflow: hidden;
+      height: 0;
+      width: $block;
 
       &:hover {
         color: $empty;
-        background: $default;
+        background: $orange;
+        cursor: pointer;
+      }
+
+      &.CourseResult-unselect,
+      &.CourseResult-remove {
+        &:hover {
+          color: $empty;
+          background: $default;
+        }
+      }
+
+      &.CourseResult-unsave {
+        color: $orange;
+
+        &:hover {
+          color: $empty;
+          background: $default;
+        }
       }
     }
   }

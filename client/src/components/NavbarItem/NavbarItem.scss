@@ -9,10 +9,14 @@
     line-height: $block;
     padding: 0 0.5*$padding;
 
-    &:hover, &.NavbarItem-active {
+    &:hover {
       color: $orange;
-
       cursor: pointer;
+    }
+
+    &.NavbarItem-active {
+      color: $empty;
+      background: $orange;
     }
   }
 

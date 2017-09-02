@@ -7,7 +7,7 @@ const auth = require('./auth.js');
 // require authentication
 // router.use(auth.enforceAuth);
 router.use(function(req, res, next) {
-  req.session.netid = 'mshu';
+  req.session.netid = 'mshu'; // for testing
   next();
   if (req.object) {
     req.object
@@ -24,7 +24,7 @@ router.use(function(req, res, next) {
         res.sendStatus(500);
       });
   } else {
-    req.sendStatus(418);
+    res.sendStatus(418);
   }
 });
 

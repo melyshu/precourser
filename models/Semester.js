@@ -14,21 +14,22 @@ const semesterSchema = new mongoose.Schema({
   courses: [{ type: String, ref: 'Course' }] // only used for importing
 });
 
-semesterSchema.statics.briefSelector = '-startDate -endDate -courses';
-semesterSchema.statics.findBriefById = function(id) {
-  return this.findById(id).select(this.briefSelector).lean().exec();
-};
-
 semesterSchema.statics.fullSelector = '';
-semesterSchema.statics.findFullById = function(id) {
-  return this.findById(id).select(this.fullSelector).lean().exec();
-};
 
-semesterSchema.statics.findFull = function() {
-  return this.find()
-    .select(this.fullSelector)
+// Semester.findFull
+semesterSchema.query.getFullAndExec = function() {
+  return this.select(mongoose.model('Semester').fullSelector)
     .sort('-_id')
     .lean()
+    .exec();
+};
+
+// GET /api/startup
+semesterSchema.statics.findFull = function() {
+  return mongoose
+    .model('Semester')
+    .find()
+    .getFullAndExec()
     .then(function(semesters) {
       if (!semesters) return null;
       return { semesters: semesters };

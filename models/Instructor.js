@@ -24,78 +24,57 @@ instructorSchema.statics.briefSelector = '_id lastModified fullName';
 
 instructorSchema.statics.fullSelector = '';
 
-instructorSchema.statics.findBriefById = function(id) {
-  return this.findById(id).select(this.briefSelector).lean().then(function(instructor) {
-    if (!instructor) return null;
-
-    return mongoose.model('Course').findBriefByInstructor(instructor._id).then(function(courses) {
-      instructor.courses = courses;
-      return instructor;
+// Instructor.searchByQuery
+instructorSchema.query.getFullAndExec = function() {
+  return this.select(mongoose.model('Instructor').fullSelector)
+    .populate({
+      path: 'courses',
+      select: mongoose.model('Course').briefSelector,
+      options: { sort: '-semester' },
+      populate: { path: 'sections' }
     })
-  });
+    .lean()
+    .exec();
 };
 
-instructorSchema.statics.findBriefByIdsAndSemester = function(ids, semester) {
-  return this.find({_id: {$in: ids}}).select(this.briefSelector).lean().then(function(instructors) {
-    const promises = [];
-    for (let i = 0; i < instructors.length; i++) {
-      const instructor = instructors[i];
+// GET /api/instructor/search/:query
+instructorSchema.statics.searchByQuery = function(query) {
+  const cleanQuery = query.trim().replace(/\s+/g, ' ');
+  const tokens = cleanQuery.split(' ');
 
-      promises.push(
-        mongoose.model('Course').findBriefByInstructorAndSemester(instructor._id, semester).then(function(courses) {
-          instructor.courses = courses;
-        })
-      );
-    }
-
-    return Promise.all(promises).then(function() {
-      return instructors;
-    });
-  });
-};
-
-instructorSchema.statics.fullSelector = '';
-instructorSchema.statics.findFullById = function(id) {
-  const instructorPromise = this.findById(id).select(this.fullSelector).lean().exec();
-  const coursePromise = mongoose.model('Course').findFullByInstructor(id);
-
-  return Promise.join(
-    instructorPromise,
-    coursePromise,
-    function(instructor, courses) {
-      if (!instructor) return instructor;
-
-      instructor.courses = courses;
-      return instructor;
-    }
-  );
-};
-
-instructorSchema.statics.search = function(semester, string) {
-  const fullNameQueries = [];
-
-  const cleanString = string.trim().replace(/\s+/g, ' ');
-
-  const queries = cleanString.split(' ');
-  for (let i = 0; i < queries.length; i++) {
-    const query = queries[i];
-    fullNameQueries.push(query);
-  }
-
-  const queryDocument = {}
-  if (fullNameQueries.length > 0) {
-    queryDocument.$and = [];
-    for (let i = 0; i < fullNameQueries.length; i++) {
-      const fullNameQuery = fullNameQueries[i];
-      queryDocument.$and.push({
-        fullName: {$regex: new RegExp(fullNameQuery, 'i')}
+  if (tokens.length === 1) {
+    return mongoose
+      .model('Instructor')
+      .find({
+        $or: [
+          { fullName: { $regex: new RegExp(tokens[0], 'i') } },
+          { position: { $regex: new RegExp(tokens[0], 'i') } }
+        ]
+      })
+      .getFullAndExec()
+      .then(function(instructors) {
+        if (!instructors) return null;
+        return { searchedInstructors: instructors };
       });
-    }
-  }
+  } else {
+    const queryDocument = {
+      $and: tokens.map(token => ({
+        $or: [
+          { fullName: { $regex: new RegExp(token, 'i') } },
+          { position: { $regex: new RegExp(token, 'i') } }
+        ]
+      }))
+    };
 
-  return this.find(queryDocument).lean().distinct('_id').then(function(ids) {
-    return mongoose.model('Instructor').findBriefByIdsAndSemester(ids, semester);
-  });
+    return mongoose
+      .model('Instructor')
+      .find(queryDocument)
+      .getFullAndExec()
+      .then(function(instructors) {
+        if (!instructors) return null;
+        return { searchedInstructors: instructors };
+      });
+  }
 };
 
 const Instructor = mongoose.model('Instructor', instructorSchema);

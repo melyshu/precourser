@@ -5,28 +5,46 @@ import DisplayCourse from '../DisplayCourse/DisplayCourse';
 
 class DisplayPane extends Component {
   render() {
+    const user = this.props.user;
+    const selectedSchedule = this.props.selectedSchedule;
+    const selectedCourse = this.props.selectedCourse;
+    const hoveredCourse = this.props.hoveredCourse;
+    const hoveredSection = this.props.hoveredSection;
+    const colorLookup = this.props.colorLookup;
+    const semesterLookup = this.props.semesterLookup;
+    const onSelectCourse = this.props.onSelectCourse;
+    const onUnselectCourse = this.props.onUnselectCourse;
+    const onSaveCourse = this.props.onSaveCourse;
+    const onUnsaveCourse = this.props.onUnsaveCourse;
+    const onAddSectionToSchedule = this.props.onAddSectionToSchedule;
+    const onRemoveSectionFromSchedule = this.props.onRemoveSectionFromSchedule;
+    const onMouseOverSection = this.props.onMouseOverSection;
+    const onMouseOutSection = this.props.onMouseOutSection;
+
     let content;
-    if (this.props.selectedCourse) {
+    if (selectedCourse) {
       content = (
         <DisplayCourse
-          semesters={this.props.semesters}
-          selectedCourse={this.props.selectedCourse}
-          onSelectCourse={this.props.onSelectCourse}
-          onUnselectCourse={this.props.onUnselectCourse}
-          savedCourses={this.props.savedCourses}
+          user={user}
+          selectedCourse={selectedCourse}
+          semesterLookup={semesterLookup}
+          onSelectCourse={onSelectCourse}
+          onUnselectCourse={onUnselectCourse}
+          onSaveCourse={onSaveCourse}
+          onUnsaveCourse={onUnsaveCourse}
         />
       );
     } else {
       content = (
         <DisplaySchedule
-          hoveredCourse={this.props.hoveredCourse}
-          hoveredSection={this.props.hoveredSection}
-          selectedSchedule={this.props.selectedSchedule}
-          onAddSectionToSchedule={this.props.onAddSectionToSchedule}
-          onRemoveSectionFromSchedule={this.props.onRemoveSectionFromSchedule}
-          onMouseOverSection={this.props.onMouseOverSection}
-          onMouseOutSection={this.props.onMouseOutSection}
-          colors={this.props.colors}
+          selectedSchedule={selectedSchedule}
+          hoveredCourse={hoveredCourse}
+          hoveredSection={hoveredSection}
+          colorLookup={colorLookup}
+          onAddSectionToSchedule={onAddSectionToSchedule}
+          onRemoveSectionFromSchedule={onRemoveSectionFromSchedule}
+          onMouseOverSection={onMouseOverSection}
+          onMouseOutSection={onMouseOutSection}
         />
       );
     }

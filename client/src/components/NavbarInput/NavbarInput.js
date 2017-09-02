@@ -4,41 +4,40 @@ import './NavbarInput.css';
 class NavbarInput extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       value: this.props.defaultValue,
       error: null
     };
 
-    this.handleCancelClick = this.handleCancelClick.bind(this);
     this.handleSubmitClick = this.handleSubmitClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.setRef = this.setRef.bind(this);
   }
 
-  handleCancelClick() {
-    this.props.collapseParent();
-  }
-
   handleSubmitClick() {
-    if (!this.props.defaultValue) {
-      this.props.onSubmit();
-      this.props.collapseParent();
-      return;
+    const value = this.state.value;
+
+    const collapseParent = this.props.collapseParent;
+    const defaultValue = this.props.defaultValue;
+    const onSubmit = this.props.onSubmit;
+
+    if (!defaultValue) {
+      onSubmit();
+      return collapseParent();
     }
 
-    if (!this.state.value) {
-      this.setState({ error: 'Please enter a valid name' });
-      return;
-    }
-
-    const trimmedValue = this.state.value.trim().replace(/\s+/g, ' ');
+    const trimmedValue = value.trim().replace(/\s+/g, ' ');
     if (trimmedValue.length > 25) {
-      this.setState({ error: 'Please enter a shorter name' });
-      return;
+      return this.setState({ error: 'Please enter a shorter name' });
     }
 
-    this.props.onSubmit(this.state.value);
-    this.props.collapseParent();
+    if (!trimmedValue) {
+      return this.setState({ error: 'Please enter a valid name' });
+    }
+
+    onSubmit(trimmedValue);
+    collapseParent();
   }
 
   handleChange(event) {
@@ -54,50 +53,48 @@ class NavbarInput extends Component {
   }
 
   render() {
-    let error;
-    if (this.state.error) {
-      error = (
-        <div className="NavbarInput-error">
-          {this.state.error}
-        </div>
-      );
-    }
+    const value = this.state.value;
+    const error = this.state.error;
 
-    let input;
-    if (this.props.defaultValue) {
-      input = (
-        <input
-          ref={this.setRef}
-          className="NavbarInput-input"
-          type="text"
-          value={this.state.value}
-          maxLength="25"
-          onChange={this.handleChange}
-        />
-      );
-    }
+    const collapseParent = this.props.collapseParent;
+    const prompt = this.props.prompt;
+    const defaultValue = this.props.defaultValue;
+    // const onSubmit = this.props.onSubmit;
+    const verb = this.props.verb;
+
+    const setRef = this.setRef;
+
+    const handleChange = this.handleChange;
+    const handleSubmitClick = this.handleSubmitClick;
 
     return (
       <div className="NavbarInput">
         <label className="NavbarInput-prompt">
-          {this.props.prompt}
+          {prompt}
         </label>
-        {input}
+        {defaultValue
+          ? <input
+              ref={setRef}
+              className="NavbarInput-input"
+              type="text"
+              value={value}
+              maxLength="25"
+              onChange={handleChange}
+            />
+          : null}
         <div className="NavbarInput-buttons">
-          <button
-            className="NavbarInput-cancel"
-            onClick={this.handleCancelClick}
-          >
+          <button className="NavbarInput-cancel" onClick={collapseParent}>
             Cancel
           </button>
-          <button
-            className="NavbarInput-submit"
-            onClick={this.handleSubmitClick}
-          >
-            {this.props.verb}
+          <button className="NavbarInput-submit" onClick={handleSubmitClick}>
+            {verb}
           </button>
         </div>
-        {error}
+        {error
+          ? <div className="NavbarInput-error">
+              {error}
+            </div>
+          : null}
       </div>
     );
   }

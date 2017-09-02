@@ -3,9 +3,6 @@ const Promise = require('bluebird');
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
-const User = require('./User.js');
-const Semester = require('./Semester.js');
-
 const scheduleSchema = new mongoose.Schema({
   /* _id: { type: mongoose.Schema.Types.ObjectId }, */
   created: { type: Date, required: 'created required' },
@@ -18,44 +15,96 @@ const scheduleSchema = new mongoose.Schema({
   public: Boolean
 });
 
-//
-// HELPER FUNCTIONS
-
 // removes unnecessary whitespace
 const clean = function(string) {
   return string.trim().replace(/\s+/g, ' ');
 };
 
-// query helper to return a promise with a full, lean schedule
+scheduleSchema.statics.fullSelector = '-public';
+
+// Schedule.findByUserAndSemester
+// Schedule.findByUserAndId
+// Schedule.createByUserSemesterAndName
+// Schedule.renameByUserAndId
+// Schedule.addCourseByUserAndId
+// Schedule.removeCourseByUserAndId
+// Schedule.addSectionByUserAndId
+// Schedule.removeSectionByUserAndId
 scheduleSchema.query.getFullAndExec = function() {
-  return this.populate({
-    path: 'courses',
-    select: mongoose.model('Course').briefSelector,
-    populate: { path: 'sections' }
-  })
+  return this.select(mongoose.model('Schedule').fullSelector)
+    .populate({
+      path: 'courses',
+      select: mongoose.model('Course').briefSelector,
+      populate: { path: 'sections' }
+    })
     .lean()
     .exec();
 };
 
-// returns a promise with an array of brief, lean schedules
 scheduleSchema.statics.briefSelector = '_id name';
+
+// Schedule.findByUserAndSemester
+// Schedule.createByUserSemesterAndName
 scheduleSchema.statics.findBriefByUserAndSemester = function(
   userId,
   semesterId
 ) {
-  return this.find({
-    user: userId,
-    semester: semesterId
-  })
-    .sort({ created: 1 })
-    .select(this.briefSelector)
+  return mongoose
+    .model('Schedule')
+    .find({ user: userId, semester: semesterId })
+    .sort({ lastModified: -1 })
+    .select(mongoose.model('Schedule').briefSelector)
     .lean()
     .exec();
 };
 
-//
-// API FUNCTIONS
+// GET /api/startup
+// GET /api/semester/:semesterId
+// Schedule.deleteByUserAndId
+scheduleSchema.statics.findByUserAndSemester = function(userId, semesterId) {
+  return mongoose
+    .model('Schedule')
+    .findBriefByUserAndSemester(userId, semesterId)
+    .then(function(schedules) {
+      if (!schedules) return null;
 
+      if (schedules.length === 0) {
+        return mongoose
+          .model('Schedule')
+          .createByUserSemesterAndName(userId, semesterId, 'New Schedule');
+      }
+
+      const scheduleId = schedules[0]._id;
+      return mongoose
+        .model('Schedule')
+        .findOne({ _id: scheduleId, user: userId })
+        .getFullAndExec()
+        .then(function(schedule) {
+          if (!schedule) return null;
+
+          return {
+            selectedSemester: semesterId,
+            schedules: schedules,
+            selectedSchedule: schedule
+          };
+        });
+    });
+};
+
+// GET /api/schedule/:scheduleId
+scheduleSchema.statics.findByUserAndId = function(userId, scheduleId) {
+  return mongoose
+    .model('Schedule')
+    .findOne({ _id: scheduleId, user: userId })
+    .getFullAndExec()
+    .then(function(schedule) {
+      if (!schedule) return;
+      return { selectedSchedule: schedule };
+    });
+};
+
+// POST /api/schedule/:scheduleId/name/:name
+// Schedule.findByUserAndSemester
 scheduleSchema.statics.createByUserSemesterAndName = function(
   userId,
   semesterId,
@@ -109,14 +158,17 @@ scheduleSchema.statics.createByUserSemesterAndName = function(
   });
 };
 
+// PUT /api/schedule/:scheduleId/name/:name
 scheduleSchema.statics.renameByUserAndId = function(userId, scheduleId, name) {
   const cleanName = clean(name);
 
-  return this.findOneAndUpdate(
-    { _id: scheduleId, user: userId },
-    { name: cleanName },
-    { new: true }
-  )
+  return mongoose
+    .model('Schedule')
+    .findOneAndUpdate(
+      { _id: scheduleId, user: userId },
+      { name: cleanName },
+      { new: true }
+    )
     .getFullAndExec()
     .then(function(schedule) {
       if (!schedule) return null;
@@ -124,53 +176,21 @@ scheduleSchema.statics.renameByUserAndId = function(userId, scheduleId, name) {
     });
 };
 
-scheduleSchema.statics.findByUserAndSemester = function(userId, semesterId) {
-  return this.findBriefByUserAndSemester(userId, semesterId).then(function(
-    schedules
-  ) {
-    if (!schedules) return null;
+// DELETE /api/schedule/:scheduleId
+scheduleSchema.statics.deleteByUserAndId = function(userId, scheduleId) {
+  return mongoose
+    .model('Schedule')
+    .findOneAndRemove({ _id: scheduleId, user: userId })
+    .then(function(schedule) {
+      if (!schedule) return null;
 
-    if (schedules.length === 0) {
       return mongoose
         .model('Schedule')
-        .createByUserSemesterAndName(userId, semesterId, 'New Schedule');
-    }
-
-    const scheduleId = schedules[0]._id;
-    return mongoose
-      .model('Schedule')
-      .findOne({ _id: scheduleId, user: userId })
-      .getFullAndExec()
-      .then(function(schedule) {
-        if (!schedule) return null;
-        return { schedules: schedules, selectedSchedule: schedule };
-      });
-  });
-};
-
-scheduleSchema.statics.findByUserAndId = function(userId, scheduleId) {
-  return this.findOne({ _id: scheduleId, user: userId })
-    .getFullAndExec()
-    .then(function(schedule) {
-      if (!schedule) return;
-      return { selectedSchedule: schedule };
+        .findByUserAndSemester(userId, schedule.semester);
     });
 };
 
-scheduleSchema.statics.deleteByUserAndId = function(userId, scheduleId) {
-  return this.findOneAndRemove({ _id: scheduleId, user: userId }).then(function(
-    schedule
-  ) {
-    if (!schedule) {
-      return null;
-    }
-
-    return mongoose
-      .model('Schedule')
-      .findByUserAndSemester(userId, schedule.semester);
-  });
-};
-
+// PUT /api/schedule/:scheduleId/course/:courseId
 scheduleSchema.statics.addCourseByUserAndId = function(
   userId,
   scheduleId,
@@ -182,10 +202,12 @@ scheduleSchema.statics.addCourseByUserAndId = function(
     .then(function(count) {
       if (!count) return null;
 
+      const semesterId = courseId.substr(0, 4);
+
       return mongoose
         .model('Schedule')
         .findOneAndUpdate(
-          { _id: scheduleId, user: userId },
+          { _id: scheduleId, user: userId, semester: semesterId },
           {
             $set: { lastModified: new Date() },
             $addToSet: { courses: courseId }
@@ -200,6 +222,7 @@ scheduleSchema.statics.addCourseByUserAndId = function(
     });
 };
 
+// DELETE /api/schedule/:scheduleId/course/:courseId
 scheduleSchema.statics.removeCourseByUserAndId = function(
   userId,
   scheduleId,
@@ -234,6 +257,7 @@ scheduleSchema.statics.removeCourseByUserAndId = function(
     });
 };
 
+// PUT /api/schedule/:scheduleId/section/:sectionId
 scheduleSchema.statics.addSectionByUserAndId = function(
   userId,
   scheduleId,
@@ -245,19 +269,25 @@ scheduleSchema.statics.addSectionByUserAndId = function(
     .then(function(count) {
       if (!count) return null;
 
+      const semesterId = sectionId.substr(0, 4);
       const courseId = sectionId.substr(0, 10);
       const sectionPrefixRegex = '^' + sectionId.substr(0, 11);
 
+      // first remove any conflicting sections
       return mongoose
         .model('Schedule')
         .findOneAndUpdate(
-          { _id: scheduleId, user: userId },
-          { $pull: { sections: { $regex: sectionPrefixRegex } } }
+          { _id: scheduleId, user: userId, semester: semesterId },
+          {
+            $set: { lastModified: new Date() },
+            $pull: { sections: { $regex: sectionPrefixRegex } }
+          }
         )
         .lean()
         .then(function(schedule) {
           if (!schedule) return null;
 
+          // then add the desired section
           return mongoose
             .model('Schedule')
             .findOneAndUpdate(
@@ -277,6 +307,7 @@ scheduleSchema.statics.addSectionByUserAndId = function(
     });
 };
 
+// DELETE /api/schedule/:scheduleId/section/:sectionId
 scheduleSchema.statics.removeSectionByUserAndId = function(
   userId,
   scheduleId,
@@ -294,9 +325,7 @@ scheduleSchema.statics.removeSectionByUserAndId = function(
           { _id: scheduleId, user: userId },
           {
             $set: { lastModified: new Date() },
-            $pull: {
-              sections: sectionId
-            }
+            $pull: { sections: sectionId }
           },
           { new: true }
         )

@@ -101,7 +101,7 @@ class DisplaySchedule extends Component {
           onMouseOutSection={this.props.onMouseOutSection}
           hoveredSection={this.props.hoveredSection}
           hoveredCourse={this.props.hoveredCourse}
-          colors={this.props.colors}
+          colorLookup={this.props.colorLookup}
         />
       );
     }

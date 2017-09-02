@@ -1,5 +1,55 @@
 API ENDPOINTS
 
+App handler mapping
+
+componentDidMount               GET    /api/startup
+handleChangeSemester            GET    /api/semester/:semesterId[?courseSearch=query (optional)]
+handleChangeSchedule            GET    /api/schedule/:scheduleId
+handleCreateSchedule            POST   /api/schedule/semester/:semesterId/name/:name
+handleRenameSchedule            PUT    /api/schedule/:scheduleId/name/:name
+handleDeleteSchedule            DELETE /api/schedule/:scheduleId
+handleChangeCourseSearch        GET    /api/course/semester/:semesterId/search/:query
+handleSelectCourse              GET    /api/course/:courseId
+handleSaveCourse                PUT    /api/save/course/:courseId
+handleUnsaveCourse              DELETE /api/save/course/:courseId
+handleAddCourseToSchedule       PUT    /api/schedule/:scheduleId/course/:courseId
+handleRemoveCourseFromSchedule  DELETE /api/schedule/:scheduleId/course/:courseId
+handleAddSectionToSchedule      PUT    /api/schedule/:scheduleId/section/:sectionId
+handleRemoveSectionFromSchedule DELETE /api/schedule/:scheduleId/section/:sectionId
+handleChangeInstructorSearch    GET    /api/instructor/search/:query ***
+
+Routing
+
+startup :)
+GET    /api/startup
+
+semester :)
+GET    /api/semester/:semesterId[?courseSearch=query (optional)]
+
+schedule :)
+GET    /api/schedule/:scheduleId
+POST   /api/schedule/semester/:semesterId/name/:name
+PUT    /api/schedule/:scheduleId/name/:name
+DELETE /api/schedule/:scheduleId
+PUT    /api/schedule/:scheduleId/course/:courseId
+DELETE /api/schedule/:scheduleId/course/:courseId
+PUT    /api/schedule/:scheduleId/section/:sectionId
+DELETE /api/schedule/:scheduleId/section/:sectionId
+
+course
+GET    /api/course/semester/:semesterId/search/:query
+GET    /api/course/:courseId
+
+instructor
+GET    /api/instructor/search/:query
+
+save :)
+PUT    /api/save/course/:courseId
+DELETE /api/save/course/:courseId
+
+
+====
+
 // startup
 GET    /api/startup
 

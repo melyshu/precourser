@@ -5,26 +5,27 @@ import CourseRating from '../CourseRating/CourseRating';
 
 class CourseSummary extends Component {
   render() {
-    const savedCourses = this.props.savedCourses;
+    const user = this.props.user;
+    const semesterLookup = this.props.semesterLookup;
     const course = this.props.course;
-    const isSemester = this.props.isSemester;
-    const inInstructor = this.props.inInstructor;
-    const semesters = this.props.semesters;
+    const showInstructors = this.props.showInstructors;
+    const showStrictRatings = this.props.showStrictRatings;
+    const showSemester = this.props.showSemester;
 
     let saved = false;
-    for (let i = 0; i < savedCourses.length; i++) {
-      saved |= savedCourses[i]._id === course._id;
+    for (let i = 0; i < user.savedCourses.length; i++) {
+      saved |= user.savedCourses[i]._id === course._id;
     }
 
     return (
       <div className="CourseSummary">
         <div className="CourseSummary-top">
           <span className="CourseSummary-listing">
-            {isSemester
-              ? semesters[course.semester].name
+            {showInstructors
+              ? semesterLookup[course.semester].name
               : course.department + course.catalogNumber}
           </span>
-          {isSemester
+          {showInstructors
             ? null
             : <span className="CourseSummary-crosslistings">
                 {course.crossListings.map(crossListing =>
@@ -54,10 +55,11 @@ class CourseSummary extends Component {
               </span>
             : null}
           <span className="CourseSummary-stretch" />
-          {inInstructor &&
-            <span className="CourseSummary-semester">
-              {semesters[course.semester].name}
-            </span>}
+          {showSemester
+            ? <span className="CourseSummary-semester">
+                {semesterLookup[course.semester].name}
+              </span>
+            : null}
           {saved
             ? <span className="CourseSummary-saved">
                 <FaStar />
@@ -66,7 +68,7 @@ class CourseSummary extends Component {
         </div>
         <div className="CourseSummary-middle">
           <span className="CourseSummary-title">
-            {isSemester
+            {showInstructors
               ? course.instructors
                   .map(instructor => instructor.fullName)
                   .join(', ')
@@ -74,12 +76,20 @@ class CourseSummary extends Component {
           </span>
         </div>
         <div className="CourseSummary-bottom">
-          <CourseRating score={course.rating} new={course.new} />
+          <CourseRating
+            score={
+              course.rating &&
+              (!showStrictRatings || course.rating.semester === course.semester)
+                ? course.rating.score
+                : null
+            }
+            new={course.new}
+          />
           <span className="CourseSummary-stretch" />
           <span className="CourseSummary-seats">
-            {(course.seatsTaken >= 0 ? course.seatsTaken : '-') +
+            {(course.seatsTaken >= 0 ? course.seatsTaken : '\u2013') +
               ' / ' +
-              (course.seatsTotal >= 0 ? course.seatsTotal : '-')}
+              (course.seatsTotal >= 0 ? course.seatsTotal : '\u2013')}
           </span>
         </div>
       </div>

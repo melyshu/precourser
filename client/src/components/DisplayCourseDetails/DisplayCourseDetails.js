@@ -81,12 +81,12 @@ class DisplayCourseDetails extends Component {
     );
   }
 
-  renderEvaluations(evaluations, semesters) {
+  renderEvaluations(evaluations, semesterLookup) {
     return [
       <div key="numeric" className="DisplayCourseDetails-field">
         <div className="DisplayCourseDetails-field-title">
           {evaluations.semester
-            ? 'Course evaluations from ' + semesters[evaluations.semester].name
+            ? 'Course evaluations from ' + semesterLookup[evaluations.semester].name
             : 'No course evaluations available'}
         </div>
         {evaluations.semester &&
@@ -128,7 +128,7 @@ class DisplayCourseDetails extends Component {
 
   render() {
     const selectedCourse = this.props.selectedCourse;
-    const semesters = this.props.semesters;
+    const semesterLookup = this.props.semesterLookup;
 
     return (
       <div className="DisplayCourseDetails">
@@ -147,7 +147,7 @@ class DisplayCourseDetails extends Component {
         )}
         {this.renderReservedSeats(selectedCourse.reservedSeats)}
         {this.renderReadings(selectedCourse.readings)}
-        {this.renderEvaluations(selectedCourse.evaluations, semesters)}
+        {this.renderEvaluations(selectedCourse.evaluations, semesterLookup)}
       </div>
     );
   }

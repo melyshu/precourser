@@ -1,0 +1,42 @@
+@import '../../common.scss';
+
+.Loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+
+  .Loading-content {
+    flex: 0 0 auto;
+
+    display: flex;
+    flex-flow: row nowrap;
+
+    .Loading-logo {
+      height: 15vw;
+      width: 15vw;
+    }
+
+    .Loading-text {
+      font-size: 5vw;
+      line-height: 15vw;
+
+      @for $i from 0 through 9 {
+        .Loading-character#{$i} {
+          animation: loading 2s ease $i*0.2s infinite;
+        }
+      }
+    }
+  }
+}
+
+@keyframes loading {
+  0% {color: $default;}
+  10% {color: $orange;}
+  50% {color: $default;}
+}

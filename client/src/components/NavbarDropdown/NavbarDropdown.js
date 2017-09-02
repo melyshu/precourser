@@ -2,49 +2,32 @@ import React, { Component } from 'react';
 import './NavbarDropdown.css';
 
 class NavbarDropdown extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleListItemClick = this.handleListItemClick.bind(this);
-    this.renderListItem = this.renderListItem.bind(this);
-  }
-
-  handleListItemClick(value) {
-    return () => {
-      this.props.onSelect(value);
-      this.props.collapseParent();
-    };
-  }
-
-  renderListItem(value, label) {
-    let className = 'NavbarDropdown-item';
-    if (this.props.selectedValue === value)
-      className = 'NavbarDropdown-item NavbarDropdown-selected';
-
-    return (
-      <li
-        key={value}
-        onClick={this.handleListItemClick(value)}
-        className={className}
-        tabIndex="0"
-      >
-        {label}
-      </li>
-    );
-  }
-
   render() {
-    const values = this.props.values || [];
-    const labels = this.props.labels || [];
+    const collapseParent = this.props.collapseParent;
+    const items = this.props.items;
+    const selectedValue = this.props.selectedValue;
+    const onSelect = this.props.onSelect;
 
-    const listItems = [];
-    for (let i = 0; i < values.length; i++) {
-      listItems.push(this.renderListItem(values[i], labels[i]));
-    }
+    const handleListItemClick = value => {
+      onSelect(value);
+      collapseParent();
+    };
 
     return (
       <ul className="NavbarDropdown">
-        {listItems}
+        {items.map(item =>
+          <li
+            key={item.value}
+            className={
+              'NavbarDropdown-item' +
+              (selectedValue === item.value ? ' NavbarDropdown-selected' : '')
+            }
+            onClick={handleListItemClick.bind(null, item.value)}
+            tabIndex="0"
+          >
+            {item.label}
+          </li>
+        )}
       </ul>
     );
   }

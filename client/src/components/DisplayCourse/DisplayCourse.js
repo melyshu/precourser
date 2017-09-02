@@ -1,55 +1,73 @@
 import React, { Component } from 'react';
 import './DisplayCourse.css';
+import FaClose from 'react-icons/lib/fa/close';
+import FaStar from 'react-icons/lib/fa/star';
 import CourseSummary from '../CourseSummary/CourseSummary';
 import DisplayCourseDetails from '../DisplayCourseDetails/DisplayCourseDetails';
 import SidePane from '../SidePane/SidePane';
 
 class DisplayCourse extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { tab: 1 };
-    this.handleTabClick = this.handleTabClick.bind(this);
-  }
-
-  handleTabClick(tab) {
-    if (!tab) {
-      return this.props.onUnselectCourse(this.props.selectedCourse);
-    }
-    this.setState({ tab: tab });
-  }
-
   render() {
-    const semesters = this.props.semesters;
+    const user = this.props.user;
     const selectedCourse = this.props.selectedCourse;
-    const savedCourses = this.props.savedCourses;
+    const semesterLookup = this.props.semesterLookup;
     const onSelectCourse = this.props.onSelectCourse;
     const onUnselectCourse = this.props.onUnselectCourse;
+    const onSaveCourse = this.props.onSaveCourse;
+    const onUnsaveCourse = this.props.onUnsaveCourse;
+
+    let saved = false;
+    for (let i = 0; i < user.savedCourses.length; i++) {
+      saved |= user.savedCourses[i]._id === selectedCourse._id;
+    }
 
     return (
       <div className="DisplayCourse">
         <div className="DisplayCourse-body">
-          <div className="DisplayCourse-header">
+          <div className="DisplayCourse-summary">
             <CourseSummary
+              user={user}
+              semesterLookup={semesterLookup}
               course={selectedCourse}
-              savedCourses={savedCourses}
-              inInstructor={true}
-              semesters={semesters}
+              showInstructors={false}
+              showStrictRatings={false}
+              showSemester={true}
             />
           </div>
           <div className="DisplayCourse-content">
             <DisplayCourseDetails
               selectedCourse={selectedCourse}
-              semesters={semesters}
+              semesterLookup={semesterLookup}
             />
           </div>
         </div>
         <SidePane
-          onSelectCourse={onSelectCourse}
-          onUnselectCourse={onUnselectCourse}
-          semesters={semesters}
+          user={user}
           selectedCourse={selectedCourse}
-          savedCourses={savedCourses}
+          semesterLookup={semesterLookup}
+          onSelectCourse={onSelectCourse}
+          buttons={[
+            <button
+              key="save"
+              className={
+                'SideMenu-button ' +
+                (saved ? 'SideMenu-unsave' : 'SideMenu-save')
+              }
+              onClick={(saved ? onUnsaveCourse : onSaveCourse).bind(
+                null,
+                selectedCourse._id
+              )}
+            >
+              <FaStar />
+            </button>,
+            <button
+              key="close"
+              className="SideMenu-button SideMenu-close"
+              onClick={onUnselectCourse.bind(null, selectedCourse._id)}
+            >
+              <FaClose />
+            </button>
+          ]}
         />
       </div>
     );

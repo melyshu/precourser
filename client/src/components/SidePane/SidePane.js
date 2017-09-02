@@ -1,70 +1,69 @@
 import React, { Component } from 'react';
-import './SidePane.css';
-import Tabs from '../Tabs/Tabs';
+import FaHistory from 'react-icons/lib/fa/history';
+import FaUser from 'react-icons/lib/fa/user';
+import SideMenu from '../SideMenu/SideMenu';
 import CourseResult from '../CourseResult/CourseResult';
 import InstructorResult from '../InstructorResult/InstructorResult';
-import FaClose from 'react-icons/lib/fa/close';
-import FaClockO from 'react-icons/lib/fa/clock-o';
-import FaUser from 'react-icons/lib/fa/user';
+import './SidePane.css';
 
 class SidePane extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { tab: 1 };
-    this.handleTabClick = this.handleTabClick.bind(this);
-  }
-
-  handleTabClick(tab) {
-    if (!tab) {
-      return this.props.onUnselectCourse(this.props.selectedCourse);
-    }
-    this.setState({ tab: tab });
-  }
-
   render() {
-    const savedCourses = this.props.savedCourses;
+    const user = this.props.user;
     const selectedCourse = this.props.selectedCourse;
-    const semesters = this.props.semesters;
     const onSelectCourse = this.props.onSelectCourse;
-    const onUnselectCourse = this.props.onUnselectCourse;
+    const semesterLookup = this.props.semesterLookup;
 
-    const tabLabels = [<FaClose />, <FaClockO />, <FaUser />];
+    const buttons = this.props.buttons;
 
-    const listItems =
-      this.state.tab === 1
-        ? selectedCourse.courses.map(course =>
+    const tabLabels = [<FaHistory />, <FaUser />];
+    const captionNouns = ['Semester', 'Instructor'];
+
+    const renderInput = tab => {
+      return;
+    };
+
+    const renderContent = tab => {
+      switch (tab) {
+        case 0:
+          return selectedCourse.courses.map(course =>
             <CourseResult
+              user={user}
+              selectedCourse={selectedCourse}
+              semesterLookup={semesterLookup}
+              onSelectCourse={onSelectCourse}
               key={course._id}
-              onSelectCourse={onSelectCourse}
-              selectedCourse={selectedCourse}
               course={course}
-              semesters={semesters}
-              savedCourses={savedCourses}
-              isSemester={true}
-            />
-          )
-        : selectedCourse.instructors.map(instructor =>
-            <InstructorResult
-              key={instructor._id}
-              instructor={instructor}
-              savedCourses={savedCourses}
-              selectedCourse={selectedCourse}
-              onSelectCourse={onSelectCourse}
-              semesters={semesters}
+              showButtons={false}
+              showInstructors={true}
+              showStrictRatings={true}
+              showSemester={false}
             />
           );
+        case 1:
+          return selectedCourse.instructors.map(instructor =>
+            <InstructorResult
+              user={user}
+              selectedCourse={selectedCourse}
+              semesterLookup={semesterLookup}
+              onSelectCourse={onSelectCourse}
+              key={instructor._id}
+              instructor={instructor}
+              showButtons={false}
+            />
+          );
+        default:
+          return;
+      }
+    };
 
     return (
-      <div className="SidePane">
-        <Tabs
-          labels={tabLabels}
-          onClick={this.handleTabClick}
-          selected={this.state.tab}
-        />
-        <ul className="SidePane-content">{listItems}
-        </ul>
-      </div>
+      <SideMenu
+        tabLabels={tabLabels}
+        renderInput={renderInput}
+        renderContent={renderContent}
+        captionNouns={captionNouns}
+        buttons={buttons}
+      />
     );
   }
 }

@@ -1,97 +1,122 @@
 import React, { Component } from 'react';
-import './MenuPane.css';
-import CourseResult from '../CourseResult/CourseResult';
-import Tabs from '../Tabs/Tabs';
 import FaSearch from 'react-icons/lib/fa/search';
+import FaUser from 'react-icons/lib/fa/user';
 import FaStar from 'react-icons/lib/fa/star';
 import FaCalendar from 'react-icons/lib/fa/calendar';
-import FaThLarge from 'react-icons/lib/fa/th-large';
+import SideMenu from '../SideMenu/SideMenu';
+import CourseResult from '../CourseResult/CourseResult';
+import InstructorResult from '../InstructorResult/InstructorResult';
+import './MenuPane.css';
 
 class MenuPane extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { tab: 0 };
-    this.handleTabClick = this.handleTabClick.bind(this);
-  }
-
-  handleTabClick(tab) {
-    this.setState({ tab: tab });
-  }
-
   render() {
-    const semesters = this.props.semesters;
+    const selectedSemester = this.props.selectedSemester;
+    const user = this.props.user;
+    const selectedSchedule = this.props.selectedSchedule;
+    const courseSearch = this.props.courseSearch;
+    const searchedCourses = this.props.searchedCourses;
+    const selectedCourse = this.props.selectedCourse;
+    const instructorSearch = this.props.instructorSearch;
+    const searchedInstructors = this.props.searchedInstructors;
+    const colorLookup = this.props.colorLookup;
+    const semesterLookup = this.props.semesterLookup;
+    const onChangeCourseSearch = this.props.onChangeCourseSearch;
+    const onSelectCourse = this.props.onSelectCourse;
+    const onUnselectCourse = this.props.onUnselectCourse;
+    const onSaveCourse = this.props.onSaveCourse;
+    const onUnsaveCourse = this.props.onUnsaveCourse;
+    const onAddCourseToSchedule = this.props.onAddCourseToSchedule;
+    const onRemoveCourseFromSchedule = this.props.onRemoveCourseFromSchedule;
+    const onChangeInstructorSearch = this.props.onChangeInstructorSearch;
+    const onMouseOverCourse = this.props.onMouseOverCourse;
+    const onMouseOutCourse = this.props.onMouseOutCourse;
 
-    const tabLabels = [<FaSearch />, <FaStar />, <FaCalendar />, <FaThLarge />];
+    const tabLabels = [<FaSearch />, <FaUser />, <FaStar />, <FaCalendar />];
+    const captionNouns = [
+      'Course',
+      'Instructor',
+      'Saved Course',
+      'Selected Course'
+    ];
 
-    let input;
-    if (this.state.tab === 0) {
-      input = (
+    const renderInput = tab => {
+      if (tab > 1) return;
+      return (
         <input
-          className="MenuPane-input"
+          className="SideMenu-input"
           type="text"
-          onChange={this.props.onChangeSearch}
-          placeholder="search"
+          value={tab ? instructorSearch : courseSearch}
+          onChange={tab ? onChangeInstructorSearch : onChangeCourseSearch}
         />
       );
-    }
+    };
 
-    const courses =
-      this.state.tab === 0
-        ? this.props.searchedCourses
-        : this.state.tab === 1
-          ? this.props.savedCourses
-          : this.props.selectedScheduleCourses;
+    const courseLists = [
+      searchedCourses,
+      null,
+      user.savedCourses.filter(course => course.semester === selectedSemester),
+      selectedSchedule.courses
+    ];
+    const renderContent = tab => {
+      if (tab === 1) {
+        return searchedInstructors.map(instructor =>
+          <InstructorResult
+            selectedSemester={selectedSemester}
+            user={user}
+            selectedSchedule={selectedSchedule}
+            selectedCourse={selectedCourse}
+            semesterLookup={semesterLookup}
+            colorLookup={colorLookup}
+            onSelectCourse={onSelectCourse}
+            onUnselectCourse={onUnselectCourse}
+            onSaveCourse={onSaveCourse}
+            onUnsaveCourse={onUnsaveCourse}
+            onAddCourseToSchedule={onAddCourseToSchedule}
+            onRemoveCourseFromSchedule={onRemoveCourseFromSchedule}
+            onMouseOverCourse={onMouseOverCourse}
+            onMouseOutCourse={onMouseOutCourse}
+            key={instructor._id}
+            instructor={instructor}
+            showButtons={true}
+          />
+        );
+      }
 
-    const courseResults = [];
-    for (let i = 0; i < courses.length; i++) {
-      const course = courses[i];
-      courseResults.push(
+      const courses = courseLists[tab];
+
+      return courses.map(course =>
         <CourseResult
+          selectedSemester={selectedSemester}
+          user={user}
+          selectedSchedule={selectedSchedule}
+          selectedCourse={selectedCourse}
+          semesterLookup={semesterLookup}
+          colorLookup={colorLookup}
+          onSelectCourse={onSelectCourse}
+          onUnselectCourse={onUnselectCourse}
+          onSaveCourse={onSaveCourse}
+          onUnsaveCourse={onUnsaveCourse}
+          onAddCourseToSchedule={onAddCourseToSchedule}
+          onRemoveCourseFromSchedule={onRemoveCourseFromSchedule}
+          onMouseOverCourse={onMouseOverCourse}
+          onMouseOutCourse={onMouseOutCourse}
           key={course._id}
           course={course}
-          onAddCourseToSchedule={this.props.onAddCourseToSchedule}
-          onRemoveCourseFromSchedule={this.props.onRemoveCourseFromSchedule}
-          onSaveCourse={this.props.onSaveCourse}
-          onUnsaveCourse={this.props.onUnsaveCourse}
-          onMouseOverCourse={this.props.onMouseOverCourse}
-          onMouseOutCourse={this.props.onMouseOutCourse}
-          onSelectCourse={this.props.onSelectCourse}
-          onUnselectCourse={this.props.onUnselectCourse}
-          colors={this.props.colors}
-          selectedScheduleCourses={this.props.selectedScheduleCourses}
-          savedCourses={this.props.savedCourses}
-          selectedCourse={this.props.selectedCourse}
-          isSemester={false}
-          semesters={semesters}
+          showButtons={true}
+          showInstructors={false}
+          showStrictRatings={false}
+          showSemester={false}
         />
       );
-    }
-
-    const noun =
-      this.state.tab === 0
-        ? ' Search Result'
-        : this.state.tab === 1 ? ' Saved Course' : ' Selected Course';
-    const plural = courses.length === 1 ? '' : 's';
-    let caption = courses.length + noun + plural;
+    };
 
     return (
-      <div className="MenuPane">
-        <Tabs
-          labels={tabLabels}
-          onClick={this.handleTabClick}
-          selected={this.state.tab}
-        />
-        <div className="MenuPane-content">
-          {input}
-          <div className="MenuPane-caption">
-            {caption}
-          </div>
-          <ul className="MenuPane-results">
-            {courseResults}
-          </ul>
-        </div>
-      </div>
+      <SideMenu
+        tabLabels={tabLabels}
+        renderInput={renderInput}
+        renderContent={renderContent}
+        captionNouns={captionNouns}
+      />
     );
   }
 }

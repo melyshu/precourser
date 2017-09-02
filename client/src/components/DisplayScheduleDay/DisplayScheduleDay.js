@@ -230,7 +230,7 @@ class DisplayScheduleDay extends Component {
             position={position}
             minTime={this.props.minTime}
             maxTime={this.props.maxTime}
-            colors={this.props.colors}
+            colorLookup={this.props.colorLookup}
           />
         );
       }

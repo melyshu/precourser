@@ -3,8 +3,7 @@ const Promise = require('bluebird');
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
-const Instructor = require('./Instructor.js');
-const Section = require('./Section.js');
+require('./Section.js');
 
 const courseSchema = new mongoose.Schema({
   _id: { type: String, required: '_id required' },
@@ -76,13 +75,15 @@ const courseSchema = new mongoose.Schema({
     enum: ['AUDIT', 'NAUDIT', 'XAUDIT']
   },
 
-  rating: Number,
-  ratingDescription: { type: String, trim: true },
+  rating: {
+    score: { type: Number },
+    semester: { type: String, ref: 'Semester' },
+    description: { type: String, trim: true }
+  },
   new: Boolean,
   recent: Boolean,
 
   evaluations: {
-    description: { type: String, trim: true },
     semester: { type: String, ref: 'Semester' },
     numeric: [
       {
@@ -143,43 +144,9 @@ courseSchema.virtual('sections', {
 });
 */
 
-courseSchema.statics.minimalSelector =
-  '_id department catalogNumber title sections';
-courseSchema.statics.findMinimalById = function(id) {
-  return this.findById(id).select(this.minimalSelector).lean().exec();
-};
+courseSchema.statics.fullSelector = '-_instructorNames';
 
-courseSchema.statics.briefSelector =
-  '-rawAttributes -banner -description -evaluations -assignments -readings -prerequisites ' +
-  '-equivalentCourses -otherInformation -otherRequirements -_instructorNames';
-courseSchema.statics.findBriefById = function(id) {
-  return this.findById(id).select(this.briefSelector).lean().exec();
-};
-
-courseSchema.statics.findBriefByIdsAndSemester = function(ids, semester) {
-  return this.find({ _id: { $in: ids }, semester: semester })
-    .select(this.briefSelector)
-    .lean()
-    .exec();
-};
-
-courseSchema.statics.findBriefByInstructorAndSemester = function(
-  instructor,
-  semester
-) {
-  return this.find({ instructors: instructor, semester: semester })
-    .select(this.briefSelector)
-    .lean()
-    .exec();
-};
-
-courseSchema.statics.findBriefByInstructor = function(instructor) {
-  return this.find({ instructors: instructor })
-    .select(this.briefSelector)
-    .lean()
-    .exec();
-};
-
+// Course.findFullById
 courseSchema.query.getFullAndExec = function() {
   return this.select(mongoose.model('Course').fullSelector)
     .populate({
@@ -191,7 +158,6 @@ courseSchema.query.getFullAndExec = function() {
         options: { sort: '-semester' }
       }
     })
-    .populate('sections')
     .populate({
       path: 'courses',
       select: mongoose.model('Course').briefSelector,
@@ -205,85 +171,181 @@ courseSchema.query.getFullAndExec = function() {
     .exec();
 };
 
-courseSchema.statics.fullSelector = '-_instructorNames';
+courseSchema.statics.briefSelector =
+  '-rawAttributes -banner -description -evaluations -assignments -readings -prerequisites ' +
+  '-equivalentCourses -otherInformation -otherRequirements -_instructorNames';
+
+// Course.searchBySemesterAndQuery
+courseSchema.query.getBriefAndExec = function() {
+  return this.select(mongoose.model('Course').briefSelector)
+    .populate('sections')
+    .lean()
+    .exec();
+};
+
+// GET /api/semester/:semesterId[?courseSearch=query (optional)]
+// GET /api/course/semester/:semesterId/search/:query
+courseSchema.statics.searchBySemesterAndQuery = function(semesterId, query) {
+  const distributionQueries = [];
+  const pdfQueries = [];
+  const auditQueries = [];
+  const departmentQueries = [];
+  const catalogNumberQueries = [];
+  const titleQueries = [];
+  const descriptionQueries = [];
+
+  const cleanQuery = query.trim().replace(/\s+/g, ' ');
+
+  const tokens = cleanQuery.split(' ');
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+
+    // distribution
+    if (/^(LA|EM|SA|HA|STN|QR|STL|EC|W)$/i.test(token)) {
+      distributionQueries.push(token.toUpperCase());
+      continue;
+    }
+
+    // pdf
+    if (/^(NPDF|PDFO|PDF|XPDF)$/i.test(token)) {
+      pdfQueries.push(token.toUpperCase());
+      continue;
+    }
+
+    // audit
+    if (/^(AUDIT|NAUDIT|XAUDIT)$/i.test(token)) {
+      auditQueries.push(token.toUpperCase());
+      continue;
+    }
+
+    // abbreviated audit
+    if (/^(A|NA|XA)$/i.test(token)) {
+      auditQueries.push(token.toUpperCase() + 'UDIT');
+      continue;
+    }
+
+    // department code
+    if (/^[A-Z]{3}[0-9]{1,3}[A-Z0-9]?$/i.test(token)) {
+      departmentQueries.push(token.substr(0, 3));
+      catalogNumberQueries.push('^' + token.substring(3));
+      continue;
+    }
+
+    // department
+    if (/^[A-Z]{3}$/i.test(token)) {
+      departmentQueries.push(token);
+      continue;
+    }
+
+    // catalog number
+    if (/^[0-9]{3}[A-Z0-9]?$/i.test(token)) {
+      catalogNumberQueries.push(token);
+      continue;
+    }
+
+    // description
+    if (/^[+]/i.test(token)) {
+      descriptionQueries.push(token.substring(1));
+      continue;
+    }
+
+    // title
+    titleQueries.push(token);
+  }
+
+  const joinRegexOr = function(array) {
+    return new RegExp(array.join('|'), 'i');
+  };
+
+  const joinRegexAnd = function(array) {
+    return new RegExp(array.map(token => '(?=.*' + token + ')').join(''), 'i');
+  };
+
+  const queryDocument = {
+    semester: semesterId
+  };
+
+  if (distributionQueries.length) {
+    queryDocument.distribution = { $in: distributionQueries };
+  }
+
+  if (pdfQueries.length > 0) {
+    queryDocument.pdf = { $in: pdfQueries };
+  }
+
+  if (auditQueries.length > 0) {
+    queryDocument.audit = { $in: auditQueries };
+  }
+
+  if (departmentQueries.length && !catalogNumberQueries.length) {
+    queryDocument.$or = [
+      { department: { $regex: joinRegexOr(departmentQueries) } },
+      { 'crossListings.department': { $regex: joinRegexOr(departmentQueries) } }
+    ];
+  }
+
+  if (catalogNumberQueries.length && !departmentQueries.length) {
+    queryDocument.$or = [
+      { catalogNumber: { $regex: joinRegexOr(catalogNumberQueries) } },
+      {
+        'crossListings.catalogNumber': {
+          $regex: joinRegexOr(catalogNumberQueries)
+        }
+      }
+    ];
+  }
+
+  if (departmentQueries.length && catalogNumberQueries.length) {
+    queryDocument.$and = [
+      {
+        $or: [
+          { department: { $regex: joinRegexOr(departmentQueries) } },
+          {
+            'crossListings.department': {
+              $regex: joinRegexOr(departmentQueries)
+            }
+          }
+        ]
+      },
+      {
+        $or: [
+          { catalogNumber: { $regex: joinRegexOr(catalogNumberQueries) } },
+          {
+            'crossListings.catalogNumber': {
+              $regex: joinRegexOr(catalogNumberQueries)
+            }
+          }
+        ]
+      }
+    ];
+  }
+
+  if (titleQueries.length) {
+    queryDocument.title = { $regex: joinRegexAnd(titleQueries) };
+  }
+
+  if (descriptionQueries.length) {
+    queryDocument.description = { $regex: joinRegexAnd(descriptionQueries) };
+  }
+
+  console.log(queryDocument);
+
+  return mongoose
+    .model('Course')
+    .find(queryDocument)
+    .getBriefAndExec()
+    .then(function(courses) {
+      if (!courses) return null;
+      return { searchedCourses: courses };
+    });
+};
+
+// GET /api/course/:courseId
 courseSchema.statics.findFullById = function(courseId) {
   return this.findById(courseId).getFullAndExec().then(function(course) {
     if (!course) return null;
     return { selectedCourse: course };
   });
-};
-
-courseSchema.statics.findFullByInstructor = function(instructor) {
-  return this.find({ instructors: instructor })
-    .select(this.fullSelector)
-    .populate('instructors sections')
-    .lean()
-    .exec();
-};
-
-courseSchema.statics.search = function(semester, string) {
-  const catalogNumberQueries = [];
-  const departmentQueries = [];
-  const titleQueries = [];
-  const pdfQueries = [];
-  const auditQueries = [];
-
-  const cleanString = string.trim().replace(/\s+/g, ' ');
-
-  const queries = cleanString.split(' ');
-  for (let i = 0; i < queries.length; i++) {
-    const query = queries[i];
-    const upper = query.toUpperCase();
-
-    if (/^[A-Z]{3}[0-9]{3}([A-Z]|[0-9])?$/.test(upper)) {
-      departmentQueries.push(upper.substr(0, 3));
-      catalogNumberQueries.push(upper.substring(3));
-      continue;
-    }
-
-    if (/^[A-Z]{3}$/.test(upper)) {
-      departmentQueries.push(upper);
-      continue;
-    }
-
-    if (/^[0-9]{3}([A-Z]|[0-9])?$/.test(upper)) {
-      catalogNumberQueries.push(upper);
-      continue;
-    }
-
-    if (/^(NPDF|PDFO|PDF)$/.test(upper)) {
-      pdfQueries.push(upper);
-      continue;
-    }
-
-    if (/^(AUDIT|NAUDIT)$/.test(upper)) {
-      auditQueries.push(upper);
-      continue;
-    }
-
-    if (query.length > 3) {
-      titleQueries.push(query.toLowerCase());
-      continue;
-    }
-  }
-
-  const queryDocument = {};
-  if (departmentQueries.length > 0)
-    queryDocument.department = { $in: departmentQueries };
-  if (catalogNumberQueries.length > 0)
-    queryDocument.catalogNumber = { $in: catalogNumberQueries };
-  if (titleQueries.length > 0)
-    queryDocument.title = { $regex: new RegExp(titleQueries.join('|'), 'i') };
-  if (pdfQueries.length > 0) queryDocument.pdf = { $in: pdfQueries };
-  if (auditQueries.length > 0) queryDocument.audit = { $in: auditQueries };
-  if (semester === 'all') queryDocument.recent = true;
-  else queryDocument.semester = semester;
-
-  return this.find(queryDocument)
-    .select(this.briefSelector)
-    .populate('sections')
-    .lean()
-    .exec();
 };
 
 const Course = mongoose.model('Course', courseSchema);

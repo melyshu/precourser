@@ -16,11 +16,11 @@
     justify-content: space-between;
     align-items: stretch;
 
-    .DisplayCourse-header {
-      flex: 0 0 auto;
-      padding: $padding;
-      font-size: 1.2rem;
+    .DisplayCourse-summary {
       box-shadow: 0 0 $shadow 0 $full;
+      font-size: 1.2rem;
+      padding: $padding;
+      flex: 0 0 auto;
     }
 
     .DisplayCourse-content {

@@ -33,7 +33,7 @@ class DisplayScheduleSession extends Component {
     const courseHovered =
       this.props.hoveredCourse && course._id === this.props.hoveredCourse._id;
 
-    const color = this.props.colors[course._id];
+    const color = this.props.colorLookup[course._id];
     const className =
       'DisplayScheduleSession' +
       (color ? ' DisplayScheduleSession-' + color : '') +

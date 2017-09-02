@@ -107,23 +107,14 @@ class CourseRating extends Component {
     const score = this.props.score;
     const _new = this.props.new;
 
-    let className = 'CourseRating';
-    let text;
-    let style = {};
-
-    if (score) {
-      text = score.toFixed(2);
-      style = {
-        color: this.getColor(score)
-      };
-    } else if (_new) {
-      className += ' CourseRating-new';
-      text = 'New';
-    }
+    const getColor = this.getColor;
 
     return (
-      <span className={className} style={style}>
-        {text}
+      <span
+        className={'CourseRating' + (!score && _new ? ' CourseRating-new' : '')}
+        style={score ? { color: getColor(score) } : null}
+      >
+        {score ? score.toFixed(2) : _new ? 'New' : ''}
       </span>
     );
   }

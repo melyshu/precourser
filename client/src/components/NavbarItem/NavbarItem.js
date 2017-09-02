@@ -4,15 +4,15 @@ import './NavbarItem.css';
 class NavbarItem extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       expanded: false
     };
+
     this.toggle = this.toggle.bind(this);
     this.collapse = this.collapse.bind(this);
-    this.setRef = this.setRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
-    this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this.setRef = this.setRef.bind(this);
   }
 
   toggle() {
@@ -23,12 +23,12 @@ class NavbarItem extends Component {
     this.setState({ expanded: false });
   }
 
-  setRef(node) {
-    this.ref = node;
+  handleClickOutside(event) {
+    if (!this.ref.contains(event.target)) this.collapse();
   }
 
-  handleClickOutside(event) {
-    if (this.ref && !this.ref.contains(event.target)) this.collapse();
+  setRef(node) {
+    this.ref = node;
   }
 
   componentDidMount() {
@@ -40,29 +40,33 @@ class NavbarItem extends Component {
   }
 
   render() {
-    let dropdown;
-    if (this.state.expanded && this.props.children) {
-      const childrenWithCollapse = React.Children.map(
-        this.props.children,
-        child => React.cloneElement(child, { collapseParent: this.collapse })
-      );
-      dropdown = (
-        <div className="NavbarItem-dropdown">
-          {childrenWithCollapse}
-        </div>
-      );
-    }
+    const expanded = this.state.expanded;
 
-    const className = this.state.expanded
-      ? 'NavbarItem-display NavbarItem-active'
-      : 'NavbarItem-display';
+    const display = this.props.display;
+    const children = this.props.children;
+
+    const toggle = this.toggle;
+    const collapse = this.collapse;
+    const setRef = this.setRef;
 
     return (
-      <div className="NavbarItem" ref={this.setRef}>
-        <div className={className} onClick={this.toggle} tabIndex="0">
-          {this.props.display}
-        </div>
-        {dropdown}
+      <div className="NavbarItem" ref={setRef}>
+        <button
+          className={
+            'NavbarItem-display' + (expanded ? ' NavbarItem-active' : '')
+          }
+          onClick={toggle}
+          tabIndex="0"
+        >
+          {display}
+        </button>
+        {expanded && children
+          ? <div className="NavbarItem-dropdown">
+              {React.Children.map(children, child =>
+                React.cloneElement(child, { collapseParent: collapse })
+              )}
+            </div>
+          : null}
       </div>
     );
   }

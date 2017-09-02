@@ -1,87 +1,72 @@
 import React, { Component } from 'react';
-import './Navbar.css';
+import FaCaretDown from 'react-icons/lib/fa/caret-down';
+import FaPencil from 'react-icons/lib/fa/pencil';
+import FaCalendarPlusO from 'react-icons/lib/fa/calendar-plus-o';
+import FaTrash from 'react-icons/lib/fa/trash';
 import Logo from '../../precourser.svg';
 import NavbarItem from '../NavbarItem/NavbarItem';
 import NavbarDropdown from '../NavbarDropdown/NavbarDropdown';
 import NavbarInput from '../NavbarInput/NavbarInput';
-import FaCalendarPlusO from 'react-icons/lib/fa/calendar-plus-o';
-import FaPencil from 'react-icons/lib/fa/pencil';
-import FaTrashO from 'react-icons/lib/fa/trash-o';
-import FaCaretDown from 'react-icons/lib/fa/caret-down';
+import './Navbar.css';
 
 class Navbar extends Component {
   render() {
     const semesters = this.props.semesters;
     const selectedSemester = this.props.selectedSemester;
-    let selectedSemesterLabel;
-
-    const semesterValues = [];
-    const semesterLabels = [];
-    for (let i = 0; i < semesters.length; i++) {
-      const semester = semesters[i];
-      semesterValues.push(semester._id);
-      semesterLabels.push(semester.name);
-      if (semester._id === selectedSemester)
-        selectedSemesterLabel = semester.name;
-    }
-
     const schedules = this.props.schedules;
-    let selectedSchedule;
-    let selectedScheduleLabel;
-    if (this.props.selectedSchedule) {
-      selectedSchedule = this.props.selectedSchedule._id;
-      selectedScheduleLabel = this.props.selectedSchedule.name;
-    }
-
-    const scheduleValues = [];
-    const scheduleLabels = [];
-    for (let i = 0; i < schedules.length; i++) {
-      const schedule = schedules[i];
-      scheduleValues.push(schedule._id);
-      scheduleLabels.push(schedule.name);
-    }
-
-    const semesterDisplay = (
-      <span>
-        {selectedSemesterLabel}
-        <FaCaretDown />
-      </span>
-    );
-
-    const scheduleDisplay = (
-      <span>
-        {selectedScheduleLabel}
-        <FaCaretDown />
-      </span>
-    );
+    const selectedSchedule = this.props.selectedSchedule;
+    const semesterLookup = this.props.semesterLookup;
+    const onChangeSemester = this.props.onChangeSemester;
+    const onChangeSchedule = this.props.onChangeSchedule;
+    const onCreateSchedule = this.props.onCreateSchedule;
+    const onRenameSchedule = this.props.onRenameSchedule;
+    const onDeleteSchedule = this.props.onDeleteSchedule;
 
     return (
       <nav className="Navbar">
         <div className="Navbar-brand">
-          <img src={Logo} alt="precourser logo" className="Navbar-logo" />
+          <img src={Logo} alt="logo" className="Navbar-logo" />
           <span>precourser</span>
         </div>
-        <NavbarItem display={semesterDisplay}>
+        <NavbarItem
+          display={
+            <span>
+              {semesterLookup[selectedSemester].name}
+              <FaCaretDown />
+            </span>
+          }
+        >
           <NavbarDropdown
-            values={semesterValues}
-            labels={semesterLabels}
+            items={semesters.map(semester => ({
+              value: semester._id,
+              label: semester.name
+            }))}
             selectedValue={selectedSemester}
-            onSelect={this.props.onChangeSemester}
+            onSelect={onChangeSemester}
           />
         </NavbarItem>
-        <NavbarItem display={scheduleDisplay}>
+        <NavbarItem
+          display={
+            <span>
+              {selectedSchedule.name}
+              <FaCaretDown />
+            </span>
+          }
+        >
           <NavbarDropdown
-            values={scheduleValues}
-            labels={scheduleLabels}
-            selectedValue={selectedSchedule}
-            onSelect={this.props.onChangeSchedule}
+            items={schedules.map(schedule => ({
+              value: schedule._id,
+              label: schedule.name
+            }))}
+            selectedValue={selectedSchedule._id}
+            onSelect={onChangeSchedule}
           />
         </NavbarItem>
         <NavbarItem display={<FaPencil />}>
           <NavbarInput
             prompt="Rename your schedule:"
-            defaultValue={selectedScheduleLabel}
-            onSubmit={this.props.onRenameSchedule}
+            defaultValue={selectedSchedule.name}
+            onSubmit={onRenameSchedule}
             verb="Rename"
           />
         </NavbarItem>
@@ -89,18 +74,18 @@ class Navbar extends Component {
           <NavbarInput
             prompt="Create a new schedule:"
             defaultValue="New Schedule"
-            onSubmit={this.props.onCreateSchedule}
+            onSubmit={onCreateSchedule}
             verb="Create"
           />
         </NavbarItem>
-        <NavbarItem display={<FaTrashO />}>
+        <NavbarItem display={<FaTrash />}>
           <NavbarInput
             prompt={
               "Are you sure you want to delete the schedule '" +
-              selectedScheduleLabel +
+              selectedSchedule.name +
               "'?"
             }
-            onSubmit={this.props.onDeleteSchedule}
+            onSubmit={onDeleteSchedule}
             verb="Delete"
           />
         </NavbarItem>

@@ -1,0 +1,93 @@
+@import '../../common.scss';
+
+.SideMenu {
+  color: $default;
+  background: $empty;
+  box-shadow: 0 0 $shadow 0 $full;
+  z-index: 50;
+
+  flex: 0 0 25vw;
+  width: 25vw;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+
+  .SideMenu-buttons {
+    z-index: 30;
+    background: $half;
+    text-align: center;
+    line-height: $block;
+    height: $block;
+
+    flex: 0 0 auto;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    .SideMenu-button {
+      flex: 0 1 $block;
+
+      &:hover {
+        color: $orange;
+        cursor: pointer;
+      }
+
+      &.SideMenu-button-selected {
+        color: $empty;
+        background: $orange;
+      }
+
+      &.SideMenu-save {
+        color: $default;
+        &:hover {
+          color: $empty;
+          background: $orange;
+        }
+      }
+
+      &.SideMenu-unsave {
+        color: $orange;
+        &:hover {
+          color: $empty;
+          background: $default;
+        }
+      }
+
+      &.SideMenu-close {
+        color: $default;
+        &:hover {
+          color: $empty;
+          background: $default;
+        }
+      }
+    }
+
+    .SideMenu-stretch {
+      flex: 1 0 0;
+    }
+  }
+
+  .SideMenu-input {
+    flex: 0 0 auto;
+    margin: 0;
+    border: none;
+    border-bottom: $border solid $half;
+    line-height: $block;
+    padding: 0 $padding;
+  }
+
+  .SideMenu-caption {
+    flex: 0 0 auto;
+    padding: $padding;
+    text-align: right;
+    font-size: 0.7rem;
+  }
+
+  .SideMenu-content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 0 0 $padding;
+  }
+}

@@ -5,7 +5,17 @@ const Schedule = require('../../models/Schedule.js');
 
 const router = express.Router();
 
-// create new schedule given semester and name
+// handleChangeSchedule
+// GET /api/schedule/:scheduleId
+router.get('/:scheduleId', function(req, res) {
+  const userId = req.session.netid;
+  const scheduleId = req.params.scheduleId;
+
+  req.object = Schedule.findByUserAndId(userId, scheduleId);
+});
+
+// handleCreateSchedule
+// POST /api/schedule/:scheduleId/name/:name
 router.post('/semester/:semesterId/name/:name', function(req, res) {
   const userId = req.session.netid;
   const semesterId = req.params.semesterId;
@@ -14,15 +24,8 @@ router.post('/semester/:semesterId/name/:name', function(req, res) {
   req.object = Schedule.createByUserSemesterAndName(userId, semesterId, name);
 });
 
-// get all schedules by semester
-router.get('/semester/:semesterId', function(req, res) {
-  const userId = req.session.netid;
-  const semesterId = req.params.semesterId;
-
-  req.object = Schedule.findByUserAndSemester(userId, semesterId);
-});
-
-// rename schedule given id and name
+// handleRenameSchedule
+// PUT /api/schedule/:scheduleId/name/:name
 router.put('/:scheduleId/name/:name', function(req, res) {
   const userId = req.session.netid;
   const scheduleId = req.params.scheduleId;
@@ -31,15 +34,8 @@ router.put('/:scheduleId/name/:name', function(req, res) {
   req.object = Schedule.renameByUserAndId(userId, scheduleId, name);
 });
 
-// get schedule by id
-router.get('/:scheduleId', function(req, res) {
-  const userId = req.session.netid;
-  const scheduleId = req.params.scheduleId;
-
-  req.object = Schedule.findByUserAndId(userId, scheduleId);
-});
-
-// delete schedule by id
+// handleDeleteSchedule
+// DELETE /api/schedule/:scheduleId
 router.delete('/:scheduleId', function(req, res) {
   const userId = req.session.netid;
   const scheduleId = req.params.scheduleId;
@@ -47,7 +43,8 @@ router.delete('/:scheduleId', function(req, res) {
   req.object = Schedule.deleteByUserAndId(userId, scheduleId);
 });
 
-// add course to schedule by ids
+// handleAddCourseToSchedule
+// PUT /api/schedule/:scheduleId/course/:courseId
 router.put('/:scheduleId/course/:courseId', function(req, res) {
   const userId = req.session.netid;
   const scheduleId = req.params.scheduleId;
@@ -56,7 +53,8 @@ router.put('/:scheduleId/course/:courseId', function(req, res) {
   req.object = Schedule.addCourseByUserAndId(userId, scheduleId, courseId);
 });
 
-// remove course from schedule by ids
+// handleRemoveCourseFromSchedule
+// DELETE /api/schedule/:scheduleId/course/:courseId
 router.delete('/:scheduleId/course/:courseId', function(req, res) {
   const userId = req.session.netid;
   const scheduleId = req.params.scheduleId;
@@ -65,7 +63,8 @@ router.delete('/:scheduleId/course/:courseId', function(req, res) {
   req.object = Schedule.removeCourseByUserAndId(userId, scheduleId, courseId);
 });
 
-// add section to schedule by ids
+// handleAddSectionToSchedule
+// PUT /api/schedule/:scheduleId/section/:sectionId
 router.put('/:scheduleId/section/:sectionId', function(req, res) {
   const userId = req.session.netid;
   const scheduleId = req.params.scheduleId;
@@ -74,7 +73,8 @@ router.put('/:scheduleId/section/:sectionId', function(req, res) {
   req.object = Schedule.addSectionByUserAndId(userId, scheduleId, sectionId);
 });
 
-// remove section from schedule by ids
+// handleRemoveSectionFromSchedule
+// DELETE /api/schedule/:scheduleId/section/:sectionId
 router.delete('/:scheduleId/section/:sectionId', function(req, res) {
   const userId = req.session.netid;
   const scheduleId = req.params.scheduleId;

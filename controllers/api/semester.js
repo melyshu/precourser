@@ -2,51 +2,38 @@ const config = require('../../config.js');
 const express = require('express');
 const Promise = require('bluebird');
 
-const Semester = require('../../models/Semester.js');
 const Schedule = require('../../models/Schedule.js');
-const User = require('../../models/User.js');
+const Course = require('../../models/Course.js');
 
 const router = express.Router();
 
-// change semester
+// handleChangeSemester
+// GET /api/semester/:semesterId[?courseSearch=query (optional)]
 router.get('/:semesterId', function(req, res) {
   const userId = req.session.netid;
   const semesterId = req.params.semesterId;
+  const query = req.query.courseSearch;
 
-  const schedulePromise = Schedule.findByUserAndSemester(userId, semesterId);
-  const userPromise = User.findFullBySemester(userId, semesterId);
+  if (!query) {
+    req.object = Schedule.findByUserAndSemester(userId, semesterId);
+  } else {
+    const schedulePromise = Schedule.findByUserAndSemester(userId, semesterId);
+    const coursePromise = Course.searchBySemesterAndQuery(semesterId, query);
 
-  req.object = Promise.join(schedulePromise, userPromise, function(
-    scheduleObject,
-    userObject
-  ) {
-    if (!scheduleObject || !userObject) return null;
+    req.object = Promise.join(schedulePromise, coursePromise, function(
+      scheduleObject,
+      courseObject
+    ) {
+      if (!scheduleObject || !courseObject) return null;
 
-    return {
-      selectedSemester: semesterId,
-      selectedSchedule: scheduleObject.selectedSchedule,
-      schedules: scheduleObject.schedules,
-      user: userObject.user
-    };
-  });
-});
-
-// search
-router.get('/all', function(req, res) {
-  Semester.find()
-    .lean()
-    .then(function(semesters) {
-      if (!semesters) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.json(semesters);
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.sendStatus(500);
+      return {
+        selectedSemester: semesterId,
+        schedules: scheduleObject.schedules,
+        selectedSchedule: scheduleObject.selectedSchedule,
+        searchedCourses: courseObject.searchedCourses
+      };
     });
+  }
 });
 
 module.exports = router;

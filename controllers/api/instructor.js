@@ -5,19 +5,12 @@ const Instructor = require('../../models/Instructor.js');
 
 const router = express.Router();
 
-// search
-router.get('/semester/:semester/search/:query', function(req, res) {
-  const semester = req.params.semester;
+// handleChangeInstructorSearch
+// GET /api/instructor/search/:query
+router.get('/search/:query', function(req, res) {
   const query = req.params.query;
 
-  req.object = Instructor.search(semester, query);
-});
-
-// retrieval
-router.get('/:id', function(req, res) {
-  const id = req.params.id;
-
-  req.object = Instructor.findFullById(id);
+  req.object = Instructor.searchByQuery(query);
 });
 
 module.exports = router;

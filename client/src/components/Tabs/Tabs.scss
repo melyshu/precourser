@@ -16,14 +16,14 @@
   .Tabs-tab {
     flex: 0 1 $block;
 
-    &:hover {
+    &.Tabs-selected {
       color: $orange;
-      cursor: pointer;
     }
 
-    &.Tabs-selected {
-      background: $orange;
+    &:hover {
       color: $empty;
+      background: $orange;
+      cursor: pointer;
     }
   }
 }

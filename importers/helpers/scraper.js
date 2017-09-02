@@ -26,8 +26,7 @@ Exported functions:
 
   scrapeCourseUpdate(courseId)
     REQUIRES ALL COURSE DETAILS AND EVALUATIONS TO BE IN THE DATABASE ALREADY
-    assigns [new, recent, rating, ratingDescription] based on what is in the
-      database already
+    assigns [new, recent, rating] based on what is in the database already
     copies over evaluations from most recent and relevant semester if this
       semester doesn't have any
 
@@ -253,6 +252,7 @@ const scrapeCourseEvaluation = function(courseId) {
       }
 
       // update evaluations field
+      evaluations.semester = semesterId;
       const course = {
         lastModified: new Date(),
         evaluations: evaluations
@@ -381,12 +381,12 @@ original course object the following fields:
   course.recent
 and tries to assign to the original course object as best as possible the
 following fields:
-  course.rating
-  course.ratingDescription
+  course.rating.score
+  course.rating.semester
+  course.rating.description
 In addition, copies the most recent and relevant evaluation data if it does not
-exist for this semester of the course. Assigns to the the field
-  course.evaluations.description
-and tries to assign to the fields, if necessary:
+exist for this semester of the course. Tries to assign to the fields, if
+necessary:
   course.evaluations.semester
   course.evaluations.numeric
   course.evaluations.written
@@ -428,7 +428,8 @@ const scrapeCourseUpdate = function(courseId) {
         if (evaluation.field === field) {
           return {
             score: evaluation.score,
-            description: field
+            description: field,
+            semester: course.semester
           };
         }
       }
@@ -438,7 +439,8 @@ const scrapeCourseUpdate = function(courseId) {
     const evaluation = numeric[0];
     return {
       score: evaluation.score,
-      description: evaluation.field
+      description: evaluation.field,
+      semester: course.semester
     };
   };
 
@@ -472,9 +474,7 @@ const scrapeCourseUpdate = function(courseId) {
 
           const length = courses.length;
           let recentRating; // holds the most recent applicable rating
-          let recentSemester; // holds the semester of the above rating
-          let recentNumeric; // the numeric evaluations
-          let recentWritten; // the written evaluations
+          let recentEvaluations; // holds the evaluations of the above rating
 
           // iterate through courses from recent to past
           for (let i = 0; i < length; i++) {
@@ -492,11 +492,7 @@ const scrapeCourseUpdate = function(courseId) {
               // we're done if rating exists!
               const rating = getCourseRating(thatCourse);
               if (rating) {
-                courseUpdate.rating = rating.score;
-                courseUpdate.ratingDescription = rating.description;
-                courseUpdate.evaluations.description =
-                  'Course evaluations from this semester';
-                courseUpdate.evaluations.semester = thatCourse.semester;
+                courseUpdate.rating = rating;
                 return courseUpdate;
               }
 
@@ -511,44 +507,32 @@ const scrapeCourseUpdate = function(courseId) {
             // save for most recent rating
             if (!recentRating) {
               recentRating = rating;
-              recentSemester = thatCourse.semester;
-              recentNumeric = thatCourse.evaluations.numeric;
-              recentWritten = thatCourse.evaluations.written;
+              recentEvaluations = thatCourse.evaluations;
             }
 
             // done if instructors intersect!
             const thatInstructors = thatCourse.instructors;
             if (existsIntersection(thisInstructors, thatInstructors)) {
-              courseUpdate.rating = rating.score;
-              courseUpdate.ratingDescription =
+              courseUpdate.rating = rating;
+              courseUpdate.rating.description =
                 rating.description +
                 ' from the last time an instructor taught the course';
-              courseUpdate.evaluations.description =
-                'Course evaluations from the last semester an instructor taught the course';
-              courseUpdate.evaluations.semester = thatCourse.semester;
-              courseUpdate.evaluations.numeric = thatCourse.evaluations.numeric;
-              courseUpdate.evaluations.written = thatCourse.evaluations.written;
+              courseUpdate.evaluations = thatCourse.evaluations;
               return courseUpdate;
             }
           }
 
           // if rating not assigned but a recent one exists we go for it!
           if (!courseUpdate.rating && recentRating) {
-            courseUpdate.rating = recentRating.score;
-            courseUpdate.ratingDescription =
+            courseUpdate.rating = recentRating;
+            courseUpdate.rating.description =
               recentRating.description +
               ' from the last time the course was taught';
-            courseUpdate.evaluations.description =
-              'Course evaluations from the last semester the course was taught';
-            courseUpdate.evaluations.semester = recentSemester;
-            courseUpdate.evaluations.numeric = recentNumeric;
-            courseUpdate.evaluations.written = recentWritten;
+            courseUpdate.evaluations = recentEvaluations;
             return courseUpdate;
           }
 
           // otherwise... bad luck, just return the new / recent information
-          courseUpdate.evaluations.description =
-            'No course evaluations available';
           return courseUpdate;
         });
     })
