@@ -10,13 +10,14 @@
   white-space: nowrap;
   padding: 0 $padding;
 
-  &:hover {
-    cursor: pointer;
-    color: $orange;
+  &.NavbarDropdown-selected {
+    background: $orange;
+    color: $white;
   }
 
-  &.NavbarDropdown-selected {
-    color: $orange;
-    font-weight: bolder;
+  &:hover {
+    cursor: pointer;
+    background: $orange;
+    color: $white;
   }
 }

@@ -21,37 +21,28 @@ class DisplayPane extends Component {
     const onMouseOverSection = this.props.onMouseOverSection;
     const onMouseOutSection = this.props.onMouseOutSection;
 
-    let content;
-    if (selectedCourse) {
-      content = (
-        <DisplayCourse
-          user={user}
-          selectedCourse={selectedCourse}
-          semesterLookup={semesterLookup}
-          onSelectCourse={onSelectCourse}
-          onUnselectCourse={onUnselectCourse}
-          onSaveCourse={onSaveCourse}
-          onUnsaveCourse={onUnsaveCourse}
-        />
-      );
-    } else {
-      content = (
-        <DisplaySchedule
-          selectedSchedule={selectedSchedule}
-          hoveredCourse={hoveredCourse}
-          hoveredSection={hoveredSection}
-          colorLookup={colorLookup}
-          onAddSectionToSchedule={onAddSectionToSchedule}
-          onRemoveSectionFromSchedule={onRemoveSectionFromSchedule}
-          onMouseOverSection={onMouseOverSection}
-          onMouseOutSection={onMouseOutSection}
-        />
-      );
-    }
-
     return (
       <div className="DisplayPane">
-        {content}
+        {selectedCourse
+          ? <DisplayCourse
+              user={user}
+              selectedCourse={selectedCourse}
+              semesterLookup={semesterLookup}
+              onSelectCourse={onSelectCourse}
+              onUnselectCourse={onUnselectCourse}
+              onSaveCourse={onSaveCourse}
+              onUnsaveCourse={onUnsaveCourse}
+            />
+          : <DisplaySchedule
+              selectedSchedule={selectedSchedule}
+              hoveredCourse={hoveredCourse}
+              hoveredSection={hoveredSection}
+              colorLookup={colorLookup}
+              onAddSectionToSchedule={onAddSectionToSchedule}
+              onRemoveSectionFromSchedule={onRemoveSectionFromSchedule}
+              onMouseOverSection={onMouseOverSection}
+              onMouseOutSection={onMouseOutSection}
+            />}
       </div>
     );
   }

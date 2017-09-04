@@ -30,7 +30,8 @@
       flex: 0 1 $block;
 
       &:hover {
-        color: $orange;
+        color: $empty;
+        background: $orange;
         cursor: pointer;
       }
 
@@ -69,21 +70,31 @@
     }
   }
 
-  .SideMenu-input {
-    flex: 0 0 auto;
-    margin: 0;
-    border: none;
+  .SideMenu-header {
+    flex: 0 0 $block;
     border-bottom: $border solid $half;
-    line-height: $block;
     padding: 0 $padding;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+
+    .SideMenu-input {
+      flex: 1 1 auto;
+      width: 50%;
+      margin: 0;
+      border: none;
+    }
+
+    .SideMenu-caption {
+      flex: 0 0 auto;
+      font-size: 0.7rem;
+      margin-left: $padding;
+    }
   }
 
-  .SideMenu-caption {
-    flex: 0 0 auto;
-    padding: $padding;
-    text-align: right;
-    font-size: 0.7rem;
-  }
+
 
   .SideMenu-content {
     flex: 1 1 auto;

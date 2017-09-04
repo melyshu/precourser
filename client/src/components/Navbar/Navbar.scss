@@ -1,27 +1,19 @@
 @import '../../common.scss';
 
-$block: 2.5rem;
-
 .Navbar {
   color: $default;
   background: $empty;
   border-bottom: $border solid $orange;
   font-size: 1rem;
-  box-shadow: 0 0 $shadow 0 $orange;
-
-  z-index: 100;
-  flex: 0 0 auto;
   height: $block;
+  box-shadow: 0 0 $shadow 0 $orange;
+  z-index: 100;
+
+  flex: 0 0 auto;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
   align-items: stretch;
-
-  .Navbar-logo {
-    height: 0.8*$block;
-    width: 0.8*$block;
-    padding: 0 0.5*$padding;
-  }
 
   .Navbar-brand {
     flex: 0 0 auto;
@@ -29,8 +21,31 @@ $block: 2.5rem;
     flex-flow: row nowrap;
     justify-content: flex-start;
     align-items: center;
+
     color: $orange;
     padding: 0 $padding 0 0;
     line-height: $block;
+
+    .Navbar-logo {
+      height: 0.8*$block;
+      width: 0.8*$block;
+      padding: 0 0.5*$padding;
+    }
+
+    .Navbar-title {
+      padding: 0 0.5*$padding;
+      color: inherit;
+      cursor: pointer;
+      text-decoration: none;
+
+      &:hover {
+        color: $empty;
+        background: $orange;
+      }
+    }
+  }
+
+  .Navbar-stretch {
+    flex: 1 1 0;
   }
 }

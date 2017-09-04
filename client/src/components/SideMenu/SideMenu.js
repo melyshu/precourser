@@ -52,9 +52,11 @@ class SideMenu extends Component {
           <div className="SideMenu-stretch" />
           {buttons}
         </div>
-        {input ? input : null}
-        <div className="SideMenu-caption">
-          {caption}
+        <div className="SideMenu-header">
+          {input ? input : null}
+          <div className="SideMenu-caption">
+            {caption}
+          </div>
         </div>
         <ul className="SideMenu-content">
           {content}

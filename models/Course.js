@@ -64,14 +64,14 @@ const courseSchema = new mongoose.Schema({
     type: String,
     trim: true,
     uppercase: true,
-    required: true,
+    required: 'pdf required',
     enum: ['PDF', 'PDFO', 'NPDF', 'XPDF']
   },
   audit: {
     type: String,
     trim: true,
     uppercase: true,
-    required: true,
+    required: 'audit required',
     enum: ['AUDIT', 'NAUDIT', 'XAUDIT']
   },
 
@@ -99,6 +99,12 @@ const courseSchema = new mongoose.Schema({
   classTypes: [{ type: String, trim: true }],
   seatsTaken: Number,
   seatsTotal: Number,
+  status: {
+    type: String,
+    trim: true,
+    required: 'status required',
+    enum: ['Open', 'Closed', 'Canceled']
+  },
 
   assignments: String,
   grading: [
@@ -327,8 +333,6 @@ courseSchema.statics.searchBySemesterAndQuery = function(semesterId, query) {
   if (descriptionQueries.length) {
     queryDocument.description = { $regex: joinRegexAnd(descriptionQueries) };
   }
-
-  console.log(queryDocument);
 
   return mongoose
     .model('Course')

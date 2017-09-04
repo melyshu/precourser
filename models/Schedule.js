@@ -45,6 +45,7 @@ scheduleSchema.statics.briefSelector = '_id name';
 
 // Schedule.findByUserAndSemester
 // Schedule.createByUserSemesterAndName
+// Schedule.renameByUserAndId
 scheduleSchema.statics.findBriefByUserAndSemester = function(
   userId,
   semesterId
@@ -52,7 +53,7 @@ scheduleSchema.statics.findBriefByUserAndSemester = function(
   return mongoose
     .model('Schedule')
     .find({ user: userId, semester: semesterId })
-    .sort({ lastModified: -1 })
+    .sort('created')
     .select(mongoose.model('Schedule').briefSelector)
     .lean()
     .exec();
@@ -166,13 +167,22 @@ scheduleSchema.statics.renameByUserAndId = function(userId, scheduleId, name) {
     .model('Schedule')
     .findOneAndUpdate(
       { _id: scheduleId, user: userId },
-      { name: cleanName },
+      { name: cleanName, lastModified: new Date() },
       { new: true }
     )
     .getFullAndExec()
     .then(function(schedule) {
       if (!schedule) return null;
-      return { selectedSchedule: schedule };
+
+      // retrieve new list of schedules
+      return mongoose
+        .model('Schedule')
+        .findBriefByUserAndSemester(userId, schedule.semester)
+        .then(function(schedules) {
+          if (!schedules) return null;
+
+          return { selectedSchedule: schedule, schedules: schedules };
+        });
     });
 };
 

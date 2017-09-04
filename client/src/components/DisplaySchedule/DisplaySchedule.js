@@ -6,16 +6,18 @@ const MIN_TIME = 8 * 60;
 const MAX_TIME = 24 * 60;
 
 class DisplaySchedule extends Component {
-  constructor(props) {
-    super(props);
-
-    this.renderDays = this.renderDays.bind(this);
-  }
-
-  renderDays() {
-    const sessionsByDay = [[], [], [], [], [], []];
+  render() {
+    const selectedSchedule = this.props.selectedSchedule;
     const hoveredCourse = this.props.hoveredCourse;
-    const selectedCourses = this.props.selectedSchedule.courses.slice();
+    const hoveredSection = this.props.hoveredSection;
+    const colorLookup = this.props.colorLookup;
+    const onAddSectionToSchedule = this.props.onAddSectionToSchedule;
+    const onRemoveSectionFromSchedule = this.props.onRemoveSectionFromSchedule;
+    const onMouseOverSection = this.props.onMouseOverSection;
+    const onMouseOutSection = this.props.onMouseOutSection;
+
+    const sessionsByDay = [[], [], [], [], [], []];
+    const selectedCourses = selectedSchedule.courses.slice();
 
     if (hoveredCourse) {
       let hoveredCourseSelected = false;
@@ -25,7 +27,7 @@ class DisplaySchedule extends Component {
       if (!hoveredCourseSelected) selectedCourses.push(hoveredCourse);
     }
 
-    const selectedSections = this.props.selectedSchedule.sections;
+    const selectedSections = selectedSchedule.sections;
 
     for (let i = 0; i < selectedCourses.length; i++) {
       const course = selectedCourses[i];
@@ -61,6 +63,7 @@ class DisplaySchedule extends Component {
             !meeting.endTime
           ) {
             days = [0];
+            continue;
           }
 
           for (let l = 0; l < days.length; l++) {
@@ -90,18 +93,18 @@ class DisplaySchedule extends Component {
     for (let i = 1; i < 6; i++) {
       displayScheduleDays.push(
         <DisplayScheduleDay
+          hoveredCourse={hoveredCourse}
+          hoveredSection={hoveredSection}
+          colorLookup={colorLookup}
+          onAddSectionToSchedule={onAddSectionToSchedule}
+          onRemoveSectionFromSchedule={onRemoveSectionFromSchedule}
+          onMouseOverSection={onMouseOverSection}
+          onMouseOutSection={onMouseOutSection}
           key={i}
           day={i}
           sessions={sessionsByDay[i]}
           minTime={MIN_TIME}
           maxTime={MAX_TIME}
-          onAddSectionToSchedule={this.props.onAddSectionToSchedule}
-          onRemoveSectionFromSchedule={this.props.onRemoveSectionFromSchedule}
-          onMouseOverSection={this.props.onMouseOverSection}
-          onMouseOutSection={this.props.onMouseOutSection}
-          hoveredSection={this.props.hoveredSection}
-          hoveredCourse={this.props.hoveredCourse}
-          colorLookup={this.props.colorLookup}
         />
       );
     }
@@ -114,13 +117,6 @@ class DisplaySchedule extends Component {
       />
     );
 
-    return displayScheduleDays;
-  }
-
-  render() {
-    const displayScheduleDays = this.renderDays();
-
-    //{JSON.stringify(this.props.selectedSchedule, null, 2)}
     return (
       <div className="DisplaySchedule">
         {displayScheduleDays}

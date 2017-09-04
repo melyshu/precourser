@@ -15,16 +15,20 @@
     flex: 0 0 auto;
 
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 
     .Loading-logo {
-      height: 15vw;
-      width: 15vw;
+      height: 2*$block;
+      width: 2*$block;
     }
 
     .Loading-text {
-      font-size: 5vw;
-      line-height: 15vw;
+      color: $full;
+      font-size: 2rem;
+      line-height: 2*$block;
 
       @for $i from 0 through 9 {
         .Loading-character#{$i} {
@@ -36,7 +40,7 @@
 }
 
 @keyframes loading {
-  0% {color: $default;}
+  0% {color: $full;}
   10% {color: $orange;}
-  50% {color: $default;}
+  50% {color: $full;}
 }

@@ -117,7 +117,7 @@ const buildDatabase = function() {
   let startInstructor;
   let startCourseUpdate;
   let finish;
-  return Promise.resolve()/*
+  return Promise.resolve()
     .then(
       // import departments
       scraper.scrapeDepartments
@@ -153,7 +153,7 @@ const buildDatabase = function() {
         COURSE_DETAIL_INTERVAL,
         COURSE_DETAIL_THREADS
       );
-    })*/
+    })
     .then(function() {
       startCourseEvaluation = new Date();
       return Course.find({

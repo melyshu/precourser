@@ -60,7 +60,7 @@ class NavbarItem extends Component {
         >
           {display}
         </button>
-        {expanded && children
+        {expanded
           ? <div className="NavbarItem-dropdown">
               {React.Children.map(children, child =>
                 React.cloneElement(child, { collapseParent: collapse })

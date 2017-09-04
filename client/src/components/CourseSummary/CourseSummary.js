@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './CourseSummary.css';
 import FaStar from 'react-icons/lib/fa/star';
+import FaCircle from 'react-icons/lib/fa/circle';
 import CourseRating from '../CourseRating/CourseRating';
+import './CourseSummary.css';
 
 class CourseSummary extends Component {
   render() {
@@ -86,6 +87,14 @@ class CourseSummary extends Component {
             new={course.new}
           />
           <span className="CourseSummary-stretch" />
+          <span
+            className={
+              'CourseSummary-status CourseSummary-status-' +
+              course.status.toLowerCase()
+            }
+          >
+            {course.status === 'Open' ? null : <FaCircle />}
+          </span>
           <span className="CourseSummary-seats">
             {(course.seatsTaken >= 0 ? course.seatsTaken : '\u2013') +
               ' / ' +

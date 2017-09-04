@@ -1,14 +1,17 @@
-$orange: #ee7f2d;
 $blue: #19647e;
 $turquoise: #28afb0;
 $yellow: #f4d35e;
 $what: #1f271b;
 
+$minwidth: 600px;
+
+// bootstrap v4
 $success: #28a745;
 $warning: #ffc107;
 $danger: #dc3545;
 $info: #17a2b8;
 
+$recal: #00b3fe;
 
 $black: #000;
 $darkest: #222;
@@ -27,8 +30,9 @@ $block: 2.5rem;
 
 // standard colours
 //*
+$orange: #ee7f2d;
 $full: $black;
-$default: $light;
+$default: #777;
 $half: $lightest;
 $empty: $white;
 //*/
@@ -70,6 +74,13 @@ $md-brown: #795548;
 $md-grey: #9e9e9e;
 $md-blue-grey: #607d8b;
 
-// colors for courses
-$colors: $md-deep-purple, $md-blue, $md-red, $md-yellow, $md-green,
-  $md-blue-grey, $md-brown, $md-cyan, $md-amber, $md-purple;
+// colors for courses (total 19)
+/*
+$colors: $md-blue-grey, $md-red, $md-pink, $md-deep-purple, $md-cyan, $md-deep-orange,
+  $md-yellow, $md-light-blue, $md-amber, $md-teal, $md-grey, $md-brown, $md-orange,
+  $md-light-green, $md-purple, $md-blue, $md-lime, $md-indigo, $md-green
+*/
+
+// selected colors (total 10)
+$colors: $md-deep-purple, $md-blue, $md-red, $md-yellow, $md-light-blue, $md-green,
+  $md-blue-grey, $md-brown, $md-cyan, $md-amber, $md-purple, $md-indigo, $md-pink, $md-teal;

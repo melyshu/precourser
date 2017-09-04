@@ -12,6 +12,7 @@ class NavbarInput extends Component {
 
     this.handleSubmitClick = this.handleSubmitClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.setRef = this.setRef.bind(this);
   }
 
@@ -44,6 +45,12 @@ class NavbarInput extends Component {
     this.setState({ value: event.target.value });
   }
 
+  handleKeyDown(event) {
+    if (event.key === 'Enter') {
+      this.handleSubmitClick();
+    }
+  }
+
   setRef(node) {
     this.inputRef = node;
   }
@@ -62,10 +69,10 @@ class NavbarInput extends Component {
     // const onSubmit = this.props.onSubmit;
     const verb = this.props.verb;
 
-    const setRef = this.setRef;
-
-    const handleChange = this.handleChange;
     const handleSubmitClick = this.handleSubmitClick;
+    const handleChange = this.handleChange;
+    const handleKeyDown = this.handleKeyDown;
+    const setRef = this.setRef;
 
     return (
       <div className="NavbarInput">
@@ -80,7 +87,13 @@ class NavbarInput extends Component {
               value={value}
               maxLength="25"
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
             />
+          : null}
+        {error
+          ? <div className="NavbarInput-error">
+              {error}
+            </div>
           : null}
         <div className="NavbarInput-buttons">
           <button className="NavbarInput-cancel" onClick={collapseParent}>
@@ -90,11 +103,6 @@ class NavbarInput extends Component {
             {verb}
           </button>
         </div>
-        {error
-          ? <div className="NavbarInput-error">
-              {error}
-            </div>
-          : null}
       </div>
     );
   }

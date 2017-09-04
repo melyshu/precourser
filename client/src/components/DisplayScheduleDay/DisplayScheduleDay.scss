@@ -9,7 +9,7 @@
   align-items: stretch;
 
   &.DisplayScheduleDay-labels {
-    flex: 0 0 2rem;
+    flex: 0 0 $block;
   }
 
   .DisplayScheduleDay-header {
@@ -31,7 +31,7 @@
   font-size: 0.6rem;
 
   position: absolute;
-  left: 0;
-  right: -0.2rem;
-  border-top: 0.5px solid $half;
+  left: -2*$border;
+  right: -2*$border;
+  border-top: $border solid $half;
 }

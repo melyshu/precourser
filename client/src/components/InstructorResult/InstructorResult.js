@@ -39,6 +39,8 @@ class InstructorResult extends Component {
     const instructor = this.props.instructor;
     const showButtons = this.props.showButtons;
 
+    const toggle = this.toggle;
+
     let scoreSum = 0;
     let scoreCount = 0;
     for (let i = 0; i < instructor.courses.length; i++) {
@@ -54,7 +56,7 @@ class InstructorResult extends Component {
 
     return (
       <li className="InstructorResult">
-        <div className="InstructorResult-header" onClick={this.toggle}>
+        <div className="InstructorResult-header" onClick={toggle}>
           <div className="InstructorResult-top">
             <span className="InstructorResult-name">
               {instructor.fullName}

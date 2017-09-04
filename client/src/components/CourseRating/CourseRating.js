@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import './CourseRating.css';
 
+const COLORS = [
+  '#f44336', // red
+  '#f44336',
+  '#FF5722',
+  '#FF9800',
+  '#FFB300',
+  '#FDD835',
+  '#C0CA33',
+  '#8BC34A',
+  '#4CAF50' // green
+];
+
 class CourseRating extends Component {
   getColor(score) {
-    const COLORS = [
-      '#f44336',
-      '#f44336',
-      '#FF5722',
-      '#FF9800',
-      '#FFB300',
-      '#FDD835',
-      '#C0CA33',
-      '#8BC34A',
-      '#4CAF50'
-    ];
-
     const stringToRgb = function(string) {
       if (string[0] === '#') string = string.substring(1);
       const rr = string.substr(0, 2);

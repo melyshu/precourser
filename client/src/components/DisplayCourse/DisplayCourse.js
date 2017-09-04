@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import './DisplayCourse.css';
-import FaClose from 'react-icons/lib/fa/close';
 import FaStar from 'react-icons/lib/fa/star';
+import FaClose from 'react-icons/lib/fa/close';
 import CourseSummary from '../CourseSummary/CourseSummary';
 import DisplayCourseDetails from '../DisplayCourseDetails/DisplayCourseDetails';
 import SidePane from '../SidePane/SidePane';
+import './DisplayCourse.css';
 
 class DisplayCourse extends Component {
   render() {

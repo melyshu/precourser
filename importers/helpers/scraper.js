@@ -218,9 +218,8 @@ database by running scrapeCourseDetail on the relevant id.
 
 NOTE: For semesters where the evaluations are not yet out (usually the current
 semester) the webpage will display the most recent evaluations available. This
-is NOT detected by this script, so running this script on a course in such
-a semester will import the WRONG evaluation data. (The data will be from a
-previous semester.)
+is now detected by this script, so running this script on a course in such
+a semester will import empty evaluation data.
 */
 const scrapeCourseEvaluation = function(courseId) {
   const semesterId = courseId.substring(0, 4);
@@ -238,7 +237,7 @@ const scrapeCourseEvaluation = function(courseId) {
     transform: cheerio.load
   })
     .then(function($) {
-      return parser.parseCourseEvaluationsPage($);
+      return parser.parseCourseEvaluationsPage($, courseId);
     })
     .then(function(evaluations) {
       // don't bother if no evaluations

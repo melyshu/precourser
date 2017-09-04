@@ -9,23 +9,35 @@ const sectionSchema = new mongoose.Schema({
   semester: { type: String, ref: 'Semester', required: 'semester required' },
   course: { type: String, ref: 'Course', required: 'course required' },
   classNumber: { type: String, trim: true }, // older sections may not have classNumber
-  name: { type: String, trim: true, uppercase: true, required: 'name required' },
+  name: {
+    type: String,
+    trim: true,
+    uppercase: true,
+    required: 'name required'
+  },
   seatsTaken: Number,
   seatsTotal: Number,
-  status: { type: String, trim: true, required: 'status required' },
-  meetings: [{
-    _id: false,
+  status: {
+    type: String,
+    trim: true,
+    required: 'status required',
+    enum: ['Open', 'Closed', 'Canceled']
+  },
+  meetings: [
+    {
+      _id: false,
 
-    // time data must be either all provided or all undefined
-    days: [Number],
-    startTime: Number,
-    endTime: Number,
+      // time data must be either all provided or all undefined
+      days: [Number],
+      startTime: Number,
+      endTime: Number,
 
-    // location data must be either all provided or all undefined
-    building: { type: String, trim: true },
-    buildingNumber: { type: String, trim: true },
-    room: { type: String, trim: true }
-  }]
+      // location data must be either all provided or all undefined
+      building: { type: String, trim: true },
+      buildingNumber: { type: String, trim: true },
+      room: { type: String, trim: true }
+    }
+  ]
 });
 
 const Section = mongoose.model('Section', sectionSchema);

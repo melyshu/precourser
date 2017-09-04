@@ -47,6 +47,7 @@ class MenuPane extends Component {
           type="text"
           value={tab ? instructorSearch : courseSearch}
           onChange={tab ? onChangeInstructorSearch : onChangeCourseSearch}
+          placeholder="search"
         />
       );
     };

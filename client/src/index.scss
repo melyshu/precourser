@@ -2,7 +2,10 @@
 
 html {
   // definition of 1rem
-  font-size: 14px;
+  font-size: 23px;
+
+  // compensate for font height (?)
+  line-height: 1.3;
 
   // default color
   color: $default;

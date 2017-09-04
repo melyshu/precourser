@@ -21,7 +21,6 @@ router.use(function(req, res, next) {
       })
       .catch(function(err) {
         console.error(err);
-        res.sendStatus(500);
       });
   } else {
     res.sendStatus(418);

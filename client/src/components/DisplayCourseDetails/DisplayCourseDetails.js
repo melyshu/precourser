@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './DisplayCourseDetails.css';
 import CourseRating from '../CourseRating/CourseRating';
+import './DisplayCourseDetails.css';
 
 class DisplayCourseDetails extends Component {
   renderReservedSeats(reservedSeats) {
@@ -86,7 +86,8 @@ class DisplayCourseDetails extends Component {
       <div key="numeric" className="DisplayCourseDetails-field">
         <div className="DisplayCourseDetails-field-title">
           {evaluations.semester
-            ? 'Course evaluations from ' + semesterLookup[evaluations.semester].name
+            ? 'Course evaluations from ' +
+              semesterLookup[evaluations.semester].name
             : 'No course evaluations available'}
         </div>
         {evaluations.semester &&

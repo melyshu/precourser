@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import './CourseResult.css';
-import FaClose from 'react-icons/lib/fa/close';
 import FaInfoCircle from 'react-icons/lib/fa/info-circle';
+import FaClose from 'react-icons/lib/fa/close';
 import FaStar from 'react-icons/lib/fa/star';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaMinus from 'react-icons/lib/fa/minus';
 import CourseSummary from '../CourseSummary/CourseSummary';
-//import FaCalendarO from 'react-icons/lib/fa/calendar-o';
+import './CourseResult.css';
 
 class CourseResult extends Component {
   render() {

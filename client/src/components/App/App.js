@@ -6,6 +6,7 @@ import DisplayPane from '../DisplayPane/DisplayPane';
 import './App.css';
 
 const TIMEOUT_DELAY = 250;
+const COLORS = 10;
 
 class App extends Component {
   constructor(props) {
@@ -82,7 +83,9 @@ class App extends Component {
       this.fetchJsonAndSetState(`/api/semester/${semesterId}`);
     } else {
       this.fetchJsonAndSetState(
-        `/api/semester/${semesterId}?courseSearch=${courseSearch}`
+        `/api/semester/${semesterId}?courseSearch=${encodeURIComponent(
+          courseSearch
+        )}`
       );
     }
   }
@@ -93,14 +96,16 @@ class App extends Component {
 
   handleCreateSchedule(name) {
     this.fetchJsonAndSetState(
-      `/api/schedule/semester/${this.state.selectedSemester}/name/${name}`,
+      `/api/schedule/semester/${this.state
+        .selectedSemester}/name/${encodeURIComponent(name)}`,
       { method: 'POST' }
     );
   }
 
   handleRenameSchedule(name) {
     this.fetchJsonAndSetState(
-      `/api/schedule/${this.state.selectedSchedule._id}/name/${name}`,
+      `/api/schedule/${this.state.selectedSchedule
+        ._id}/name/${encodeURIComponent(name)}`,
       {
         method: 'PUT'
       }
@@ -126,7 +131,8 @@ class App extends Component {
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
       this.fetchJson(
-        `/api/course/semester/${this.state.selectedSemester}/search/${query}`
+        `/api/course/semester/${this.state
+          .selectedSemester}/search/${encodeURIComponent(query)}`
       ).then(object => {
         if (
           this.state.courseSearch === query &&
@@ -194,7 +200,9 @@ class App extends Component {
 
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
-      this.fetchJson(`/api/instructor/search/${query}`).then(object => {
+      this.fetchJson(
+        `/api/instructor/search/${encodeURIComponent(query)}`
+      ).then(object => {
         if (this.state.instructorSearch === query) this.setState(object);
       });
     }, TIMEOUT_DELAY);
@@ -229,6 +237,9 @@ class App extends Component {
   }
 
   render() {
+    const loading = this.state.loading;
+    if (loading) return <Loading />;
+
     const departments = this.state.departments;
     const semesters = this.state.semesters;
     const selectedSemester = this.state.selectedSemester;
@@ -242,7 +253,6 @@ class App extends Component {
     const searchedInstructors = this.state.searchedInstructors;
     const hoveredCourse = this.state.hoveredCourse;
     const hoveredSection = this.state.hoveredSection;
-    const loading = this.state.loading;
 
     const handleChangeSemester = this.handleChangeSemester;
     const handleChangeSchedule = this.handleChangeSchedule;
@@ -279,23 +289,42 @@ class App extends Component {
       semesterLookup[semester._id] = semester;
     }
 
+    // make a hash for randomizing colors based on schedule id
+    let N = parseInt(selectedSchedule._id, 16);
+    const remainders = [1];
+    for (let i = 2; i <= COLORS; i++) {
+      remainders.push(N % i + 1);
+      N = Math.floor(N / i);
+    }
+    const hash = {};
+    let position = 0;
+    for (let i = 0; i < COLORS; i++) {
+      let placesToMove = remainders[COLORS - i];
+      while (placesToMove) {
+        position = (position + 1) % COLORS;
+        if (hash[position] === undefined) {
+          placesToMove--;
+        }
+      }
+      hash[position] = i;
+    }
+
     // make color lookup
     const colorLookup = {};
     for (let i = 0; i < selectedSchedule.courses.length; i++) {
-      colorLookup[selectedSchedule.courses[i]._id] = 'color' + i % 10;
+      colorLookup[selectedSchedule.courses[i]._id] = 'color' + hash[i % COLORS];
     }
     if (hoveredCourse && !colorLookup[hoveredCourse._id]) {
       colorLookup[hoveredCourse._id] =
-        'color' + selectedSchedule.courses.length % 10;
+        'color' + hash[selectedSchedule.courses.length % COLORS];
     }
-
-    if (loading) return <Loading />;
 
     return (
       <div className="App">
         <Navbar
           semesters={semesters}
           selectedSemester={selectedSemester}
+          user={user}
           schedules={schedules}
           selectedSchedule={selectedSchedule}
           semesterLookup={semesterLookup}

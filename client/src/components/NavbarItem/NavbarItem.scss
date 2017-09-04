@@ -10,7 +10,8 @@
     padding: 0 0.5*$padding;
 
     &:hover {
-      color: $orange;
+      background: $orange;
+      color: $empty;
       cursor: pointer;
     }
 
@@ -26,7 +27,8 @@
 
     position: absolute;
     top: 100%;
-    left: 0;
     background: $empty;
+
+    right: 0;
   }
 }

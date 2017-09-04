@@ -1,8 +1,8 @@
 @import '../../common.scss';
 
 .NavbarInput {
-  padding: 1rem 1rem;
-  width: 13rem;
+  padding: $padding;
+  width: 5*$block;
 
   display: flex;
   flex-flow: column nowrap;
@@ -13,6 +13,13 @@
   .NavbarInput-input {
     flex: 0 0 auto;
     margin-bottom: $padding;
+  }
+
+  .NavbarInput-error {
+    flex: 0 0 auto;
+    margin-bottom: $padding;
+    font-size: 0.6rem;
+    color: $orange;
   }
 
   .NavbarInput-buttons {
@@ -31,6 +38,7 @@
 
     .NavbarInput-cancel {
       color: $default;
+
       &:hover {
         color: $empty;
         background: $default;
@@ -40,6 +48,7 @@
 
     .NavbarInput-submit {
       color: $orange;
+
       &:hover {
         color: $empty;
         background: $orange;

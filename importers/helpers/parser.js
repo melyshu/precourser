@@ -243,13 +243,25 @@ const parseCourseOfferingsPage = function($, courseId) {
     course.sections.push(section._id);
   }
 
-  // calculate level of enrollment for course and class types
+  // calculate level of enrollment, class types and status for course
   const seatsTakenByType = {};
   const seatsTotalByType = {};
+  const statusByType = {};
   const classTypes = {};
   for (let i in sections) {
     const section = sections[i];
+
     const type = section.name[0];
+
+    // filter away empty, canceled sections
+    if (
+      section.status === 'Canceled' &&
+      !section.seatsTaken &&
+      !section.seatsTotal
+    ) {
+      continue;
+    }
+
     if (section.seatsTaken !== undefined) {
       if (!seatsTakenByType[type]) seatsTakenByType[type] = 0;
       seatsTakenByType[type] += section.seatsTaken;
@@ -258,20 +270,36 @@ const parseCourseOfferingsPage = function($, courseId) {
       if (!seatsTotalByType[type]) seatsTotalByType[type] = 0;
       seatsTotalByType[type] += section.seatsTotal;
     }
+    if (!statusByType[type])
+      statusByType[type] = { Open: 0, Closed: 0, Canceled: 0 };
+    statusByType[type][section.status]++;
     classTypes[type] = 0;
   }
 
   // take the maximum seatsTaken
   let seatsTaken = -1;
-  for (let i in seatsTakenByType)
-    seatsTaken = Math.max(seatsTaken, seatsTakenByType[i]);
+  for (let type in seatsTakenByType)
+    seatsTaken = Math.max(seatsTaken, seatsTakenByType[type]);
   if (seatsTaken > -1) course.seatsTaken = seatsTaken;
 
   // take the minimum seatsTotal
   let seatsTotal = Infinity;
-  for (let i in seatsTotalByType)
-    seatsTotal = Math.min(seatsTotal, seatsTotalByType[i]);
+  for (let type in seatsTotalByType)
+    seatsTotal = Math.min(seatsTotal, seatsTotalByType[type]);
   if (seatsTotal < Infinity) course.seatsTotal = seatsTotal;
+
+  // calculate best case status
+  course.status = 'Canceled';
+  for (let type in statusByType) {
+    const statuses = statusByType[type];
+
+    course.status = 'Open';
+
+    if (statuses.Open === 0) {
+      course.status = 'Closed';
+      break;
+    }
+  }
 
   // take unique class types
   course.classTypes = [];
@@ -479,11 +507,25 @@ Takes:
 Returns an evaluations object (to be used within the course.evaluations field)
 with evaluation data extracted from the webpage.
 */
-const parseCourseEvaluationsPage = function($) {
+const parseCourseEvaluationsPage = function($, courseId) {
   const evaluations = {
     numeric: [],
     written: []
   };
+
+  // check semester from instructor
+  const semesterId = courseId.substr(0, 4);
+  let isSemesterCorrect = true;
+  $('a').each(function() {
+    const $a = $(this);
+    const href = $a.attr('href');
+
+    if (href.substr(0, 10) !== 'instructor') return;
+
+    const instructorSemesterId = href.substr(34, 4);
+    isSemesterCorrect &= semesterId === instructorSemesterId;
+  });
+  if (!isSemesterCorrect) return evaluations;
 
   // numeric evaluations
   const b64 = $('#chart_settings').attr('value');
