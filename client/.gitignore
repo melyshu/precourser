@@ -8,7 +8,9 @@
 
 # production (overridden default)
 !/build
-!/build/*.css
+
+# css files (using scss instead)
+/src/**/*.css
 
 # misc
 .DS_Store
