@@ -42,39 +42,34 @@ instructorSchema.statics.searchByQuery = function(query) {
   const cleanQuery = query.trim().replace(/\s+/g, ' ');
   const tokens = cleanQuery.split(' ');
 
-  if (tokens.length === 1) {
-    return mongoose
-      .model('Instructor')
-      .find({
-        $or: [
-          { fullName: { $regex: new RegExp(tokens[0], 'i') } },
-          { position: { $regex: new RegExp(tokens[0], 'i') } }
-        ]
-      })
-      .getFullAndExec()
-      .then(function(instructors) {
-        if (!instructors) return null;
-        return { searchedInstructors: instructors };
-      });
-  } else {
-    const queryDocument = {
-      $and: tokens.map(token => ({
-        $or: [
-          { fullName: { $regex: new RegExp(token, 'i') } },
-          { position: { $regex: new RegExp(token, 'i') } }
-        ]
-      }))
-    };
+  const queryDocument =
+    tokens.length === 1
+      ? {
+          $or: [
+            { fullName: { $regex: new RegExp(tokens[0], 'i') } },
+            { position: { $regex: new RegExp(tokens[0], 'i') } }
+          ]
+        }
+      : {
+          $and: tokens.map(token => ({
+            $or: [
+              { fullName: { $regex: new RegExp(token, 'i') } },
+              { position: { $regex: new RegExp(token, 'i') } }
+            ]
+          }))
+        };
 
-    return mongoose
-      .model('Instructor')
-      .find(queryDocument)
-      .getFullAndExec()
-      .then(function(instructors) {
-        if (!instructors) return null;
-        return { searchedInstructors: instructors };
-      });
-  }
+  return mongoose
+    .model('Instructor')
+    .find(queryDocument)
+    .getFullAndExec()
+    .then(function(instructors) {
+      if (!instructors) return null;
+      return {
+        searchedInstructors: instructors,
+        loadingInstructorSearch: false
+      };
+    });
 };
 
 const Instructor = mongoose.model('Instructor', instructorSchema);

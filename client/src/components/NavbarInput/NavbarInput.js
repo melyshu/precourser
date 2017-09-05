@@ -66,6 +66,7 @@ class NavbarInput extends Component {
     const collapseParent = this.props.collapseParent;
     const prompt = this.props.prompt;
     const defaultValue = this.props.defaultValue;
+    const isShort = this.props.isShort;
     // const onSubmit = this.props.onSubmit;
     const verb = this.props.verb;
 
@@ -85,7 +86,7 @@ class NavbarInput extends Component {
               className="NavbarInput-input"
               type="text"
               value={value}
-              maxLength="25"
+              maxLength={isShort ? '25' : '200'}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
             />

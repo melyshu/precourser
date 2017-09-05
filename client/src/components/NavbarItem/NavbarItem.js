@@ -43,6 +43,7 @@ class NavbarItem extends Component {
     const expanded = this.state.expanded;
 
     const display = this.props.display;
+    const alignRight = this.props.alignRight;
     const children = this.props.children;
 
     const toggle = this.toggle;
@@ -61,7 +62,12 @@ class NavbarItem extends Component {
           {display}
         </button>
         {expanded
-          ? <div className="NavbarItem-dropdown">
+          ? <div
+              className={
+                'NavbarItem-dropdown NavbarItem-align-' +
+                (alignRight ? 'right' : 'left')
+              }
+            >
               {React.Children.map(children, child =>
                 React.cloneElement(child, { collapseParent: collapse })
               )}

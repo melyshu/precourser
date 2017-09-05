@@ -340,16 +340,20 @@ courseSchema.statics.searchBySemesterAndQuery = function(semesterId, query) {
     .getBriefAndExec()
     .then(function(courses) {
       if (!courses) return null;
-      return { searchedCourses: courses };
+      return { searchedCourses: courses, loadingCourseSearch: false };
     });
 };
 
 // GET /api/course/:courseId
 courseSchema.statics.findFullById = function(courseId) {
-  return this.findById(courseId).getFullAndExec().then(function(course) {
-    if (!course) return null;
-    return { selectedCourse: course };
-  });
+  return mongoose
+    .model('Course')
+    .findById(courseId)
+    .getFullAndExec()
+    .then(function(course) {
+      if (!course) return null;
+      return { selectedCourse: course };
+    });
 };
 
 const Course = mongoose.model('Course', courseSchema);

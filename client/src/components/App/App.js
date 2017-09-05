@@ -5,7 +5,7 @@ import MenuPane from '../MenuPane/MenuPane';
 import DisplayPane from '../DisplayPane/DisplayPane';
 import './App.css';
 
-const TIMEOUT_DELAY = 250;
+const TIMEOUT_DELAY = 500;
 const COLORS = 10;
 
 class App extends Component {
@@ -20,9 +20,11 @@ class App extends Component {
       schedules: [],
       selectedSchedule: { courses: [] },
       courseSearch: '',
+      loadingCourseSearch: false,
       searchedCourses: [],
       selectedCourse: null,
       instructorSearch: '',
+      loadingInstructorSearch: false,
       searchedInstructors: [],
       hoveredCourse: null,
       hoveredSection: null,
@@ -57,7 +59,11 @@ class App extends Component {
     }
   }
 
+  // https://stackoverflow.com/questions/44326797/express-session-not-working-for-ajax-call
+  // (same problem for ../registerServiceWorker.js)
   fetchJson(string, init) {
+    if (!init) init = {};
+    init.credentials = 'same-origin';
     return fetch(string, init)
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
@@ -124,9 +130,11 @@ class App extends Component {
   handleChangeCourseSearch(event) {
     const query = event.target.value;
     const semesterId = this.state.selectedSemester;
-    this.setState({ courseSearch: query });
-
-    if (query.length < 3) return;
+    this.setState({ courseSearch: query, loadingCourseSearch: true });
+    if (query.length < 3) {
+      this.setState({ searchedCourses: [], loadingCourseSearch: false });
+      return;
+    }
 
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
@@ -138,6 +146,7 @@ class App extends Component {
           this.state.courseSearch === query &&
           this.state.selectedSemester === semesterId
         ) {
+          this.searchTimeout = null;
           this.setState(object);
         }
       });
@@ -194,16 +203,24 @@ class App extends Component {
 
   handleChangeInstructorSearch(event) {
     const query = event.target.value;
-    this.setState({ instructorSearch: query });
-
-    if (query.length < 3) return;
+    this.setState({ instructorSearch: query, loadingInstructorSearch: true });
+    if (query.length < 3) {
+      this.setState({
+        searchedInstructors: [],
+        loadingInstructorSearch: false
+      });
+      return;
+    }
 
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
       this.fetchJson(
         `/api/instructor/search/${encodeURIComponent(query)}`
       ).then(object => {
-        if (this.state.instructorSearch === query) this.setState(object);
+        if (this.state.instructorSearch === query) {
+          this.searchTimeout = null;
+          this.setState(object);
+        }
       });
     }, TIMEOUT_DELAY);
   }
@@ -247,9 +264,11 @@ class App extends Component {
     const schedules = this.state.schedules;
     const selectedSchedule = this.state.selectedSchedule;
     const courseSearch = this.state.courseSearch;
+    const loadingCourseSearch = this.state.loadingCourseSearch;
     const searchedCourses = this.state.searchedCourses;
     const selectedCourse = this.state.selectedCourse;
     const instructorSearch = this.state.instructorSearch;
+    const loadingInstructorSearch = this.state.loadingInstructorSearch;
     const searchedInstructors = this.state.searchedInstructors;
     const hoveredCourse = this.state.hoveredCourse;
     const hoveredSection = this.state.hoveredSection;
@@ -340,9 +359,11 @@ class App extends Component {
             user={user}
             selectedSchedule={selectedSchedule}
             courseSearch={courseSearch}
+            loadingCourseSearch={loadingCourseSearch}
             searchedCourses={searchedCourses}
             selectedCourse={selectedCourse}
             instructorSearch={instructorSearch}
+            loadingInstructorSearch={loadingInstructorSearch}
             searchedInstructors={searchedInstructors}
             colorLookup={colorLookup}
             semesterLookup={semesterLookup}

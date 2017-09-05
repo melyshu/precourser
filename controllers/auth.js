@@ -1,7 +1,6 @@
 const config = require('../config.js');
 const express = require('express');
 const CASAuthentication = require('cas');
-const User = require('../models/User.js');
 
 const casUrl = 'https://fed.princeton.edu/cas/';
 const cas = new CASAuthentication({
@@ -9,32 +8,30 @@ const cas = new CASAuthentication({
   service: config.host + '/auth/verify'
 });
 
-exports.router = express.Router();
+const PUBLIC_PATHS = /\/client.*|\/auth\/login|\/auth\/verify|\/home/;
+
+const router = express.Router();
 
 // redirection to Princeton CAS
-exports.router.get('/login', function(req, res) {
-  // store any redirection in session
-  if (typeof(req.query.redirect) === 'string') {
-    req.session.redirect = req.query.redirect
-  }
-
-  res.redirect(casUrl + 'login?service=' + config.host + req.baseUrl + '/verify');
+router.get('/login', function(req, res) {
+  res.redirect(
+    casUrl + 'login?service=' + config.host + req.baseUrl + '/verify'
+  );
 });
 
 // handle response from Princeton CAS
-exports.router.get('/verify', function(req, res) {
-  const redirection = req.session.redirect || '/';
-
+// automatically redirect to app page
+router.get('/verify', function(req, res) {
   // already has a CAS session
   if (req.session.netid) {
-    res.redirect(redirection);
+    res.redirect('/');
     return;
   }
 
-  // must have ticket from CAS or else return
+  // must have ticket from CAS or else return to home
   const ticket = req.query.ticket;
   if (ticket === undefined) {
-    res.redirect(config.host);
+    res.redirect(config.host + '/home');
     return;
   }
 
@@ -47,50 +44,47 @@ exports.router.get('/verify', function(req, res) {
     }
 
     // save session
+    // https://stackoverflow.com/questions/5883821/node-js-express-session-problem
     req.session.netid = netid;
+    req.session.save(function(err) {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      }
 
-    // create new user if it doesn't exist
-    User.createIfNonexistent(netid).then(function() { // if successful, redirect
-      res.redirect(redirection);
-    }).catch(function(err) { // error somewhere
-      console.error(err);
-      res.sendStatus(500);
+      // redirect
+      res.redirect('/');
     });
   });
 });
 
 // logout from Princeton CAS
-exports.router.get('/logout', function(req, res) {
+router.get('/logout', function(req, res) {
   req.session.destroy();
-  res.redirect(casUrl + 'logout?url=' + config.host);
+  res.redirect(casUrl + 'logout?url=' + config.host + '/home');
 });
 
-// check if user is authenticated
-exports.userHasAuth = function(req) {
-  return req.session.netid;
-}
-
 // middleware to enforce authentication
-exports.enforceAuth = function(req, res, next) {
-  if (req.session.netid) {
-    next();
-  } else {
-    res.sendStatus(401);
+const enforceAuth = function(req, res, next) {
+  if (process.env.DEV_USER && process.env.NODE_ENV !== 'production') {
+    req.session.netid = process.env.DEV_USER;
   }
-}
 
-// middleware to get details of user
-exports.loadUser = function(req, res, next) {
-  if (!req.session.netid) {
+  // if authorized, continue with request
+  if (req.session.netid) {
     next();
     return;
   }
 
-  User.findById(req.session.netid).then(function(user) {
-    res.locals.user = user;
-  }).catch(function(err) {
-    console.error(err);
-  }).then(function() {
+  // otherwise, make sure it is one of the public paths
+  if (PUBLIC_PATHS.test(req.path)) {
     next();
-  });
-}
+    return;
+  }
+
+  // redirect to home for other requests
+  res.redirect('/home');
+};
+
+module.exports.router = router;
+module.exports.enforceAuth = enforceAuth;

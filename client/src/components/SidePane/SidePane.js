@@ -22,6 +22,10 @@ class SidePane extends Component {
       return;
     };
 
+    const renderSpinner = tab => {
+      return false;
+    };
+
     const renderContent = tab => {
       switch (tab) {
         case 0:
@@ -60,6 +64,7 @@ class SidePane extends Component {
       <SideMenu
         tabLabels={tabLabels}
         renderInput={renderInput}
+        renderSpinner={renderSpinner}
         renderContent={renderContent}
         captionNouns={captionNouns}
         buttons={buttons}

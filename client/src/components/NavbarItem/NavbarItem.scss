@@ -1,7 +1,7 @@
 @import '../../common.scss';
 
 .NavbarItem {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   position: relative;
 
   .NavbarItem-display {
@@ -29,6 +29,12 @@
     top: 100%;
     background: $empty;
 
-    right: 0;
+    &.NavbarItem-align-left {
+      left: 0;
+    }
+
+    &.NavbarItem-align-right {
+      right: 0;
+    }
   }
 }

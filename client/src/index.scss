@@ -47,6 +47,10 @@ p {
   margin: 0;
 }
 
+input {
+  font-family: inherit;
+  line-height: 1.3em;
+}
 
 
 $colors: $md-deep-purple, $md-blue, $md-red, $md-yellow, $md-green,

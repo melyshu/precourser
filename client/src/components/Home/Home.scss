@@ -1,7 +1,5 @@
 @import '../../common.scss';
 
-$SUBTITLE_INTERVAL: 3.5s;
-
 .Home {
   position: absolute;
   top: 0;
@@ -18,84 +16,6 @@ $SUBTITLE_INTERVAL: 3.5s;
     flex: 1 1 auto;
     overflow-y: auto;
     color: $full;
-
-    .Home-cover {
-      min-height: calc(100vh - #{2*$block + $border});
-      box-sizing: border-box;
-      padding: $block;
-      text-align: center;
-
-      display: flex;
-      flex-flow: column nowrap;
-      justify-content: center;
-      align-items: center;
-
-      .Home-title {
-        font-size: 2rem;
-        line-height: 3rem;
-
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: center;
-        align-items: center;
-
-        .Home-title-logo {
-          height: 3rem;
-        }
-      }
-
-      .Home-subtitles {
-        margin-bottom: $padding;
-        color: $default;
-        height: 3.9rem;
-
-        display: flex;
-        flex-flow: column nowrap;
-        justify-content: flex-end;
-        align-items: stretch;
-
-        .Home-subtitle-0 {
-          color: $empty;
-          animation: $SUBTITLE_INTERVAL subtitle-0 ease-in-out;
-        }
-
-        .Home-subtitle-1 {
-          color: $default;
-          animation: $SUBTITLE_INTERVAL subtitle-1 ease-in-out;
-        }
-
-        .Home-subtitle-2 {
-          color: $empty;
-          overflow: hidden;
-          animation: $SUBTITLE_INTERVAL subtitle-2 ease-in-out;
-        }
-      }
-
-      .Home-button {
-        line-height: $block;
-        margin-bottom: $padding;
-        padding: 0 $padding;
-        border: $border solid $orange;
-        color: $orange;
-        cursor: pointer;
-        text-decoration: none;
-
-        &:hover {
-          cursor: pointer;
-          color: $empty;
-          background: $orange;
-        }
-      }
-
-      .Home-narrow {
-        font-size: 0.5rem;
-
-        @media (min-width: $minwidth) {
-          height: 0;
-          overflow: hidden;
-        }
-      }
-    }
 
     .Home-heading {
       text-align: center;
@@ -152,13 +72,13 @@ $SUBTITLE_INTERVAL: 3.5s;
           .Home-app-features {
             padding: $padding $padding 0;
             font-size: 0.8rem;
-            flex: 1 1 auto;
             li {
               margin-bottom: $padding;
             }
           }
 
           .Home-app-contributors {
+            flex: 1 1 auto;
             padding: $padding;
             background: $half;
             color: $default;
@@ -193,7 +113,7 @@ $SUBTITLE_INTERVAL: 3.5s;
 
     .Home-footer {
       background: $half;
-      font-size: 0.5rem;
+      font-size: 0.6rem;
       text-align: center;
       padding: $block;
 
@@ -206,54 +126,5 @@ $SUBTITLE_INTERVAL: 3.5s;
         margin: 0 $padding;
       }
     }
-  }
-}
-
-@keyframes subtitle-0 {
-  0% {
-    color: $empty;
-  }
-  35% {
-    color: $empty;
-  }
-  65% {
-    color: $default;
-  }
-  100% {
-    color: $default;
-  }
-}
-
-@keyframes subtitle-1 {
-  0% {
-    color: $default;
-  }
-  35% {
-    color: $default;
-  }
-  65% {
-    color: $empty;
-  }
-  100% {
-    color: $empty;
-  }
-}
-
-@keyframes subtitle-2 {
-  0% {
-    color: $empty;
-    max-height: 2em;
-  }
-  35% {
-    color: $empty;
-    max-height: 1.3em;
-  }
-  65% {
-    color: $empty;
-    max-height: 0;
-  }
-  100% {
-    color: $empty;
-    max-height: 0;
   }
 }

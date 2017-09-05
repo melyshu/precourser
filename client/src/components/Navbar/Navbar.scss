@@ -48,4 +48,13 @@
   .Navbar-stretch {
     flex: 1 1 0;
   }
+
+  .Navbar-feedback {
+    color: $orange;
+    text-decoration: none;
+    &:hover {
+      font-weight: bolder;
+      cursor: pointer;
+    }
+  }
 }

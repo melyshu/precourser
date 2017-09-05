@@ -1,113 +1,32 @@
 import React, { Component } from 'react';
 import Navbar from '../Navbar/Navbar';
-import Logo from '../../precourser.svg';
+import Cover from '../Cover/Cover';
 import './Home.css';
 
-const SUBTITLES = [
-  'course selection made easy',
-  'elegant scheduling',
-  'synchronized course details',
-  'intuitive search',
-  'beautiful interface',
-  'integrated course evaluations',
-  'comprehensive instructor history'
-];
-const INTERVAL = 3500;
-
 class Home extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      previousSubtitle: 4,
-      currentSubtitle: 4,
-      nextSubtitle: 0,
-      subtitleCount: 0
-    };
-
-    this.changeSubtitle = this.changeSubtitle.bind(this);
-  }
-
-  changeSubtitle() {
-    const previousSubtitle = this.state.currentSubtitle;
-    const currentSubtitle = this.state.nextSubtitle;
-    const subtitleCount = this.state.subtitleCount;
-
-    let nextSubtitle = Math.floor(Math.random() * SUBTITLES.length);
-    while (
-      nextSubtitle === previousSubtitle ||
-      nextSubtitle === currentSubtitle
-    ) {
-      nextSubtitle = Math.floor(Math.random() * SUBTITLES.length);
-    }
-
-    this.setState({
-      previousSubtitle: previousSubtitle,
-      currentSubtitle: currentSubtitle,
-      nextSubtitle: nextSubtitle,
-      subtitleCount: subtitleCount + 1
-    });
-  }
-
-  componentDidMount() {
-    this.subtitleInterval = setInterval(this.changeSubtitle, INTERVAL);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.subtitleInterval);
-  }
-
   render() {
-    const previousSubtitle = this.state.previousSubtitle;
-    const currentSubtitle = this.state.currentSubtitle;
-    const nextSubtitle = this.state.nextSubtitle;
-    const subtitleCount = this.state.subtitleCount;
-
     return (
       <div className="Home">
         <Navbar isEmpty={true} />
         <div className="Home-page">
-          <div className="Home-cover">
-            <div className="Home-title">
-              <img src={Logo} alt="logo" className="Home-title-logo" />
-              <span className="Home-title-title">precourser</span>
-            </div>
-            <div className="Home-subtitles">
-              {[
-                <div key={subtitleCount + 2} className="Home-subtitle-0">
-                  {SUBTITLES[nextSubtitle]}
-                </div>,
-                <div key={subtitleCount + 1} className="Home-subtitle-1">
-                  {SUBTITLES[currentSubtitle]}
-                </div>,
-                <div key={subtitleCount} className="Home-subtitle-2">
-                  {SUBTITLES[previousSubtitle]}
-                </div>
-              ]}
-            </div>
-            <a href="/" className="Home-button">
-              select courses
-            </a>
-            <div className="Home-narrow">
-              Your screen may be too narrow. For the best experience, use a
-              larger device.
-            </div>
-          </div>
+          <Cover loading={false} />
           <div className="Home-features">
             <div className="Home-heading">combining the best from</div>
             <div className="Home-apps">
               <div className="Home-app">
                 <a
-                  href="https://princetoncourses.com"
                   className="Home-app-princetoncourses"
+                  href="https://princetoncourses.com"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Princeton Courses
                 </a>
                 <ul className="Home-app-features">
                   <li>course evaluations</li>
                   <li>instructor history</li>
-                  <li>saving courses</li>
-                  <li>text search</li>
+                  <li>save courses</li>
+                  <li>text-based search</li>
                 </ul>
                 <ul className="Home-app-contributors">
                   <li className="Home-app-contributor">bsicim@</li>{' '}
@@ -118,14 +37,19 @@ class Home extends Component {
                 </ul>
               </div>
               <div className="Home-app">
-                <a href="https://recal.io" className="Home-app-recal">
+                <a
+                  className="Home-app-recal"
+                  href="https://recal.io"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   ReCal
                 </a>
                 <ul className="Home-app-features">
                   <li>beautiful schedules</li>
-                  <li>intuitive interface</li>
                   <li>colorful design</li>
                   <li>instant search</li>
+                  <li>intuitive interface</li>
                 </ul>
 
                 <ul className="Home-app-contributors">

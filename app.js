@@ -4,6 +4,7 @@ console.log('Launching...');
 
 const config = require('./config.js');
 
+const path = require('path');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const express = require('express');
@@ -12,7 +13,6 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 
 const auth = require('./controllers/auth.js');
 const api = require('./controllers/api.js');
-const feedback = require('./controllers/feedback.js');
 
 console.log('Dependencies loaded...');
 
@@ -24,6 +24,7 @@ const store = new MongoDBStore({
   collection: 'sessions'
 });
 
+// sets session for netids
 app.use(
   session({
     cookie: { maxAge: 24 * 60 * 60 * 1000 }, // a day
@@ -35,32 +36,38 @@ app.use(
   })
 );
 
-app.use(auth.loadUser);
+// handles authentication issues
+app.use(auth.enforceAuth);
 
 app.use('/auth', auth.router);
 app.use('/api', api.router);
-app.use('/feedback', feedback.router);
 
-app.get('/', function(req, res) {
-  res.send(`
+// production uses static assets from react build
+if (process.env.NODE_ENV === 'production') {
+  app.use('/client', express.static(path.join(__dirname, 'client', 'build')));
+
+  app.get(['/', '/home'], function(req, res) {
+    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+  });
+} else {
+  // otherwise use crude pages
+
+  // landing page
+  app.get('/home', function(req, res) {
+    res.send(`
     <html>
       <body>
         <h1>Hello!</h1>
-        <a href="/app">Leggo</a>
+        <a href="/auth/login">Leggo</a>
       </body>
     </html>
   `);
-});
+  });
 
-app.get('/app', function(req, res) {
-  if (!auth.userHasAuth(req)) {
-    res.redirect('/auth/login?redirect=' + req.originalUrl);
-    return;
-  }
+  app.get('/', function(req, res) {
+    const netid = req.session.netid;
 
-  const netid = req.session.netid;
-
-  res.send(`
+    res.send(`
     <html>
       <body>
         <h1>Ahoy there!</h1>
@@ -69,8 +76,15 @@ app.get('/app', function(req, res) {
       </body>
     </html>
   `);
+  });
+}
+
+// catch all
+// https://stackoverflow.com/questions/19313016/catch-all-route-except-for-login
+app.all('*', function(req, res) {
+  res.redirect('/home');
 });
 
 app.listen(config.port, () => {
-  console.log(`testserver listening on port ${config.port}!`);
+  console.log(`precourser listening at ${config.host} on port ${config.port}!`);
 });

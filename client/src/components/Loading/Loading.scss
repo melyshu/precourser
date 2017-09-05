@@ -8,39 +8,8 @@
   bottom: 0;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
-
-  .Loading-content {
-    flex: 0 0 auto;
-
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-
-    .Loading-logo {
-      height: 2*$block;
-      width: 2*$block;
-    }
-
-    .Loading-text {
-      color: $full;
-      font-size: 2rem;
-      line-height: 2*$block;
-
-      @for $i from 0 through 9 {
-        .Loading-character#{$i} {
-          animation: loading 2s ease $i*0.2s infinite;
-        }
-      }
-    }
-  }
-}
-
-@keyframes loading {
-  0% {color: $full;}
-  10% {color: $orange;}
-  50% {color: $full;}
+  justify-content: flex-start;
+  align-items: stretch;
+  
+  color: $full;
 }

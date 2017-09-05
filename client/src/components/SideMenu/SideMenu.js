@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import FaCircleONotch from 'react-icons/lib/fa/circle-o-notch';
 import './SideMenu.css';
 
 class SideMenu extends Component {
@@ -18,6 +19,7 @@ class SideMenu extends Component {
 
     const tabLabels = this.props.tabLabels;
     const renderInput = this.props.renderInput;
+    const renderSpinner = this.props.renderSpinner;
     const renderContent = this.props.renderContent;
     const captionNouns = this.props.captionNouns;
     const buttons = this.props.buttons;
@@ -39,6 +41,7 @@ class SideMenu extends Component {
     }
 
     const input = renderInput(tab);
+    const hasSpinner = renderSpinner(tab);
     const content = renderContent(tab);
 
     const noun = captionNouns[tab];
@@ -54,6 +57,7 @@ class SideMenu extends Component {
         </div>
         <div className="SideMenu-header">
           {input ? input : null}
+          {hasSpinner ? <FaCircleONotch className="SideMenu-spinner" /> : null}
           <div className="SideMenu-caption">
             {caption}
           </div>

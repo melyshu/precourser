@@ -14,9 +14,11 @@ class MenuPane extends Component {
     const user = this.props.user;
     const selectedSchedule = this.props.selectedSchedule;
     const courseSearch = this.props.courseSearch;
+    const loadingCourseSearch = this.props.loadingCourseSearch;
     const searchedCourses = this.props.searchedCourses;
     const selectedCourse = this.props.selectedCourse;
     const instructorSearch = this.props.instructorSearch;
+    const loadingInstructorSearch = this.props.loadingInstructorSearch;
     const searchedInstructors = this.props.searchedInstructors;
     const colorLookup = this.props.colorLookup;
     const semesterLookup = this.props.semesterLookup;
@@ -49,6 +51,13 @@ class MenuPane extends Component {
           onChange={tab ? onChangeInstructorSearch : onChangeCourseSearch}
           placeholder="search"
         />
+      );
+    };
+
+    const renderSpinner = tab => {
+      return (
+        (tab === 0 && loadingCourseSearch) ||
+        (tab === 1 && loadingInstructorSearch)
       );
     };
 
@@ -115,6 +124,7 @@ class MenuPane extends Component {
       <SideMenu
         tabLabels={tabLabels}
         renderInput={renderInput}
+        renderSpinner={renderSpinner}
         renderContent={renderContent}
         captionNouns={captionNouns}
       />

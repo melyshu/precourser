@@ -2,13 +2,11 @@ const config = require('../config.js');
 const express = require('express');
 
 const router = express.Router();
-const auth = require('./auth.js');
 
-// require authentication
-// router.use(auth.enforceAuth);
+// pre-process api responses from req.object
 router.use(function(req, res, next) {
-  req.session.netid = 'mshu'; // for testing
   next();
+
   if (req.object) {
     req.object
       .then(function(object) {
@@ -29,9 +27,9 @@ router.use(function(req, res, next) {
 
 router.use('/startup', require('./api/startup.js'));
 router.use('/semester', require('./api/semester.js'));
-router.use('/course', require('./api/course.js'));
-router.use('/instructor', require('./api/instructor.js'));
-router.use('/save', require('./api/save.js'));
 router.use('/schedule', require('./api/schedule.js'));
+router.use('/course', require('./api/course.js'));
+router.use('/save', require('./api/save.js'));
+router.use('/instructor', require('./api/instructor.js'));
 
 module.exports.router = router;

@@ -14,7 +14,7 @@ const semesterSchema = new mongoose.Schema({
   courses: [{ type: String, ref: 'Course' }] // only used for importing
 });
 
-semesterSchema.statics.fullSelector = '';
+semesterSchema.statics.fullSelector = '-courses';
 
 // Semester.findFull
 semesterSchema.query.getFullAndExec = function() {
