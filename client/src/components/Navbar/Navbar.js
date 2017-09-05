@@ -6,7 +6,7 @@ import FaTrash from 'react-icons/lib/fa/trash';
 import NavbarItem from '../NavbarItem/NavbarItem';
 import NavbarDropdown from '../NavbarDropdown/NavbarDropdown';
 import NavbarInput from '../NavbarInput/NavbarInput';
-import Logo from '../../precourser.svg';
+import Logo from '../../images/precourser.svg';
 import './Navbar.css';
 
 /*

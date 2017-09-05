@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Navbar from '../Navbar/Navbar';
 import Cover from '../Cover/Cover';
+import heroku from '../../images/heroku.png';
+import mongodb from '../../images/mongodb.png';
+import nodejs from '../../images/nodejs.png';
+import reactjs from '../../images/reactjs.png';
 import './Home.css';
 
 class Home extends Component {
@@ -61,28 +65,12 @@ class Home extends Component {
             </div>
           </div>
           <div className="Home-tools">
-            <div className="Home-heading">made with</div>
+            <div className="Home-heading">built with</div>
             <ul className="Home-tools-logos">
-              <img
-                alt="node.js"
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Node.js_logo_2015.svg/591px-Node.js_logo_2015.svg.png"
-                className="Home-tools-logo"
-              />
-              <img
-                alt="React.js"
-                src="http://blog.koalite.com/wp-content/uploads/logo-reactjs.png"
-                className="Home-tools-logo"
-              />
-              <img
-                alt="mongoDB"
-                src="https://upload.wikimedia.org/wikipedia/en/thumb/4/45/MongoDB-Logo.svg/640px-MongoDB-Logo.svg.png"
-                className="Home-tools-logo"
-              />
-              <img
-                alt="heroku"
-                src="http://logos-download.com/wp-content/uploads/2016/09/Heroku_logo.png"
-                className="Home-tools-logo"
-              />
+              <img alt="node.js" src={nodejs} className="Home-tools-logo" />
+              <img alt="React.js" src={reactjs} className="Home-tools-logo" />
+              <img alt="mongoDB" src={mongodb} className="Home-tools-logo" />
+              <img alt="heroku" src={heroku} className="Home-tools-logo" />
             </ul>
           </div>
           <div className="Home-footer">

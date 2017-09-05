@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Logo from '../../precourser.svg';
+import Logo from '../../images/precourser.svg';
 import './Cover.css';
 
 const SUBTITLES = [

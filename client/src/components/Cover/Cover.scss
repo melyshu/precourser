@@ -95,18 +95,21 @@ $ANIMATION_END: 80%;
     align-items: stretch;
 
     .Cover-subtitle-0 {
+      white-space: nowrap;
       z-index: 2;
       color: $empty;
       animation: $SUBTITLE_INTERVAL subtitle-0 ease-in-out;
     }
 
     .Cover-subtitle-1 {
+      white-space: nowrap;
       z-index: 1;
       color: $default;
       animation: $SUBTITLE_INTERVAL subtitle-1 ease-in-out;
     }
 
     .Cover-subtitle-2 {
+      white-space: nowrap;
       color: $empty;
       overflow: hidden;
       animation: $SUBTITLE_INTERVAL subtitle-2 ease-in-out;
