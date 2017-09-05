@@ -14,9 +14,7 @@ const router = express.Router();
 
 // redirection to Princeton CAS
 router.get('/login', function(req, res) {
-  res.redirect(
-    casUrl + 'login?service=' + config.host + req.baseUrl + '/verify'
-  );
+  res.redirect(casUrl + 'login?service=' + config.host + '/auth/verify');
 });
 
 // handle response from Princeton CAS
@@ -31,7 +29,7 @@ router.get('/verify', function(req, res) {
   // must have ticket from CAS or else return to home
   const ticket = req.query.ticket;
   if (ticket === undefined) {
-    res.redirect(config.host + '/home');
+    res.redirect('/home');
     return;
   }
 
