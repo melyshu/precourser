@@ -68,7 +68,7 @@ const enforceAuth = function(req, res, next) {
     req.session.netid = process.env.DEV_USER;
   }
 
-  // if authorized, continue with request
+  // if authorized continue with request
   if (req.session.netid) {
     next();
     return;
