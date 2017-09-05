@@ -64,7 +64,7 @@ router.get('/logout', function(req, res) {
 
 // middleware to enforce authentication
 const enforceAuth = function(req, res, next) {
-  if (process.env.DEV_USER && process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production' && process.env.DEV_USER) {
     req.session.netid = process.env.DEV_USER;
   }
 

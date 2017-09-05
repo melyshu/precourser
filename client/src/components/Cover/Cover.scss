@@ -87,7 +87,8 @@ $ANIMATION_END: 80%;
 
   .Cover-middle {
     color: $default;
-    height: 4rem;
+    height: 3rem;
+    font-size: 0.8rem;
 
     display: flex;
     flex-flow: column nowrap;
@@ -117,10 +118,12 @@ $ANIMATION_END: 80%;
   }
 
   .Cover-bottom {
+    margin-bottom: $padding;
+    font-size: 0.8rem;
+
     .Cover-button {
       display: block;
       line-height: $block;
-      margin-bottom: $padding;
       padding: 0 $padding;
       border: $border solid $orange;
       color: $orange;

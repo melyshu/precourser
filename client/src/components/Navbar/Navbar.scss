@@ -4,7 +4,7 @@
   color: $default;
   background: $empty;
   border-bottom: $border solid $orange;
-  font-size: 1rem;
+  font-size: 0.8rem;
   height: $block;
   box-shadow: 0 0 $shadow 0 $orange;
   z-index: 100;
@@ -22,7 +22,6 @@
     justify-content: flex-start;
     align-items: center;
 
-    color: $orange;
     padding: 0 $padding 0 0;
     line-height: $block;
 
@@ -33,8 +32,9 @@
     }
 
     .Navbar-title {
+      color: $orange;
+
       padding: 0 0.5*$padding;
-      color: inherit;
       cursor: pointer;
       text-decoration: none;
 

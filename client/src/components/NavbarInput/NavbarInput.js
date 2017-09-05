@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import './NavbarInput.css';
 
+const MAX_NAME_LENGTH = 25;
+const MAX_FEEDBACK_LENGTH = 200;
+
 class NavbarInput extends Component {
   constructor(props) {
     super(props);
@@ -21,6 +24,7 @@ class NavbarInput extends Component {
 
     const collapseParent = this.props.collapseParent;
     const defaultValue = this.props.defaultValue;
+    const isFeedback = this.props.isFeedback;
     const onSubmit = this.props.onSubmit;
 
     if (!defaultValue) {
@@ -29,12 +33,25 @@ class NavbarInput extends Component {
     }
 
     const trimmedValue = value.trim().replace(/\s+/g, ' ');
-    if (trimmedValue.length > 25) {
-      return this.setState({ error: 'Please enter a shorter name' });
-    }
+    if (isFeedback) {
+      if (trimmedValue.length > MAX_FEEDBACK_LENGTH) {
+        return this.setState({
+          error: 'Use the link for longer responses!'
+        });
+      }
+      if (!trimmedValue.length) {
+        return this.setState({
+          error: 'Tongue tied?'
+        });
+      }
+    } else {
+      if (trimmedValue.length > MAX_NAME_LENGTH) {
+        return this.setState({ error: 'Please enter a shorter name' });
+      }
 
-    if (!trimmedValue) {
-      return this.setState({ error: 'Please enter a valid name' });
+      if (!trimmedValue.length) {
+        return this.setState({ error: 'Please enter a valid name' });
+      }
     }
 
     onSubmit(trimmedValue);
@@ -66,7 +83,7 @@ class NavbarInput extends Component {
     const collapseParent = this.props.collapseParent;
     const prompt = this.props.prompt;
     const defaultValue = this.props.defaultValue;
-    const isShort = this.props.isShort;
+    const isFeedback = this.props.isFeedback;
     // const onSubmit = this.props.onSubmit;
     const verb = this.props.verb;
 
@@ -86,7 +103,7 @@ class NavbarInput extends Component {
               className="NavbarInput-input"
               type="text"
               value={value}
-              maxLength={isShort ? '25' : '200'}
+              maxLength={isFeedback ? MAX_FEEDBACK_LENGTH : MAX_NAME_LENGTH}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
             />

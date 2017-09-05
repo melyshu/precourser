@@ -111,7 +111,6 @@ class Navbar extends Component {
                 <NavbarInput
                   prompt="Rename your schedule:"
                   defaultValue={selectedSchedule.name}
-                  isShort={true}
                   onSubmit={onRenameSchedule}
                   verb="Rename"
                 />
@@ -120,7 +119,6 @@ class Navbar extends Component {
                 <NavbarInput
                   prompt="Create a new schedule:"
                   defaultValue="New Schedule"
-                  isShort={true}
                   onSubmit={onCreateSchedule}
                   verb="Create"
                 />
@@ -138,7 +136,7 @@ class Navbar extends Component {
               </NavbarItem>
             ]}
         <div className="Navbar-stretch" />
-        <NavbarItem display="Feedback" alignRight={true}>
+        <NavbarItem display="feedback" alignRight={true}>
           <NavbarInput
             prompt={
               <span>
@@ -154,7 +152,7 @@ class Navbar extends Component {
               </span>
             }
             defaultValue="Enter any thoughts!"
-            isShort={false}
+            isFeedback={true}
             onSubmit={handleSubmitFeedback}
             verb="Submit"
           />
