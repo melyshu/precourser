@@ -150,6 +150,7 @@ const scrapeCourseDetail = function(courseId) {
   /*
   Fetch webpage and parse
   */
+  logger.log('debug', 'scrapeCourseDetail: %s starting request', courseId);
   return rp({
     uri:
       'https://registrar.princeton.edu/course-offerings/course_details.xml?courseid=' +
@@ -159,9 +160,11 @@ const scrapeCourseDetail = function(courseId) {
     transform: cheerio.load
   })
     .then(function($) {
+      logger.log('debug', 'scrapeCourseDetail: %s starting parsing', courseId);
       return parser.parseCourseOfferingsPage($, courseId);
     })
     .then(function(object) {
+      logger.log('debug', 'scrapeCourseDetail: %s final processing', courseId);
       // object is undefined if course is not real
       if (!object) {
         logger.log(
@@ -458,7 +461,12 @@ const scrapeCourseUpdate = function(courseId) {
     .then(function(course) {
       const thisInstructors = course.instructors;
       const thisId = course._id;
-      const courseUpdate = { evaluations: course.evaluations };
+      const evaluations = course.evaluations || {
+        numeric: [],
+        written: []
+      };
+
+      const courseUpdate = { evaluations: evaluations };
 
       // find all semesters of this course
       return Course.find({
@@ -707,6 +715,12 @@ const scrapeAll = function(f, ids, description, interval, threads) {
                 count,
                 '*'.repeat(queue.length)
               );
+              logger.log(
+                'debug',
+                'scrapeAll: %s released as number %d',
+                id,
+                sent
+              );
               resolve();
             }, timeToWait);
           }
@@ -717,6 +731,7 @@ const scrapeAll = function(f, ids, description, interval, threads) {
           return scrapeNAttempts(f.bind(null, id), id, ATTEMPTS);
         })
         .then(function(result) {
+          logger.log('debug', 'scrapeAll: %s returned successfully', id);
           // detect if real or not
           if (result === 'unreal') {
             unreal.push(id);
@@ -724,6 +739,7 @@ const scrapeAll = function(f, ids, description, interval, threads) {
           }
         })
         .catch(function(err) {
+          logger.log('debug', 'scrapeAll: %s returned unsuccessfully', id);
           // uh oh... take some logs
           unsuccessful.push(id);
           logger.log(
@@ -736,6 +752,7 @@ const scrapeAll = function(f, ids, description, interval, threads) {
           return Promise.resolve(); // resolve anyway
         })
         .finally(function() {
+          logger.log('debug', 'scrapeAll: %s finished processing', id);
           // finished processing!
           processed++;
           logger.log(

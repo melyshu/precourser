@@ -1,0 +1,35 @@
+BUGS
+
+cover subtitle isn't perfect
+
+tokenise search on client side - four spaces make an empty search of everything!
+
+switching semesters on empty search
+
+mobile layout
+
+edge hates flexbox
+
+first login loading forever
+
+THINGS TO IMPROVE
+
+selected course highlighting
+
+course result - expanding a little clunky?
+
+SEARCH
+
+simple
+
+distribution
+  /^(LA|EM|SA|HA|STN|QR|STL|EC|W)$/i
+pdf
+  /^(NPDF|PDFO|PDF|XPDF)$/i
+audit
+  /^(AUDIT|NAUDIT|XAUDIT)$/i
+  /^(A|NA|XA)$/i
+department code
+
+ - department
+111? - catalogNumber

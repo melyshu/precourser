@@ -38,14 +38,14 @@ const LAST_SEMESTER_WITH_EVALUATIONS = '1174';
 // prettier-ignore
 const SEMESTERS = [ // see ./hardcode/SEMESTERS.js for more details
           '1182',
-  '1174', '1172'/*,
+  '1174', '1172',
   '1164', '1162',
   '1154', '1152',
   '1144', '1142',
   '1134', '1132',
   '1124', '1122',
   '1114', '1112',
-  '1104', '1102'*/
+  '1104', '1102'
 ];
 
 // scraper fine-tuning

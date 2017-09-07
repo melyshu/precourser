@@ -24,7 +24,11 @@ const store = new MongoDBStore({
   collection: 'sessions'
 });
 
-if (process.env.NODE_ENV === 'production') {
+/*
+if (
+  process.env.NODE_ENV === 'production' &&
+  config.host !== 'http://localhost:4000'
+) {
   // force https
   // https://jaketrent.com/post/https-redirect-node-heroku/
   app.use((req, res, next) => {
@@ -32,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
       res.redirect(`https://${req.header('host')}${req.url}`);
     else next();
   });
-}
+}*/
 
 // sets session for netids
 app.use(
