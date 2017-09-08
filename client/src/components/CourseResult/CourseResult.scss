@@ -17,7 +17,7 @@
 
   &.CourseResult-selected {
     background: mix($orange, $white, 10%);
-    border-color: mix($orange, $white, 10%);
+    border-color: $orange;
     .CourseResult-main {
       border-color: mix($orange, $white, 10%);
     }

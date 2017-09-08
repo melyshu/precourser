@@ -57,14 +57,22 @@
   }
 
   .InstructorResult-courses {
-    transition: max-height 1s ease, margin-bottom 1s ease;
-    max-height: 0;
+    transition: margin-bottom 1s ease;
     margin-bottom: 0;
-    overflow: auto;
+
+    .InstructorResult-course {
+      transition: max-height 1s ease;
+      max-height: 0;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
 
     &.InstructorResult-expanded {
       margin-bottom: $padding;
-      max-height: 50vh;
+
+      .InstructorResult-course {
+        max-height: 5rem;
+      }
     }
   }
 }

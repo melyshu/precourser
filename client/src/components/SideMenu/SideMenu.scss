@@ -35,19 +35,41 @@
     justify-content: flex-start;
     align-items: stretch;
 
+    &.SideMenu-sorts {
+      background: $empty;
+      justify-content: flex-end;
+      border-bottom: $border solid $half;
+      padding-left: $padding;
+
+      .SideMenu-caption {
+        flex: 0 0 auto;
+        font-size: 0.6rem;
+      }
+    }
+
     .SideMenu-button {
       flex: 0 1 $block;
       font-size: 0.8rem;
+
+      &.SideMenu-button-selected {
+        color: $empty;
+        background: $orange;
+
+        &.SideMenu-sort {
+          color: $orange;
+          background: inherit;
+
+          &:hover {
+            color: $empty;
+            background: $orange;
+          }
+        }
+      }
 
       &:hover {
         color: $empty;
         background: $orange;
         cursor: pointer;
-      }
-
-      &.SideMenu-button-selected {
-        color: $empty;
-        background: $orange;
       }
 
       &.SideMenu-save {
@@ -82,7 +104,6 @@
 
   .SideMenu-header {
     flex: 0 0 $block;
-    border-bottom: $border solid $half;
     padding: 0 $padding;
 
     display: flex;
@@ -105,15 +126,7 @@
       color: $md-blue;
       animation: 0.6s spin linear infinite;
     }
-
-    .SideMenu-caption {
-      flex: 0 0 auto;
-      font-size: 0.7rem;
-      margin-left: 4*$border;
-    }
   }
-
-
 
   .SideMenu-content {
     flex: 1 1 auto;

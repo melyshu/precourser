@@ -93,28 +93,30 @@ class InstructorResult extends Component {
           }
         >
           {instructor.courses.map(course =>
-            <CourseResult
-              selectedSemester={selectedSemester}
-              user={user}
-              selectedSchedule={selectedSchedule}
-              selectedCourse={selectedCourse}
-              semesterLookup={semesterLookup}
-              colorLookup={colorLookup}
-              onSelectCourse={onSelectCourse}
-              onUnselectCourse={onUnselectCourse}
-              onSaveCourse={onSaveCourse}
-              onUnsaveCourse={onUnsaveCourse}
-              onAddCourseToSchedule={onAddCourseToSchedule}
-              onRemoveCourseFromSchedule={onRemoveCourseFromSchedule}
-              onMouseOverCourse={onMouseOverCourse}
-              onMouseOutCourse={onMouseOutCourse}
-              key={course._id}
-              course={course}
-              showButtons={showButtons}
-              showInstructors={false}
-              showStrictRatings={true}
-              showSemester={true}
-            />
+            <div className="InstructorResult-course">
+              <CourseResult
+                selectedSemester={selectedSemester}
+                user={user}
+                selectedSchedule={selectedSchedule}
+                selectedCourse={selectedCourse}
+                semesterLookup={semesterLookup}
+                colorLookup={colorLookup}
+                onSelectCourse={onSelectCourse}
+                onUnselectCourse={onUnselectCourse}
+                onSaveCourse={onSaveCourse}
+                onUnsaveCourse={onUnsaveCourse}
+                onAddCourseToSchedule={onAddCourseToSchedule}
+                onRemoveCourseFromSchedule={onRemoveCourseFromSchedule}
+                onMouseOverCourse={onMouseOverCourse}
+                onMouseOutCourse={onMouseOutCourse}
+                key={course._id}
+                course={course}
+                showButtons={showButtons}
+                showInstructors={false}
+                showStrictRatings={true}
+                showSemester={true}
+              />
+            </div>
           )}
         </ul>
       </li>
