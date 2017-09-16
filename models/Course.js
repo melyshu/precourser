@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
 require('./Section.js');
+const User = require('./User.js');
 
 const courseSchema = new mongoose.Schema({
   _id: { type: String, required: '_id required' },
@@ -174,7 +175,15 @@ courseSchema.query.getFullAndExec = function() {
       options: { sort: '-semester' }
     })
     .lean()
-    .exec();
+    .exec()
+    .then(function(course) {
+      if (!course) return null;
+
+      return User.count({ savedCourses: course._id }).then(function(count) {
+        course.saves = count;
+        return course;
+      });
+    });
 };
 
 courseSchema.statics.briefSelector =
@@ -207,7 +216,9 @@ courseSchema.statics.searchBySemesterAndQuery = function(semesterId, query) {
     const token = tokens[i];
 
     // distribution
-    if (/^(LA|EM|SA|HA|STN|QR|STL|EC|W)$/i.test(token)) {
+    // https://ua.princeton.edu/sites/ua/files/Undergraduate%20Announcement%202010-11.pdf
+    // ST and STX should no longer be in use
+    if (/^(EC|EM|HA|LA|SA|QR|ST|STL|STN|STX|W)$/i.test(token)) {
       distributionQueries.push(token.toUpperCase());
       continue;
     }

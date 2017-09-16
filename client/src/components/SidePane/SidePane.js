@@ -13,15 +13,22 @@ class SidePane extends Component {
   render() {
     const user = this.props.user;
     const selectedCourse = this.props.selectedCourse;
-    const onSelectCourse = this.props.onSelectCourse;
+    const now = this.props.now;
     const semesterLookup = this.props.semesterLookup;
-
-    const buttons = this.props.buttons;
+    const distributionLookup = this.props.distributionLookup;
+    const pdfLookup = this.props.pdfLookup;
+    const auditLookup = this.props.auditLookup;
+    const onSelectCourse = this.props.onSelectCourse;
 
     const tabLabels = [<FaHistory />, <FaUser />];
+    const tabDescriptions = ['All semesters', 'Instructors'];
     const sortLabels = [
       [<FaSortAmountDesc />, <FaSortNumericDesc />],
       [<FaSortAlphaAsc />, <FaSortNumericDesc />]
+    ];
+    const sortDescriptions = [
+      ['Sort by semester', 'Sort by rating'],
+      ['Sort by name', 'Sort by rating']
     ];
     const captionNouns = ['Semester', 'Instructor'];
 
@@ -96,7 +103,11 @@ class SidePane extends Component {
             <CourseResult
               user={user}
               selectedCourse={selectedCourse}
+              now={now}
               semesterLookup={semesterLookup}
+              distributionLookup={distributionLookup}
+              pdfLookup={pdfLookup}
+              auditLookup={auditLookup}
               onSelectCourse={onSelectCourse}
               key={course._id}
               course={course}
@@ -114,8 +125,12 @@ class SidePane extends Component {
         .map(instructor =>
           <InstructorResult
             user={user}
+            now={now}
             selectedCourse={selectedCourse}
             semesterLookup={semesterLookup}
+            distributionLookup={distributionLookup}
+            pdfLookup={pdfLookup}
+            auditLookup={auditLookup}
             onSelectCourse={onSelectCourse}
             key={instructor._id}
             instructor={instructor}
@@ -127,12 +142,13 @@ class SidePane extends Component {
     return (
       <SideMenu
         tabLabels={tabLabels}
+        tabDescriptions={tabDescriptions}
         sortLabels={sortLabels}
+        sortDescriptions={sortDescriptions}
         renderInput={renderInput}
         renderSpinner={renderSpinner}
         renderContent={renderContent}
         captionNouns={captionNouns}
-        buttons={buttons}
       />
     );
   }

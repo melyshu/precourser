@@ -43,6 +43,7 @@ class NavbarItem extends Component {
     const expanded = this.state.expanded;
 
     const display = this.props.display;
+    const description = this.props.description;
     const alignRight = this.props.alignRight;
     const children = this.props.children;
 
@@ -56,6 +57,7 @@ class NavbarItem extends Component {
           className={
             'NavbarItem-display' + (expanded ? ' NavbarItem-active' : '')
           }
+          title={description}
           onClick={toggle}
           tabIndex="0"
         >

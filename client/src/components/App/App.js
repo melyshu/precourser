@@ -7,6 +7,7 @@ import './App.css';
 
 const TIMEOUT_DELAY = 500;
 const COLORS = 10;
+const REFRESH_INTERVAL = 60000;
 
 class App extends Component {
   constructor(props) {
@@ -28,7 +29,8 @@ class App extends Component {
       searchedInstructors: [],
       hoveredCourse: null,
       hoveredSection: null,
-      loading: true
+      loading: true,
+      now: new Date()
     };
 
     const functionsToBind = [
@@ -251,6 +253,14 @@ class App extends Component {
 
   componentDidMount() {
     this.fetchJsonAndSetState(`/api/startup`);
+    this.nowInterval = setInterval(
+      () => this.setState({ now: new Date() }),
+      REFRESH_INTERVAL
+    );
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.nowInterval);
   }
 
   render() {
@@ -272,6 +282,7 @@ class App extends Component {
     const searchedInstructors = this.state.searchedInstructors;
     const hoveredCourse = this.state.hoveredCourse;
     const hoveredSection = this.state.hoveredSection;
+    const now = this.state.now;
 
     const handleChangeSemester = this.handleChangeSemester;
     const handleChangeSchedule = this.handleChangeSchedule;
@@ -338,6 +349,33 @@ class App extends Component {
         'color' + hash[selectedSchedule.courses.length % COLORS];
     }
 
+    const distributionLookup = {
+      EC: 'Epistemology and Cognition',
+      EM: 'Ethical Thought and Moral Values',
+      HA: 'Historical Analysis',
+      LA: 'Literature and the Arts',
+      SA: 'Social Analysis',
+      QR: 'Quantitative Reasoning',
+      ST: 'Science and Technology', // deprecated
+      STL: 'Science and Technology with Laboratory',
+      STN: 'Science and Technology without Laboratory',
+      STX: 'Science and Technology', // deprecated
+      W: 'Writing'
+    };
+
+    const pdfLookup = {
+      PDF: 'PDF available',
+      NPDF: 'No PDF',
+      PDFO: 'PDF only',
+      XPDF: 'No PDF data'
+    };
+
+    const auditLookup = {
+      AUDIT: 'Audit available',
+      NAUDIT: 'No audit',
+      XAUDIT: 'No audit data'
+    };
+
     return (
       <div className="App">
         <Navbar
@@ -365,8 +403,12 @@ class App extends Component {
             instructorSearch={instructorSearch}
             loadingInstructorSearch={loadingInstructorSearch}
             searchedInstructors={searchedInstructors}
+            now={now}
             colorLookup={colorLookup}
             semesterLookup={semesterLookup}
+            distributionLookup={distributionLookup}
+            pdfLookup={pdfLookup}
+            auditLookup={auditLookup}
             onChangeCourseSearch={handleChangeCourseSearch}
             onSelectCourse={handleSelectCourse}
             onUnselectCourse={handleUnselectCourse}
@@ -384,8 +426,12 @@ class App extends Component {
             selectedCourse={selectedCourse}
             hoveredCourse={hoveredCourse}
             hoveredSection={hoveredSection}
+            now={now}
             colorLookup={colorLookup}
             semesterLookup={semesterLookup}
+            distributionLookup={distributionLookup}
+            pdfLookup={pdfLookup}
+            auditLookup={auditLookup}
             onSelectCourse={handleSelectCourse}
             onUnselectCourse={handleUnselectCourse}
             onSaveCourse={handleSaveCourse}

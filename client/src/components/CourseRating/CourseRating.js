@@ -106,6 +106,7 @@ class CourseRating extends Component {
   render() {
     const score = this.props.score;
     const _new = this.props.new;
+    const description = this.props.description;
 
     const getColor = this.getColor;
 
@@ -113,6 +114,7 @@ class CourseRating extends Component {
       <span
         className={'CourseRating' + (!score && _new ? ' CourseRating-new' : '')}
         style={score ? { color: getColor(score) } : null}
+        title={description}
       >
         {score ? score.toFixed(2) : _new ? 'New' : ''}
       </span>

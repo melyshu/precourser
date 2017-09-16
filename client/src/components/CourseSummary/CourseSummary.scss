@@ -1,12 +1,23 @@
 @import '../../common.scss';
 
 .CourseSummary {
+  &:hover {
+    .CourseSummary-bottom .TimeAgo {
+      max-width: $block;
+    }
+  }
+
   .CourseSummary-top,
   .CourseSummary-middle,
   .CourseSummary-bottom {
     flex: 0 0 auto;
     display: flex;
     flex-flow: row nowrap;
+
+    > * {
+      margin-left: 5*$border;
+      white-space: nowrap;
+    }
 
     .CourseSummary-stretch {
       flex: 1 1 0;
@@ -17,11 +28,6 @@
     font-size: 0.6em;
     justify-content: flex-start;
     align-items: flex-end;
-
-    * {
-      margin-left: 5*$border;
-      white-space: nowrap;
-    }
 
     .CourseSummary-listing {
       font-size: 1.1em; // on top of the 0.6em;
@@ -37,6 +43,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
       color: $full;
+
+      .CourseSummary-crosslisting {
+        margin-left: 5*$border;
+      }
     }
 
     .CourseSummary-distribution {
@@ -75,13 +85,14 @@
     .CourseSummary-saved {
       order: 4;
       color: $orange;
-      margin-left: 0;
     }
   } // CourseSummary-top
 
   .CourseSummary-middle {
     .CourseSummary-title {
-      font-size: 0.9em;
+      margin-left: 0;
+      font-size: 0.8em;
+      white-space: normal;
       overflow: hidden;
     }
   }
@@ -91,12 +102,14 @@
     justify-content: flex-end;
     align-items: stretch;
 
-    .CourseSummary-semester {
-      margin-left: 5*$border;
+    .CourseRating {
+      margin-left: 0;
     }
 
-    .CourseSummary-seats {
-      margin-left: 5*$border;
+    .TimeAgo {
+      max-width: 0;
+      overflow: hidden;
+      transition: max-width 0.5s ease;
     }
 
     .CourseSummary-status {
@@ -106,7 +119,6 @@
       flex-flow: row nowrap;
       justify-content: center;
       align-items: center;
-
 
       &.CourseSummary-status-open {
         color: $success;

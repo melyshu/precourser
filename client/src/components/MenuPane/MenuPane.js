@@ -23,8 +23,12 @@ class MenuPane extends Component {
     const instructorSearch = this.props.instructorSearch;
     const loadingInstructorSearch = this.props.loadingInstructorSearch;
     const searchedInstructors = this.props.searchedInstructors;
+    const now = this.props.now;
     const colorLookup = this.props.colorLookup;
     const semesterLookup = this.props.semesterLookup;
+    const distributionLookup = this.props.distributionLookup;
+    const pdfLookup = this.props.pdfLookup;
+    const auditLookup = this.props.auditLookup;
     const onChangeCourseSearch = this.props.onChangeCourseSearch;
     const onSelectCourse = this.props.onSelectCourse;
     const onUnselectCourse = this.props.onUnselectCourse;
@@ -37,11 +41,23 @@ class MenuPane extends Component {
     const onMouseOutCourse = this.props.onMouseOutCourse;
 
     const tabLabels = [<FaSearch />, <FaUser />, <FaStar />, <FaCalendar />];
+    const tabDescriptions = [
+      'Course search',
+      'Instructor search',
+      'Saved courses',
+      'Courses in schedule'
+    ];
     const sortLabels = [
       [<FaSortAmountAsc />, <FaSortAlphaAsc />, <FaSortNumericDesc />],
       [<FaSortAlphaAsc />, <FaSortNumericDesc />],
       [<FaSortAmountAsc />, <FaSortAlphaAsc />, <FaSortNumericDesc />],
       [<FaSortAmountAsc />, <FaSortAlphaAsc />, <FaSortNumericDesc />]
+    ];
+    const sortDescriptions = [
+      ['Sort by department code', 'Sort by title', 'Sort by rating'],
+      ['Sort by name', 'Sort by rating'],
+      ['Sort by department code', 'Sort by title', 'Sort by rating'],
+      ['Sort by department code', 'Sort by title', 'Sort by rating']
     ];
     const captionNouns = [
       'Course',
@@ -148,8 +164,12 @@ class MenuPane extends Component {
               user={user}
               selectedSchedule={selectedSchedule}
               selectedCourse={selectedCourse}
+              now={now}
               semesterLookup={semesterLookup}
               colorLookup={colorLookup}
+              distributionLookup={distributionLookup}
+              pdfLookup={pdfLookup}
+              auditLookup={auditLookup}
               onSelectCourse={onSelectCourse}
               onUnselectCourse={onUnselectCourse}
               onSaveCourse={onSaveCourse}
@@ -180,8 +200,12 @@ class MenuPane extends Component {
             user={user}
             selectedSchedule={selectedSchedule}
             selectedCourse={selectedCourse}
+            now={now}
             semesterLookup={semesterLookup}
             colorLookup={colorLookup}
+            distributionLookup={distributionLookup}
+            pdfLookup={pdfLookup}
+            auditLookup={auditLookup}
             onSelectCourse={onSelectCourse}
             onUnselectCourse={onUnselectCourse}
             onSaveCourse={onSaveCourse}
@@ -203,7 +227,9 @@ class MenuPane extends Component {
     return (
       <SideMenu
         tabLabels={tabLabels}
+        tabDescriptions={tabDescriptions}
         sortLabels={sortLabels}
+        sortDescriptions={sortDescriptions}
         renderInput={renderInput}
         renderSpinner={renderSpinner}
         renderContent={renderContent}

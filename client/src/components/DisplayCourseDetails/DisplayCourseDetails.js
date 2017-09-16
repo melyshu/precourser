@@ -3,6 +3,15 @@ import CourseRating from '../CourseRating/CourseRating';
 import './DisplayCourseDetails.css';
 
 class DisplayCourseDetails extends Component {
+  renderBanner(banner) {
+    if (!banner) return;
+    return (
+      <div className="DisplayCourseDetails-field DisplayCourseDetails-banner">
+        {banner}
+      </div>
+    );
+  }
+
   renderReservedSeats(reservedSeats) {
     if (!reservedSeats || !reservedSeats.length) return;
     return (
@@ -133,6 +142,7 @@ class DisplayCourseDetails extends Component {
 
     return (
       <div className="DisplayCourseDetails">
+        {this.renderBanner(selectedCourse.banner)}
         {this.renderText('Description', selectedCourse.description)}
         {this.renderGrading(selectedCourse.grading)}
         {this.renderText('Assignments', selectedCourse.assignments)}

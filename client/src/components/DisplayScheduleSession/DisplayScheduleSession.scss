@@ -13,11 +13,6 @@
     background-color: $dimmed;
   }
 
-  &.DisplayScheduleSession-selected.DisplayScheduleSession-section-hovered {
-    border-color: $dimmed;
-    background-color: $dimmed;
-  }
-
   &.DisplayScheduleSession-selected,
   &.DisplayScheduleSession-section-hovered {
     border-color: $color;
@@ -27,6 +22,16 @@
       $full,
       $empty
     );
+  }
+
+  &.DisplayScheduleSession-selected.DisplayScheduleSession-section-hovered {
+    border-color: $dimmed;
+    background-color: $dimmed;
+  }
+
+  &.DisplayScheduleSession-selected.DisplayScheduleSession-course-hovered {
+    background-color: $dimmed;
+    color: $full;
   }
 }
 

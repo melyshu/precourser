@@ -26,12 +26,13 @@ class SideMenu extends Component {
     const sort = this.state.sort[tab];
 
     const tabLabels = this.props.tabLabels;
+    const tabDescriptions = this.props.tabDescriptions;
     const sortLabels = this.props.sortLabels;
+    const sortDescriptions = this.props.sortDescriptions;
     const renderInput = this.props.renderInput;
     const renderSpinner = this.props.renderSpinner;
     const renderContent = this.props.renderContent;
     const captionNouns = this.props.captionNouns;
-    const buttons = this.props.buttons;
 
     const handleTabClick = this.handleTabClick;
     const handleSortClick = this.handleSortClick;
@@ -45,6 +46,7 @@ class SideMenu extends Component {
           className={
             'SideMenu-button' + (i === tab ? ' SideMenu-button-selected' : '')
           }
+          title={tabDescriptions[i]}
         >
           {tabLabels[i]}
         </button>
@@ -61,6 +63,7 @@ class SideMenu extends Component {
             'SideMenu-button SideMenu-sort' +
             (i === sort ? ' SideMenu-button-selected' : '')
           }
+          title={sortDescriptions[tab][i]}
         >
           {sortLabels[tab][i]}
         </button>
@@ -80,7 +83,6 @@ class SideMenu extends Component {
         <div className="SideMenu-buttons">
           {tabs}
           <div className="SideMenu-stretch" />
-          {buttons}
         </div>
         {input
           ? <div className="SideMenu-header">

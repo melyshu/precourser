@@ -3,6 +3,7 @@ import FaCaretDown from 'react-icons/lib/fa/caret-down';
 import FaPencil from 'react-icons/lib/fa/pencil';
 import FaCalendarPlusO from 'react-icons/lib/fa/calendar-plus-o';
 import FaTrash from 'react-icons/lib/fa/trash';
+import FaQuestion from 'react-icons/lib/fa/question';
 import NavbarItem from '../NavbarItem/NavbarItem';
 import NavbarDropdown from '../NavbarDropdown/NavbarDropdown';
 import NavbarInput from '../NavbarInput/NavbarInput';
@@ -64,7 +65,7 @@ class Navbar extends Component {
       <nav className="Navbar">
         <div className="Navbar-brand">
           <img src={Logo} alt="logo" className="Navbar-logo" />
-          <a href="/home" className="Navbar-title">
+          <a href="/home" className="Navbar-title" title="Home">
             precourser
           </a>
         </div>
@@ -79,6 +80,7 @@ class Navbar extends Component {
                     <FaCaretDown />
                   </span>
                 }
+                description="Change semester"
               >
                 <NavbarDropdown
                   items={semesters.map(semester => ({
@@ -97,6 +99,7 @@ class Navbar extends Component {
                     <FaCaretDown />
                   </span>
                 }
+                description="Change schedule"
               >
                 <NavbarDropdown
                   items={schedules.map(schedule => ({
@@ -107,7 +110,11 @@ class Navbar extends Component {
                   onSelect={onChangeSchedule}
                 />
               </NavbarItem>,
-              <NavbarItem key="rename" display={<FaPencil />}>
+              <NavbarItem
+                key="rename"
+                display={<FaPencil />}
+                description="Rename schedule"
+              >
                 <NavbarInput
                   prompt="Rename your schedule:"
                   defaultValue={selectedSchedule.name}
@@ -115,7 +122,11 @@ class Navbar extends Component {
                   verb="Rename"
                 />
               </NavbarItem>,
-              <NavbarItem key="create" display={<FaCalendarPlusO />}>
+              <NavbarItem
+                key="create"
+                display={<FaCalendarPlusO />}
+                description="Create schedule"
+              >
                 <NavbarInput
                   prompt="Create a new schedule:"
                   defaultValue="New Schedule"
@@ -123,7 +134,11 @@ class Navbar extends Component {
                   verb="Create"
                 />
               </NavbarItem>,
-              <NavbarItem key="delete" display={<FaTrash />}>
+              <NavbarItem
+                key="delete"
+                display={<FaTrash />}
+                description="Delete schedule"
+              >
                 <NavbarInput
                   prompt={
                     "Are you sure you want to delete the schedule '" +
@@ -136,7 +151,11 @@ class Navbar extends Component {
               </NavbarItem>
             ]}
         <div className="Navbar-stretch" />
-        <NavbarItem display="feedback" alignRight={true}>
+        <NavbarItem
+          display={<FaQuestion />}
+          description={'Feedback'}
+          alignRight={true}
+        >
           <NavbarInput
             prompt={
               <span>

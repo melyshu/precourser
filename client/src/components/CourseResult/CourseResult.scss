@@ -9,6 +9,7 @@
   font-size: 0.8rem;
   border: $border solid $empty;
   padding: 5*$border 8*$border;
+  cursor: default;
 
   display: flex;
   flex-flow: column nowrap;
@@ -36,7 +37,6 @@
 
     .CourseResult-main .CourseSummary-title {
       max-height: 4rem;
-      white-space: normal;
     }
   }
 

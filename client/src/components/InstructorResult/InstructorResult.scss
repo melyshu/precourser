@@ -39,6 +39,11 @@
       .InstructorResult-position {
         //text-transform: uppercase;
       }
+
+      .InstructorResult-rating-count {
+        font-size: 0.8em;
+        color: $half;
+      }
     }
 
     .InstructorResult-bottom {
@@ -71,7 +76,7 @@
       margin-bottom: $padding;
 
       .InstructorResult-course {
-        max-height: 5rem;
+        max-height: 10rem;
       }
     }
   }

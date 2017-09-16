@@ -23,7 +23,11 @@ class InstructorResult extends Component {
     const user = this.props.user;
     const selectedSchedule = this.props.selectedSchedule; // if showButtons is enabled
     const selectedCourse = this.props.selectedCourse;
+    const now = this.props.now;
     const semesterLookup = this.props.semesterLookup;
+    const distributionLookup = this.props.distributionLookup;
+    const pdfLookup = this.props.pdfLookup;
+    const auditLookup = this.props.auditLookup;
     const colorLookup = this.props.colorLookup; // if showButtons is enabled
     const onSelectCourse = this.props.onSelectCourse;
 
@@ -61,7 +65,12 @@ class InstructorResult extends Component {
             <span className="InstructorResult-name">
               {instructor.fullName}
             </span>
-            <span className="InstructorResult-count">
+            <span
+              className="InstructorResult-count"
+              title={
+                instructor.courses.length + ' courses under this instructor'
+              }
+            >
               {instructor.courses.length}
             </span>
           </div>
@@ -69,7 +78,19 @@ class InstructorResult extends Component {
             <span className="InstructorResult-position">
               {instructor.position}
             </span>
-            <CourseRating score={score} new={_new} />
+            <span
+              className="InstructorResult-rating"
+              title={
+                scoreCount
+                  ? 'Average rating over ' + scoreCount + ' courses'
+                  : null
+              }
+            >
+              <CourseRating score={score} new={_new} />
+              <span className="InstructorResult-rating-count">
+                {'\u00a0/\u00a0' + scoreCount}
+              </span>
+            </span>
           </div>
           <ul className="InstructorResult-bottom">
             {instructor.phone &&
@@ -99,8 +120,12 @@ class InstructorResult extends Component {
                 user={user}
                 selectedSchedule={selectedSchedule}
                 selectedCourse={selectedCourse}
+                now={now}
                 semesterLookup={semesterLookup}
                 colorLookup={colorLookup}
+                distributionLookup={distributionLookup}
+                pdfLookup={pdfLookup}
+                auditLookup={auditLookup}
                 onSelectCourse={onSelectCourse}
                 onUnselectCourse={onUnselectCourse}
                 onSaveCourse={onSaveCourse}

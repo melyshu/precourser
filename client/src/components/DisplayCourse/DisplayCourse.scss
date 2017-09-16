@@ -17,10 +17,62 @@
     align-items: stretch;
 
     .DisplayCourse-summary {
-      box-shadow: 0 0 $shadow 0 $full;
       font-size: 1.1rem;
       padding: $padding;
       flex: 0 0 auto;
+      background: $empty;
+
+      z-index: 10;
+    }
+
+    .DisplayCourse-buttons {
+      flex: 0 0 auto;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      align-items: stretch;
+
+      box-shadow: 0 0 $shadow 0 $full;
+      background: $half;
+      text-align: center;
+      line-height: $block;
+      height: $block;
+      font-size: 0.8rem;
+
+      .DisplayCourse-button {
+        flex: 0 1 $block;
+        color: $default;
+
+        &.DisplayCourse-save {
+          color: $default;
+          &:hover {
+            color: $empty;
+            background: $orange;
+          }
+        }
+
+        &.DisplayCourse-unsave {
+          color: $orange;
+          &:hover {
+            color: $empty;
+            background: $default;
+          }
+        }
+
+        &.DisplayCourse-close {
+          color: $default;
+          &:hover {
+            color: $empty;
+            background: $default;
+          }
+        }
+
+        &:hover {
+          color: $empty;
+          background: $orange;
+          cursor: pointer;
+        }
+      }
     }
 
     .DisplayCourse-content {

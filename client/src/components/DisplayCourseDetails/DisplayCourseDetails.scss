@@ -6,6 +6,12 @@
   .DisplayCourseDetails-field {
     margin-bottom: $padding;
 
+    &.DisplayCourseDetails-banner {
+      color: $orange;
+      font-size: 0.8em;
+      font-weight: bolder;
+    }
+
     .DisplayCourseDetails-field-title {
       text-transform: uppercase;
       font-size: 0.6em;

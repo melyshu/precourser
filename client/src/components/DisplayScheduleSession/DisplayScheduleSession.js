@@ -1,7 +1,17 @@
 import React, { Component } from 'react';
 import './DisplayScheduleSession.css';
 
+const DAYS = ['', 'M', 'T', 'W', 'Th', 'F'];
+
 class DisplayScheduleSession extends Component {
+  minsToString(mins) {
+    const h = (Math.floor(mins / 60) - 1) % 12 + 1;
+    const m = mins % 60;
+    const p = mins >= 12 * 60 ? 'pm' : 'am';
+
+    return h + ':' + ('00' + m).substr(-2) + ' ' + p;
+  }
+
   render() {
     const hoveredCourse = this.props.hoveredCourse;
     const hoveredSection = this.props.hoveredSection;
@@ -14,6 +24,8 @@ class DisplayScheduleSession extends Component {
     const maxTime = this.props.maxTime;
     const session = this.props.session;
     const position = this.props.position;
+
+    const minsToString = this.minsToString;
 
     const meeting = session.meeting;
     const section = session.section;
@@ -46,6 +58,33 @@ class DisplayScheduleSession extends Component {
             ? ' DisplayScheduleSession-section-type-hovered'
             : '')
         }
+        title={
+          course.department +
+          course.catalogNumber +
+          ' ' +
+          section.name +
+          '\n' +
+          section.meetings
+            .map(
+              meeting =>
+                meeting.days.map(day => DAYS[day]).join('') +
+                ' ' +
+                minsToString(meeting.startTime) +
+                ' \u2013 ' +
+                minsToString(meeting.endTime) +
+                '\n'
+            )
+            .join('') +
+          section.status +
+          ' ' +
+          (section.seatsTaken >= 0 ? section.seatsTaken : '\u2013') +
+          ' / ' +
+          (section.seatsTotal >= 0 ? section.seatsTotal : '\u2013') +
+          '\n' +
+          (meeting.building && meeting.room
+            ? meeting.building + ' ' + meeting.room + '\n'
+            : '')
+        }
         style={{
           top: top,
           bottom: bottom,
@@ -73,8 +112,8 @@ class DisplayScheduleSession extends Component {
         </div>
         <div className="DisplayScheduleSession-bottom">
           <span className="DisplayScheduleSession-location">
-            {meeting.building && meeting.buildingNumber
-              ? meeting.building + ' ' + meeting.buildingNumber
+            {meeting.building && meeting.room
+              ? meeting.building + ' ' + meeting.room
               : ''}
           </span>{' '}
           <span className="DisplayScheduleSession-status">

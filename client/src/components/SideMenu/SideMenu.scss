@@ -42,8 +42,11 @@
       padding-left: $padding;
 
       .SideMenu-caption {
-        flex: 0 0 auto;
+        flex: 0 1 auto;
         font-size: 0.6rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
 
@@ -70,30 +73,6 @@
         color: $empty;
         background: $orange;
         cursor: pointer;
-      }
-
-      &.SideMenu-save {
-        color: $default;
-        &:hover {
-          color: $empty;
-          background: $orange;
-        }
-      }
-
-      &.SideMenu-unsave {
-        color: $orange;
-        &:hover {
-          color: $empty;
-          background: $default;
-        }
-      }
-
-      &.SideMenu-close {
-        color: $default;
-        &:hover {
-          color: $empty;
-          background: $default;
-        }
       }
     }
 

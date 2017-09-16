@@ -10,8 +10,12 @@ class DisplayPane extends Component {
     const selectedCourse = this.props.selectedCourse;
     const hoveredCourse = this.props.hoveredCourse;
     const hoveredSection = this.props.hoveredSection;
+    const now = this.props.now;
     const colorLookup = this.props.colorLookup;
     const semesterLookup = this.props.semesterLookup;
+    const distributionLookup = this.props.distributionLookup;
+    const pdfLookup = this.props.pdfLookup;
+    const auditLookup = this.props.auditLookup;
     const onSelectCourse = this.props.onSelectCourse;
     const onUnselectCourse = this.props.onUnselectCourse;
     const onSaveCourse = this.props.onSaveCourse;
@@ -27,7 +31,11 @@ class DisplayPane extends Component {
           ? <DisplayCourse
               user={user}
               selectedCourse={selectedCourse}
+              now={now}
               semesterLookup={semesterLookup}
+              distributionLookup={distributionLookup}
+              pdfLookup={pdfLookup}
+              auditLookup={auditLookup}
               onSelectCourse={onSelectCourse}
               onUnselectCourse={onUnselectCourse}
               onSaveCourse={onSaveCourse}

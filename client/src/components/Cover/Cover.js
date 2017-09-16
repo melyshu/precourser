@@ -20,7 +20,6 @@ class Cover extends Component {
     const subtitle = 1 + Math.floor(Math.random() * (SUBTITLES.length - 1));
 
     this.state = {
-      previousSubtitle: 0,
       currentSubtitle: subtitle,
       nextSubtitle: 0,
       subtitleCount: 0
@@ -30,20 +29,15 @@ class Cover extends Component {
   }
 
   changeSubtitle() {
-    const previousSubtitle = this.state.currentSubtitle;
     const currentSubtitle = this.state.nextSubtitle;
     const subtitleCount = this.state.subtitleCount;
 
     let nextSubtitle = Math.floor(Math.random() * SUBTITLES.length);
-    while (
-      nextSubtitle === previousSubtitle ||
-      nextSubtitle === currentSubtitle
-    ) {
+    while (nextSubtitle === currentSubtitle) {
       nextSubtitle = Math.floor(Math.random() * SUBTITLES.length);
     }
 
     this.setState({
-      previousSubtitle: previousSubtitle,
       currentSubtitle: currentSubtitle,
       nextSubtitle: nextSubtitle,
       subtitleCount: subtitleCount + 1
@@ -59,7 +53,6 @@ class Cover extends Component {
   }
 
   render() {
-    const previousSubtitle = this.state.previousSubtitle;
     const currentSubtitle = this.state.currentSubtitle;
     const nextSubtitle = this.state.nextSubtitle;
     const subtitleCount = this.state.subtitleCount;
@@ -79,9 +72,6 @@ class Cover extends Component {
             </div>,
             <div key={subtitleCount + 1} className="Cover-subtitle-1">
               {SUBTITLES[currentSubtitle]}
-            </div>,
-            <div key={subtitleCount} className="Cover-subtitle-2">
-              {SUBTITLES[previousSubtitle]}
             </div>
           ]}
         </div>
@@ -100,6 +90,19 @@ class Cover extends Component {
         <div className="Cover-narrow">
           Your screen may be too narrow. For the best experience, use a larger
           device.
+        </div>
+        <div className="Cover-message">
+          precourser is currently under construction!
+          <br />
+          If you have any feedback please don't hesitate to use the form{' '}
+          <a
+            className="Cover-link"
+            href="https://goo.gl/forms/R5EIfruDGJlIrkG33"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            here
+          </a>
         </div>
       </div>
     );

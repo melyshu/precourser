@@ -261,7 +261,13 @@ class DisplayScheduleDay extends Component {
       const style = { top: top, bottom: bottom };
       cells.push(
         <div key={i} className="DisplayScheduleDay-cell" style={style}>
-          {labels ? (i - 1) % 12 + 1 : ''}
+          {labels
+            ? <div className="DisplayScheduleDay-cell-label">
+                <div className="DisplayScheduleDay-cell-text">
+                  {(i - 1) % 12 + 1}
+                </div>
+              </div>
+            : null}
         </div>
       );
     }

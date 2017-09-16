@@ -13,8 +13,12 @@ class CourseResult extends Component {
     const user = this.props.user;
     const selectedSchedule = this.props.selectedSchedule; // if showButtons is enabled
     const selectedCourse = this.props.selectedCourse;
+    const now = this.props.now;
     const semesterLookup = this.props.semesterLookup;
     const colorLookup = this.props.colorLookup; // if showButtons is enabled
+    const distributionLookup = this.props.distributionLookup;
+    const pdfLookup = this.props.pdfLookup;
+    const auditLookup = this.props.auditLookup;
     const onSelectCourse = this.props.onSelectCourse;
 
     // handlers below are only required if showButtons is enabled
@@ -68,7 +72,11 @@ class CourseResult extends Component {
         >
           <CourseSummary
             user={user}
+            now={now}
             semesterLookup={semesterLookup}
+            distributionLookup={distributionLookup}
+            pdfLookup={pdfLookup}
+            auditLookup={auditLookup}
             course={course}
             showInstructors={showInstructors}
             showStrictRatings={showStrictRatings}
@@ -78,6 +86,11 @@ class CourseResult extends Component {
         {showButtons
           ? <div className="CourseResult-buttons">
               <button
+                title={
+                  selected
+                    ? 'Hide course information'
+                    : 'Show course information'
+                }
                 className={
                   'CourseResult-button CourseResult-' +
                   (selected ? 'unselect' : 'select')
@@ -90,6 +103,7 @@ class CourseResult extends Component {
                 {selected ? <FaClose /> : <FaInfoCircle />}
               </button>
               <button
+                title={saved ? 'Unsave course' : 'Save course'}
                 className={
                   'CourseResult-button CourseResult-' +
                   (saved ? 'unsave' : 'save')
@@ -103,6 +117,11 @@ class CourseResult extends Component {
               </button>
               {validButtons
                 ? <button
+                    title={
+                      inSchedule
+                        ? 'Remove course from schedule'
+                        : 'Add course to schedule'
+                    }
                     className={
                       'CourseResult-button CourseResult-' +
                       (inSchedule ? 'remove' : 'add')

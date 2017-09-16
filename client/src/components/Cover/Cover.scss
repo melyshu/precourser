@@ -6,53 +6,41 @@ $ANIMATION_END: 80%;
 
 @keyframes subtitle-0 {
   0% {
+    top: 0;
     color: $empty;
   }
   #{$ANIMATION_START} {
+    top: 0;
     color: $empty;
   }
   #{$ANIMATION_END} {
+    top: 1.2em;
     color: $default;
   }
   100% {
+    top: 1.2em;
     color: $default;
   }
 }
 
 @keyframes subtitle-1 {
   0% {
+    top: 1.2em;
     color: $default;
   }
   #{$ANIMATION_START} {
+    top: 1.2em;
     color: $default;
   }
   #{$ANIMATION_END} {
+    top: 2.4em;
     color: $empty;
   }
   100% {
+    top: 2.4em;
     color: $empty;
   }
 }
-
-@keyframes subtitle-2 {
-  0% {
-    color: $empty;
-    max-height: 2em;
-  }
-  #{$ANIMATION_START} {
-    color: $empty;
-    max-height: 1.3em;
-  }
-  #{$ANIMATION_END} {
-    color: $empty;
-    max-height: 0;
-  }
-  100% {
-    color: $empty;
-    max-height: 0;
-  }
-}
-
 
 .Cover {
   min-height: calc(100vh - #{2*$block + $border});
@@ -89,37 +77,35 @@ $ANIMATION_END: 80%;
     color: $default;
     height: 3rem;
     font-size: 0.8rem;
+    position: relative;
 
+    align-self: stretch;
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-end;
     align-items: stretch;
 
-    .Cover-subtitle-0 {
+    .Cover-subtitle-0, .Cover-subtitle-1 {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
       white-space: nowrap;
-      z-index: 2;
-      color: $empty;
+    }
+
+    .Cover-subtitle-0 {
       animation: $SUBTITLE_INTERVAL subtitle-0 ease-in-out;
     }
 
     .Cover-subtitle-1 {
-      white-space: nowrap;
-      z-index: 1;
-      color: $default;
       animation: $SUBTITLE_INTERVAL subtitle-1 ease-in-out;
-    }
-
-    .Cover-subtitle-2 {
-      white-space: nowrap;
-      color: $empty;
-      overflow: hidden;
-      animation: $SUBTITLE_INTERVAL subtitle-2 ease-in-out;
     }
   }
 
   .Cover-bottom {
     margin-bottom: $padding;
     font-size: 0.8rem;
+    z-index: 10;
 
     .Cover-button {
       display: block;
@@ -140,10 +126,25 @@ $ANIMATION_END: 80%;
 
   .Cover-narrow {
     font-size: 0.5rem;
+    margin-bottom: $padding;
 
     @media (min-width: $minwidth) {
       height: 0;
       overflow: hidden;
+    }
+  }
+
+  .Cover-message {
+    color: $default;
+    font-size: 0.7rem;
+  }
+
+  .Cover-link {
+    color: $orange;
+    text-decoration: none;
+
+    &:hover {
+      font-weight: bolder;
     }
   }
 }

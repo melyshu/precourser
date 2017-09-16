@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import FaStar from 'react-icons/lib/fa/star';
 import FaCircle from 'react-icons/lib/fa/circle';
 import CourseRating from '../CourseRating/CourseRating';
+import TimeAgo from '../TimeAgo/TimeAgo';
 import './CourseSummary.css';
 
 class CourseSummary extends Component {
   render() {
     const user = this.props.user;
+    const now = this.props.now;
     const semesterLookup = this.props.semesterLookup;
+    const distributionLookup = this.props.distributionLookup;
+    const pdfLookup = this.props.pdfLookup;
+    const auditLookup = this.props.auditLookup;
     const course = this.props.course;
     const showInstructors = this.props.showInstructors;
     const showStrictRatings = this.props.showStrictRatings;
@@ -26,9 +31,10 @@ class CourseSummary extends Component {
               ? semesterLookup[course.semester].name
               : course.department + course.catalogNumber}
           </span>
-          {showInstructors
-            ? null
-            : <span className="CourseSummary-crosslistings">
+          {!showInstructors &&
+          course.crossListings &&
+          course.crossListings.length
+            ? <span className="CourseSummary-crosslistings">
                 {course.crossListings.map(crossListing =>
                   <span
                     key={crossListing.department}
@@ -39,19 +45,29 @@ class CourseSummary extends Component {
                       crossListing.catalogNumber}
                   </span>
                 )}
-              </span>}
+              </span>
+            : null}
           {course.distribution
-            ? <span className="CourseSummary-distribution">
+            ? <span
+                className="CourseSummary-distribution"
+                title={distributionLookup[course.distribution]}
+              >
                 {course.distribution}
               </span>
             : null}
           {course.pdf
-            ? <span className={'CourseSummary-' + course.pdf.toLowerCase()}>
+            ? <span
+                className={'CourseSummary-' + course.pdf.toLowerCase()}
+                title={pdfLookup[course.pdf]}
+              >
                 {course.pdf}
               </span>
             : null}
           {course.audit
-            ? <span className={'CourseSummary-' + course.audit.toLowerCase()}>
+            ? <span
+                className={'CourseSummary-' + course.audit.toLowerCase()}
+                title={auditLookup[course.audit]}
+              >
                 {course.audit.slice(0, -4)}
               </span>
             : null}
@@ -62,7 +78,7 @@ class CourseSummary extends Component {
               </span>
             : null}
           {saved
-            ? <span className="CourseSummary-saved">
+            ? <span className="CourseSummary-saved" title="Saved course">
                 <FaStar />
               </span>
             : null}
@@ -85,13 +101,21 @@ class CourseSummary extends Component {
                 : null
             }
             new={course.new}
+            description={
+              course.rating &&
+              (!showStrictRatings || course.rating.semester === course.semester)
+                ? course.rating.description
+                : null
+            }
           />
           <span className="CourseSummary-stretch" />
+          <TimeAgo now={now} then={new Date(course.lastModified)} />
           <span
             className={
               'CourseSummary-status CourseSummary-status-' +
               course.status.toLowerCase()
             }
+            title={course.status}
           >
             {course.status === 'Open' ? null : <FaCircle />}
           </span>
