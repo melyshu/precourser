@@ -6,7 +6,11 @@ class SideMenu extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { tab: 0, sort: props.tabLabels.slice().fill(0) };
+    this.state = {
+      tab: 0,
+      sort: props.tabLabels.slice().fill(0),
+      sign: props.tabLabels.slice().fill(1)
+    };
     this.handleTabClick = this.handleTabClick.bind(this);
     this.handleSortClick = this.handleSortClick.bind(this);
   }
@@ -17,13 +21,21 @@ class SideMenu extends Component {
 
   handleSortClick(sort) {
     const sortState = this.state.sort.slice();
-    sortState[this.state.tab] = sort;
-    this.setState({ sort: sortState });
+    const signState = this.state.sign.slice();
+    if (sortState[this.state.tab] === sort) {
+      signState[this.state.tab] *= -1;
+      this.setState({ sign: signState });
+    } else {
+      sortState[this.state.tab] = sort;
+      signState[this.state.tab] = 1;
+      this.setState({ sort: sortState, sign: signState });
+    }
   }
 
   render() {
     const tab = this.state.tab;
     const sort = this.state.sort[tab];
+    const sign = this.state.sign[tab];
 
     const tabLabels = this.props.tabLabels;
     const tabDescriptions = this.props.tabDescriptions;
@@ -65,14 +77,14 @@ class SideMenu extends Component {
           }
           title={sortDescriptions[tab][i]}
         >
-          {sortLabels[tab][i]}
+          {sortLabels[tab][i][i === sort ? (1 - sign) / 2 : 0]}
         </button>
       );
     }
 
     const input = renderInput(tab);
     const hasSpinner = renderSpinner(tab);
-    const content = renderContent(tab, sort);
+    const content = renderContent(tab, sort, sign);
 
     const noun = captionNouns[tab];
     const plural = content.length === 1 ? '' : 's';

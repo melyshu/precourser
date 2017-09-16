@@ -87,9 +87,11 @@ class InstructorResult extends Component {
               }
             >
               <CourseRating score={score} new={_new} />
-              <span className="InstructorResult-rating-count">
-                {'\u00a0/\u00a0' + scoreCount}
-              </span>
+              {scoreCount
+                ? <span className="InstructorResult-rating-count">
+                    {'\u00a0/\u00a0' + scoreCount}
+                  </span>
+                : null}
             </span>
           </div>
           <ul className="InstructorResult-bottom">

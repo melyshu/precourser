@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import FaHistory from 'react-icons/lib/fa/history';
 import FaUser from 'react-icons/lib/fa/user';
 import FaSortAlphaAsc from 'react-icons/lib/fa/sort-alpha-asc';
+import FaSortAlphaDesc from 'react-icons/lib/fa/sort-alpha-desc';
+import FaSortAmountAsc from 'react-icons/lib/fa/sort-amount-asc';
 import FaSortAmountDesc from 'react-icons/lib/fa/sort-amount-desc';
+import FaSortNumericAsc from 'react-icons/lib/fa/sort-numeric-asc';
 import FaSortNumericDesc from 'react-icons/lib/fa/sort-numeric-desc';
 import SideMenu from '../SideMenu/SideMenu';
 import CourseResult from '../CourseResult/CourseResult';
@@ -23,8 +26,14 @@ class SidePane extends Component {
     const tabLabels = [<FaHistory />, <FaUser />];
     const tabDescriptions = ['All semesters', 'Instructors'];
     const sortLabels = [
-      [<FaSortAmountDesc />, <FaSortNumericDesc />],
-      [<FaSortAlphaAsc />, <FaSortNumericDesc />]
+      [
+        [<FaSortAmountDesc />, <FaSortAmountAsc />],
+        [<FaSortNumericDesc />, <FaSortNumericAsc />]
+      ],
+      [
+        [<FaSortAlphaAsc />, <FaSortAlphaDesc />],
+        [<FaSortNumericDesc />, <FaSortNumericAsc />]
+      ]
     ];
     const sortDescriptions = [
       ['Sort by semester', 'Sort by rating'],
@@ -40,20 +49,24 @@ class SidePane extends Component {
       return false;
     };
 
-    const courseSortSemester = (a, b) => {
-      return (b.semester > a.semester) - (a.semester > b.semester);
+    // s is sign in sorting functions
+
+    const courseSortSemester = (s, a, b) => {
+      return s * ((b.semester > a.semester) - (a.semester > b.semester));
     };
 
-    const courseSortRating = (a, b) => {
+    const courseSortRating = (s, a, b) => {
       if (!a.rating && !b.rating) {
-        if (!a.new && !b.new) return courseSortSemester(a, b);
+        if (!a.new && !b.new) return courseSortSemester(1, a, b);
         if (!a.new) return 1;
         if (!b.new) return -1;
-        return courseSortSemester(a, b);
+        return courseSortSemester(1, a, b);
       }
       if (!a.rating) return 1;
       if (!b.rating) return -1;
-      return b.rating.score - a.rating.score || courseSortSemester(a, b);
+      return (
+        s * (b.rating.score - a.rating.score) || courseSortSemester(1, a, b)
+      );
     };
 
     const getInstructorRating = instructor => {
@@ -76,29 +89,29 @@ class SidePane extends Component {
       };
     };
 
-    const instructorSortName = (a, b) => {
-      return (a.fullName > b.fullName) - (b.fullName - a.fullName);
+    const instructorSortName = (s, a, b) => {
+      return s * ((a.fullName > b.fullName) - (b.fullName > a.fullName));
     };
 
-    const instructorSortRating = (a, b) => {
+    const instructorSortRating = (s, a, b) => {
       const ratingA = getInstructorRating(a);
       const ratingB = getInstructorRating(b);
       if (!ratingA.score && !ratingB.score) {
-        if (!ratingA.new && !ratingB.new) return instructorSortName(a, b);
+        if (!ratingA.new && !ratingB.new) return instructorSortName(1, a, b);
         if (!ratingA.new) return 1;
         if (!ratingB.new) return -1;
-        return instructorSortName(a, b);
+        return instructorSortName(1, a, b);
       }
       if (!ratingA.score) return 1;
       if (!ratingB.score) return -1;
-      return ratingB.score - ratingA.score || instructorSortName(a, b);
+      return s * (ratingB.score - ratingA.score) || instructorSortName(1, a, b);
     };
 
-    const renderContent = (tab, sort) => {
+    const renderContent = (tab, sort, sign) => {
       if (!tab) {
         return selectedCourse.courses
           .slice()
-          .sort(sort ? courseSortRating : courseSortSemester)
+          .sort((sort ? courseSortRating : courseSortSemester).bind(null, sign))
           .map(course =>
             <CourseResult
               user={user}
@@ -121,7 +134,9 @@ class SidePane extends Component {
 
       return selectedCourse.instructors
         .slice()
-        .sort(sort ? instructorSortRating : instructorSortName)
+        .sort(
+          (sort ? instructorSortRating : instructorSortName).bind(null, sign)
+        )
         .map(instructor =>
           <InstructorResult
             user={user}

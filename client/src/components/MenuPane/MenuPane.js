@@ -4,7 +4,10 @@ import FaUser from 'react-icons/lib/fa/user';
 import FaStar from 'react-icons/lib/fa/star';
 import FaCalendar from 'react-icons/lib/fa/calendar';
 import FaSortAlphaAsc from 'react-icons/lib/fa/sort-alpha-asc';
+import FaSortAlphaDesc from 'react-icons/lib/fa/sort-alpha-desc';
 import FaSortAmountAsc from 'react-icons/lib/fa/sort-amount-asc';
+import FaSortAmountDesc from 'react-icons/lib/fa/sort-amount-desc';
+import FaSortNumericAsc from 'react-icons/lib/fa/sort-numeric-asc';
 import FaSortNumericDesc from 'react-icons/lib/fa/sort-numeric-desc';
 import SideMenu from '../SideMenu/SideMenu';
 import CourseResult from '../CourseResult/CourseResult';
@@ -48,10 +51,25 @@ class MenuPane extends Component {
       'Courses in schedule'
     ];
     const sortLabels = [
-      [<FaSortAmountAsc />, <FaSortAlphaAsc />, <FaSortNumericDesc />],
-      [<FaSortAlphaAsc />, <FaSortNumericDesc />],
-      [<FaSortAmountAsc />, <FaSortAlphaAsc />, <FaSortNumericDesc />],
-      [<FaSortAmountAsc />, <FaSortAlphaAsc />, <FaSortNumericDesc />]
+      [
+        [<FaSortAmountAsc />, <FaSortAmountDesc />],
+        [<FaSortAlphaAsc />, <FaSortAlphaDesc />],
+        [<FaSortNumericDesc />, <FaSortNumericAsc />]
+      ],
+      [
+        [<FaSortAlphaAsc />, <FaSortAlphaDesc />],
+        [<FaSortNumericDesc />, <FaSortNumericAsc />]
+      ],
+      [
+        [<FaSortAmountAsc />, <FaSortAmountDesc />],
+        [<FaSortAlphaAsc />, <FaSortAlphaDesc />],
+        [<FaSortNumericDesc />, <FaSortNumericAsc />]
+      ],
+      [
+        [<FaSortAmountAsc />, <FaSortAmountDesc />],
+        [<FaSortAlphaAsc />, <FaSortAlphaDesc />],
+        [<FaSortNumericDesc />, <FaSortNumericAsc />]
+      ]
     ];
     const sortDescriptions = [
       ['Sort by department code', 'Sort by title', 'Sort by rating'],
@@ -86,27 +104,32 @@ class MenuPane extends Component {
       );
     };
 
-    const courseSortDepartmentCode = (a, b) => {
+    // s is sign in sorting functions
+
+    const courseSortDepartmentCode = (s, a, b) => {
       const codeA = a.department + a.catalogNumber;
       const codeB = b.department + b.catalogNumber;
 
-      return (codeA > codeB) - (codeB > codeA);
+      return s * ((codeA > codeB) - (codeB > codeA));
     };
 
-    const courseSortTitle = (a, b) => {
-      return (a.title > b.title) - (b.title > a.title);
+    const courseSortTitle = (s, a, b) => {
+      return s * ((a.title > b.title) - (b.title > a.title));
     };
 
-    const courseSortRating = (a, b) => {
+    const courseSortRating = (s, a, b) => {
       if (!a.rating && !b.rating) {
-        if (!a.new && !b.new) return courseSortDepartmentCode(a, b);
+        if (!a.new && !b.new) return courseSortDepartmentCode(1, a, b);
         if (!a.new) return 1;
         if (!b.new) return -1;
-        return courseSortDepartmentCode(a, b);
+        return courseSortDepartmentCode(1, a, b);
       }
       if (!a.rating) return 1;
       if (!b.rating) return -1;
-      return b.rating.score - a.rating.score || courseSortDepartmentCode(a, b);
+      return (
+        s * (b.rating.score - a.rating.score) ||
+        courseSortDepartmentCode(1, a, b)
+      );
     };
 
     const getInstructorRating = instructor => {
@@ -129,22 +152,22 @@ class MenuPane extends Component {
       };
     };
 
-    const instructorSortName = (a, b) => {
-      return (a.fullName > b.fullName) - (b.fullName - a.fullName);
+    const instructorSortName = (s, a, b) => {
+      return s * ((a.fullName > b.fullName) - (b.fullName - a.fullName));
     };
 
-    const instructorSortRating = (a, b) => {
+    const instructorSortRating = (s, a, b) => {
       const ratingA = getInstructorRating(a);
       const ratingB = getInstructorRating(b);
       if (!ratingA.score && !ratingB.score) {
-        if (!ratingA.new && !ratingB.new) return instructorSortName(a, b);
+        if (!ratingA.new && !ratingB.new) return instructorSortName(1, a, b);
         if (!ratingA.new) return 1;
         if (!ratingB.new) return -1;
-        return instructorSortName(a, b);
+        return instructorSortName(1, a, b);
       }
       if (!ratingA.score) return 1;
       if (!ratingB.score) return -1;
-      return ratingB.score - ratingA.score || instructorSortName(a, b);
+      return s * (ratingB.score - ratingA.score) || instructorSortName(1, a, b);
     };
 
     const courseLists = [
@@ -153,11 +176,13 @@ class MenuPane extends Component {
       user.savedCourses.filter(course => course.semester === selectedSemester),
       selectedSchedule.courses
     ];
-    const renderContent = (tab, sort) => {
+    const renderContent = (tab, sort, sign) => {
       if (tab === 1) {
         return searchedInstructors
           .slice()
-          .sort(sort ? instructorSortRating : instructorSortName)
+          .sort(
+            (sort ? instructorSortRating : instructorSortName).bind(null, sign)
+          )
           .map(instructor =>
             <InstructorResult
               selectedSemester={selectedSemester}
@@ -190,9 +215,12 @@ class MenuPane extends Component {
       return courses
         .slice()
         .sort(
-          sort === 2
+          (sort === 2
             ? courseSortRating
-            : sort ? courseSortTitle : courseSortDepartmentCode
+            : sort ? courseSortTitle : courseSortDepartmentCode).bind(
+            null,
+            sign
+          )
         )
         .map(course =>
           <CourseResult
