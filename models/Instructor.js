@@ -10,7 +10,13 @@ const instructorSchema = new mongoose.Schema({
   position: { type: String, trim: true },
   phone: { type: String, trim: true, lowercase: true },
   email: { type: String, trim: true, lowercase: true },
-  office: { type: String, trim: true }
+  office: { type: String, trim: true },
+  history: {
+    courses: { type: Number, required: 'history.courses required' },
+    ratedCourses: { type: Number, required: 'history.courses required' },
+    rating: Number,
+    firstSemester: { type: String, trim: true }
+  }
 });
 
 instructorSchema.virtual('courses', {
