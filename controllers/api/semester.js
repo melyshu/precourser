@@ -15,7 +15,15 @@ router.get('/:semesterId', function(req, res) {
   const query = req.query.courseSearch;
 
   if (!query) {
-    req.object = Schedule.findByUserAndSemester(userId, semesterId);
+    req.object = Schedule.findByUserAndSemester(
+      userId,
+      semesterId
+    ).then(function(scheduleObject) {
+      if (!scheduleObject) return null;
+
+      scheduleObject.selectedSemester = semesterId;
+      return scheduleObject;
+    });
   } else {
     const schedulePromise = Schedule.findByUserAndSemester(userId, semesterId);
     const coursePromise = Course.searchBySemesterAndQuery(semesterId, query);

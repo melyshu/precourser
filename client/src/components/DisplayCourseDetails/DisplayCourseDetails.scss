@@ -2,6 +2,7 @@
 
 .DisplayCourseDetails {
   flex: 1 1 auto;
+  font-size: 0.6rem;
 
   .DisplayCourseDetails-field {
     margin-bottom: $padding;
@@ -13,9 +14,8 @@
     }
 
     .DisplayCourseDetails-field-title {
-      text-transform: uppercase;
-      font-size: 0.6em;
-      color: $default;
+      font-size: 0.9em;
+      color: $orange;
     }
 
     .DisplayCourseDetails-field-content {
@@ -37,9 +37,18 @@
         }
       }
 
-      .DisplayCourseDetails-evaluations-score {
+      .DisplayCourseDetails-evaluations-numeric {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
         font-size: 0.7em;
-        text-align: right;
+        margin-bottom: 5*$border;
+
+        .DisplayCourseDetails-evaluations-field {
+          flex: 1 1 auto;
+          font-size: 1.43em;
+          margin-left: 5*$border;
+        }
       }
 
       .DisplayCourseDetails-evaluations-written {

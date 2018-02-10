@@ -3,7 +3,7 @@ import FaCaretDown from 'react-icons/lib/fa/caret-down';
 import FaPencil from 'react-icons/lib/fa/pencil';
 import FaCalendarPlusO from 'react-icons/lib/fa/calendar-plus-o';
 import FaTrash from 'react-icons/lib/fa/trash';
-import FaQuestion from 'react-icons/lib/fa/question';
+import FaEdit from 'react-icons/lib/fa/edit';
 import NavbarItem from '../NavbarItem/NavbarItem';
 import NavbarDropdown from '../NavbarDropdown/NavbarDropdown';
 import NavbarInput from '../NavbarInput/NavbarInput';
@@ -152,7 +152,7 @@ class Navbar extends Component {
             ]}
         <div className="Navbar-stretch" />
         <NavbarItem
-          display={<FaQuestion />}
+          display={<FaEdit />}
           description={'Feedback'}
           alignRight={true}
         >

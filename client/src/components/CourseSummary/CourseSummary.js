@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import FaStar from 'react-icons/lib/fa/star';
-import FaCircle from 'react-icons/lib/fa/circle';
+import FaLock from 'react-icons/lib/fa/lock';
 import CourseRating from '../CourseRating/CourseRating';
 import TimeAgo from '../TimeAgo/TimeAgo';
 import './CourseSummary.css';
@@ -72,27 +72,11 @@ class CourseSummary extends Component {
               </span>
             : null}
           <span className="CourseSummary-stretch" />
-          {showSemester
-            ? <span className="CourseSummary-semester">
-                {semesterLookup[course.semester].name}
-              </span>
-            : null}
           {saved
             ? <span className="CourseSummary-saved" title="Saved course">
                 <FaStar />
               </span>
             : null}
-        </div>
-        <div className="CourseSummary-middle">
-          <span className="CourseSummary-title">
-            {showInstructors
-              ? course.instructors
-                  .map(instructor => instructor.fullName)
-                  .join(', ')
-              : course.title}
-          </span>
-        </div>
-        <div className="CourseSummary-bottom">
           <CourseRating
             score={
               course.rating &&
@@ -108,6 +92,23 @@ class CourseSummary extends Component {
                 : null
             }
           />
+        </div>
+        <div className="CourseSummary-middle">
+          <span className="CourseSummary-title">
+            {showInstructors
+              ? course.instructors
+                  .map(instructor => instructor.fullName)
+                  .join(', ')
+              : course.title}
+          </span>
+          <span className="CourseSummary-stretch" />
+        </div>
+        <div className="CourseSummary-bottom">
+          {showSemester
+            ? <span className="CourseSummary-semester">
+                {semesterLookup[course.semester].name}
+              </span>
+            : null}
           <span className="CourseSummary-stretch" />
           <TimeAgo now={now} then={new Date(course.lastModified)} />
           <span
@@ -117,7 +118,7 @@ class CourseSummary extends Component {
             }
             title={course.status}
           >
-            {course.status === 'Open' ? null : <FaCircle />}
+            {course.status === 'Open' ? null : <FaLock />}
           </span>
           <span className="CourseSummary-seats">
             {(course.seatsTaken >= 0 ? course.seatsTaken : '\u2013') +

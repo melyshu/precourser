@@ -65,6 +65,20 @@ class InstructorResult extends Component {
             <span className="InstructorResult-name">
               {instructor.fullName}
             </span>
+            <CourseRating
+              score={score}
+              new={_new}
+              description={
+                scoreCount
+                  ? 'Average rating over ' + scoreCount + ' courses'
+                  : null
+              }
+            />
+          </div>
+          <div className="InstructorResult-middle">
+            <span className="InstructorResult-position">
+              {instructor.position}
+            </span>
             <span
               className="InstructorResult-count"
               title={
@@ -72,26 +86,6 @@ class InstructorResult extends Component {
               }
             >
               {instructor.courses.length}
-            </span>
-          </div>
-          <div className="InstructorResult-middle">
-            <span className="InstructorResult-position">
-              {instructor.position}
-            </span>
-            <span
-              className="InstructorResult-rating"
-              title={
-                scoreCount
-                  ? 'Average rating over ' + scoreCount + ' courses'
-                  : null
-              }
-            >
-              <CourseRating score={score} new={_new} />
-              {scoreCount
-                ? <span className="InstructorResult-rating-count">
-                    {'\u00a0/\u00a0' + scoreCount}
-                  </span>
-                : null}
             </span>
           </div>
           <ul className="InstructorResult-bottom">

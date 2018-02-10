@@ -112,11 +112,14 @@ class CourseRating extends Component {
 
     return (
       <span
-        className={'CourseRating' + (!score && _new ? ' CourseRating-new' : '')}
-        style={score ? { color: getColor(score) } : null}
+        className={
+          'CourseRating' +
+          (score ? '' : _new ? ' CourseRating-new' : ' CourseRating-none')
+        }
+        style={score ? { backgroundColor: getColor(score) } : null}
         title={description}
       >
-        {score ? score.toFixed(2) : _new ? 'New' : ''}
+        {score ? score.toFixed(2) : _new ? 'New' : 'N/A'}
       </span>
     );
   }

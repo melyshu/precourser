@@ -30,20 +30,6 @@ class DisplayCourse extends Component {
     return (
       <div className="DisplayCourse">
         <div className="DisplayCourse-body">
-          <div className="DisplayCourse-summary">
-            <CourseSummary
-              user={user}
-              now={now}
-              semesterLookup={semesterLookup}
-              distributionLookup={distributionLookup}
-              pdfLookup={pdfLookup}
-              auditLookup={auditLookup}
-              course={selectedCourse}
-              showInstructors={false}
-              showStrictRatings={false}
-              showSemester={true}
-            />
-          </div>
           <div className="DisplayCourse-buttons">
             <button
               className="DisplayCourse-button DisplayCourse-close"
@@ -86,6 +72,20 @@ class DisplayCourse extends Component {
                   <FaHome />
                 </a>
               : null}
+          </div>
+          <div className="DisplayCourse-summary">
+            <CourseSummary
+              user={user}
+              now={now}
+              semesterLookup={semesterLookup}
+              distributionLookup={distributionLookup}
+              pdfLookup={pdfLookup}
+              auditLookup={auditLookup}
+              course={selectedCourse}
+              showInstructors={false}
+              showStrictRatings={false}
+              showSemester={true}
+            />
           </div>
           <div className="DisplayCourse-content">
             <DisplayCourseDetails

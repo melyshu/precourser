@@ -32,6 +32,10 @@
   right: -2*$border;
   border-top: $border solid $half;
 
+  &.DisplayScheduleDay-cell-main {
+    border-color: $default;
+  }
+
   .DisplayScheduleDay-cell-label {
     font-size: 0.5rem;
     height: 0.6rem;

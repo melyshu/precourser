@@ -262,6 +262,7 @@ class MenuPane extends Component {
         renderSpinner={renderSpinner}
         renderContent={renderContent}
         captionNouns={captionNouns}
+        edge="left"
       />
     );
   }

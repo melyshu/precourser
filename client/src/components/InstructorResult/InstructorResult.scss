@@ -19,30 +19,29 @@
       display: flex;
       flex-flow: row nowrap;
       justify-content: space-between;
-      align-items: flex-end;
     }
 
     .InstructorResult-top {
-      .InstructorResult-name {
-        font-size: 0.9em;
-        color: $full;
-      }
+      align-items: flex-start;
+      font-size: 0.5em;
 
-      .InstructorResult-count {
-        font-size: 0.7em;
+      .InstructorResult-name {
+        font-size: 1.4em;
+        color: $full;
       }
     }
 
     .InstructorResult-middle {
+      align-items: flex-end;
       font-size: 0.5em;
 
       .InstructorResult-position {
+        margin-right: $shadow;
         //text-transform: uppercase;
       }
 
-      .InstructorResult-rating-count {
-        font-size: 0.8em;
-        color: $half;
+      .InstructorResult-count {
+        // font-size: 0.7em;
       }
     }
 

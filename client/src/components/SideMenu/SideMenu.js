@@ -45,6 +45,7 @@ class SideMenu extends Component {
     const renderSpinner = this.props.renderSpinner;
     const renderContent = this.props.renderContent;
     const captionNouns = this.props.captionNouns;
+    const edge = this.props.edge;
 
     const handleTabClick = this.handleTabClick;
     const handleSortClick = this.handleSortClick;
@@ -91,7 +92,7 @@ class SideMenu extends Component {
     const caption = content.length + ' ' + noun + plural;
 
     return (
-      <div className="SideMenu">
+      <div className={'SideMenu' + (edge ? ' SideMenu-' + edge : '')}>
         <div className="SideMenu-buttons">
           {tabs}
           <div className="SideMenu-stretch" />
