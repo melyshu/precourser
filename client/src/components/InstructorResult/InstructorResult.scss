@@ -1,5 +1,14 @@
 @import '../../common.scss';
 
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .InstructorResult {
   .InstructorResult-header {
     border: $border solid $empty;
@@ -26,8 +35,18 @@
       font-size: 0.5em;
 
       .InstructorResult-name {
+        flex: 1 1 auto;
         font-size: 1.4em;
+        margin-right: 5*$border;
         color: $full;
+      }
+
+      .InstructorResult-spinner {
+        flex: 0 0 auto;
+        font-size: 0.7rem;
+        margin-right: 5*$border;
+        color: $md-blue;
+        animation: 0.6s spin linear infinite;
       }
     }
 

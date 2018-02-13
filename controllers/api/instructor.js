@@ -13,4 +13,12 @@ router.get('/search/:query', function(req, res) {
   req.object = Instructor.searchByQuery(query);
 });
 
+// handleLoadInstructor
+// GET /api/instructor/:instructorId
+router.get('/:instructorId', function(req, res) {
+  const instructorId = req.params.instructorId;
+
+  req.object = Instructor.findFullById(instructorId);
+});
+
 module.exports = router;

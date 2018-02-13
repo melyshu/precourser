@@ -3,6 +3,7 @@ import Loading from '../Loading/Loading';
 import Navbar from '../Navbar/Navbar';
 import MenuPane from '../MenuPane/MenuPane';
 import DisplayPane from '../DisplayPane/DisplayPane';
+import Virtual from '../Virtual/Virtual';
 import './App.css';
 
 const TIMEOUT_DELAY = 500;
@@ -33,6 +34,9 @@ class App extends Component {
       now: new Date()
     };
 
+    this.fetchJson = Virtual.fetchJson;
+    this.fetchJsonAndSetState = Virtual.fetchJsonAndSetState;
+
     const functionsToBind = [
       'fetchJsonAndSetState',
       'handleChangeSemester',
@@ -61,6 +65,7 @@ class App extends Component {
     }
   }
 
+  /*
   // https://stackoverflow.com/questions/44326797/express-session-not-working-for-ajax-call
   // (same problem for ../registerServiceWorker.js)
   fetchJson(string, init) {
@@ -83,7 +88,7 @@ class App extends Component {
 
   fetchJsonAndSetState(string, init) {
     return this.fetchJson(string, init).then(object => this.setState(object));
-  }
+  }*/
 
   handleChangeSemester(semesterId) {
     const courseSearch = this.state.courseSearch;

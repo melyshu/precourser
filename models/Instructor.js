@@ -26,11 +26,16 @@ instructorSchema.virtual('courses', {
   justOne: false
 });
 
-instructorSchema.statics.briefSelector = '_id lastModified fullName';
+instructorSchema.statics.briefSelector = '-courses';
 
 instructorSchema.statics.fullSelector = '';
 
 // Instructor.searchByQuery
+instructorSchema.query.getBriefAndExec = function() {
+  return this.select(mongoose.model('Instructor').briefSelector).lean().exec();
+};
+
+// Instructor.findFullById
 instructorSchema.query.getFullAndExec = function() {
   return this.select(mongoose.model('Instructor').fullSelector)
     .populate({
@@ -68,13 +73,25 @@ instructorSchema.statics.searchByQuery = function(query) {
   return mongoose
     .model('Instructor')
     .find(queryDocument)
-    .getFullAndExec()
+    .getBriefAndExec()
     .then(function(instructors) {
       if (!instructors) return null;
       return {
         searchedInstructors: instructors,
         loadingInstructorSearch: false
       };
+    });
+};
+
+// GET /api/instructor/:instructorId
+instructorSchema.statics.findFullById = function(instructorId) {
+  return mongoose
+    .model('Instructor')
+    .findById(instructorId)
+    .getFullAndExec()
+    .then(function(instructor) {
+      if (!instructor) return null;
+      return { instructor: instructor };
     });
 };
 
