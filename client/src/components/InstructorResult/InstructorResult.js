@@ -1,21 +1,44 @@
 import React, { Component } from 'react';
+import FaCircleONotch from 'react-icons/lib/fa/circle-o-notch';
 import CourseResult from '../CourseResult/CourseResult';
 import CourseRating from '../CourseRating/CourseRating';
+import Virtual from '../Virtual/Virtual';
 import './InstructorResult.css';
+
+const TIMEOUT_DELAY = 0.05;
 
 class InstructorResult extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      expanded: false
+      expanded: false,
+      instructor: this.props.instructor,
+      loaded: undefined
     };
 
     this.toggle = this.toggle.bind(this);
+    this.fetchJson = Virtual.fetchJson;
+    this.handleLoadInstructor = this.handleLoadInstructor.bind(this);
   }
 
   toggle() {
-    this.setState({ expanded: !this.state.expanded });
+    if (this.state.loaded === true)
+      this.setState({ expanded: !this.state.expanded });
+    else this.handleLoadInstructor(this.state.instructor._id);
+  }
+
+  handleLoadInstructor(instructorId) {
+    if (this.state.loaded === false) return;
+    this.setState({ loaded: false });
+    this.fetchJson(`/api/instructor/${instructorId}`).then(object => {
+      object.loaded = true;
+      this.setState(object);
+
+      setTimeout(() => {
+        this.setState({ expanded: true });
+      }, TIMEOUT_DELAY);
+    });
   }
 
   render() {
@@ -40,23 +63,13 @@ class InstructorResult extends Component {
     const onMouseOverCourse = this.props.onMouseOverCourse;
     const onMouseOutCourse = this.props.onMouseOutCourse;
 
-    const instructor = this.props.instructor;
     const showButtons = this.props.showButtons;
 
+    const expanded = this.state.expanded;
+    const instructor = this.state.instructor;
+    const loaded = this.state.loaded;
+
     const toggle = this.toggle;
-
-    let scoreSum = 0;
-    let scoreCount = 0;
-    for (let i = 0; i < instructor.courses.length; i++) {
-      const course = instructor.courses[i];
-
-      if (course.rating && course.rating.semester === course.semester) {
-        scoreCount++;
-        scoreSum += course.rating.score;
-      }
-    }
-    const score = scoreCount ? scoreSum / scoreCount : null;
-    const _new = instructor.courses.length === 0;
 
     return (
       <li className="InstructorResult">
@@ -65,33 +78,32 @@ class InstructorResult extends Component {
             <span className="InstructorResult-name">
               {instructor.fullName}
             </span>
-            <span
-              className="InstructorResult-count"
-              title={
-                instructor.courses.length + ' courses under this instructor'
+            {loaded === false
+              ? <FaCircleONotch className="InstructorResult-spinner" />
+              : null}
+            <CourseRating
+              score={instructor.history.rating}
+              new={false}
+              description={
+                instructor.history.ratedCourses
+                  ? 'Average rating over ' +
+                    instructor.history.ratedCourses +
+                    ' courses'
+                  : null
               }
-            >
-              {instructor.courses.length}
-            </span>
+            />
           </div>
           <div className="InstructorResult-middle">
             <span className="InstructorResult-position">
               {instructor.position}
             </span>
             <span
-              className="InstructorResult-rating"
+              className="InstructorResult-count"
               title={
-                scoreCount
-                  ? 'Average rating over ' + scoreCount + ' courses'
-                  : null
+                instructor.history.courses + ' courses under this instructor'
               }
             >
-              <CourseRating score={score} new={_new} />
-              {scoreCount
-                ? <span className="InstructorResult-rating-count">
-                    {'\u00a0/\u00a0' + scoreCount}
-                  </span>
-                : null}
+              {instructor.history.courses}
             </span>
           </div>
           <ul className="InstructorResult-bottom">
@@ -109,43 +121,45 @@ class InstructorResult extends Component {
               </li>}
           </ul>
         </div>
-        <ul
-          className={
-            'InstructorResult-courses' +
-            (this.state.expanded ? ' InstructorResult-expanded' : '')
-          }
-        >
-          {instructor.courses.map(course =>
-            <div className="InstructorResult-course">
-              <CourseResult
-                selectedSemester={selectedSemester}
-                user={user}
-                selectedSchedule={selectedSchedule}
-                selectedCourse={selectedCourse}
-                now={now}
-                semesterLookup={semesterLookup}
-                colorLookup={colorLookup}
-                distributionLookup={distributionLookup}
-                pdfLookup={pdfLookup}
-                auditLookup={auditLookup}
-                onSelectCourse={onSelectCourse}
-                onUnselectCourse={onUnselectCourse}
-                onSaveCourse={onSaveCourse}
-                onUnsaveCourse={onUnsaveCourse}
-                onAddCourseToSchedule={onAddCourseToSchedule}
-                onRemoveCourseFromSchedule={onRemoveCourseFromSchedule}
-                onMouseOverCourse={onMouseOverCourse}
-                onMouseOutCourse={onMouseOutCourse}
-                key={course._id}
-                course={course}
-                showButtons={showButtons}
-                showInstructors={false}
-                showStrictRatings={true}
-                showSemester={true}
-              />
-            </div>
-          )}
-        </ul>
+        {loaded
+          ? <ul
+              className={
+                'InstructorResult-courses' +
+                (expanded ? ' InstructorResult-expanded' : '')
+              }
+            >
+              {instructor.courses.map(course =>
+                <div key={course._id} className="InstructorResult-course">
+                  <CourseResult
+                    selectedSemester={selectedSemester}
+                    user={user}
+                    selectedSchedule={selectedSchedule}
+                    selectedCourse={selectedCourse}
+                    now={now}
+                    semesterLookup={semesterLookup}
+                    colorLookup={colorLookup}
+                    distributionLookup={distributionLookup}
+                    pdfLookup={pdfLookup}
+                    auditLookup={auditLookup}
+                    onSelectCourse={onSelectCourse}
+                    onUnselectCourse={onUnselectCourse}
+                    onSaveCourse={onSaveCourse}
+                    onUnsaveCourse={onUnsaveCourse}
+                    onAddCourseToSchedule={onAddCourseToSchedule}
+                    onRemoveCourseFromSchedule={onRemoveCourseFromSchedule}
+                    onMouseOverCourse={onMouseOverCourse}
+                    onMouseOutCourse={onMouseOutCourse}
+                    key={course._id}
+                    course={course}
+                    showButtons={showButtons}
+                    showInstructors={false}
+                    showStrictRatings={true}
+                    showSemester={true}
+                  />
+                </div>
+              )}
+            </ul>
+          : null}
       </li>
     );
   }

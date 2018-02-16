@@ -88,11 +88,16 @@ class MenuPane extends Component {
       if (tab > 1) return;
       return (
         <input
+          key={tab}
           className="SideMenu-input"
           type="text"
           value={tab ? instructorSearch : courseSearch}
           onChange={tab ? onChangeInstructorSearch : onChangeCourseSearch}
           placeholder="search"
+          autoFocus={true}
+          onFocus={event => {
+            event.target.select();
+          }}
         />
       );
     };
@@ -132,42 +137,17 @@ class MenuPane extends Component {
       );
     };
 
-    const getInstructorRating = instructor => {
-      let scoreSum = 0;
-      let scoreCount = 0;
-      for (let i = 0; i < instructor.courses.length; i++) {
-        const course = instructor.courses[i];
-
-        if (course.rating && course.rating.semester === course.semester) {
-          scoreCount++;
-          scoreSum += course.rating.score;
-        }
-      }
-      const score = scoreCount ? scoreSum / scoreCount : null;
-      const _new = instructor.courses.length === 0;
-
-      return {
-        score: score,
-        new: _new
-      };
-    };
-
     const instructorSortName = (s, a, b) => {
       return s * ((a.fullName > b.fullName) - (b.fullName - a.fullName));
     };
 
     const instructorSortRating = (s, a, b) => {
-      const ratingA = getInstructorRating(a);
-      const ratingB = getInstructorRating(b);
-      if (!ratingA.score && !ratingB.score) {
-        if (!ratingA.new && !ratingB.new) return instructorSortName(1, a, b);
-        if (!ratingA.new) return 1;
-        if (!ratingB.new) return -1;
-        return instructorSortName(1, a, b);
-      }
-      if (!ratingA.score) return 1;
-      if (!ratingB.score) return -1;
-      return s * (ratingB.score - ratingA.score) || instructorSortName(1, a, b);
+      const ratingA = a.history.rating;
+      const ratingB = b.history.rating;
+      if (!ratingA && !ratingB) return instructorSortName(1, a, b);
+      if (!ratingA) return 1;
+      if (!ratingB) return -1;
+      return s * (ratingB - ratingA) || instructorSortName(1, a, b);
     };
 
     const courseLists = [
@@ -262,6 +242,7 @@ class MenuPane extends Component {
         renderSpinner={renderSpinner}
         renderContent={renderContent}
         captionNouns={captionNouns}
+        edge="left"
       />
     );
   }

@@ -33,11 +33,11 @@ const Course = require('../models/Course.js');
 const Instructor = require('../models/Instructor.js');
 
 // VARIABLES THAT NEED TO BE KEPT UP TO DATE
-const CURRENT_SEMESTER = '1182';
+const CURRENT_SEMESTER = '1184';
 const LAST_SEMESTER_WITH_EVALUATIONS = '1174';
 // prettier-ignore
 const SEMESTERS = [ // see ./hardcode/SEMESTERS.js for more details
-          '1182',
+  '1184', '1182',
   '1174', '1172',
   '1164', '1162',
   '1154', '1152',
@@ -72,6 +72,10 @@ const INSTRUCTOR_THREADS = 8;
 const COURSE_UPDATE_INTERVAL = 50;
 const COURSE_UPDATE_THREADS = 30;
 
+// runs at about 948 / min or 1 / 63 ms
+const INSTRUCTOR_UPDATE_INTERVAL = 50;
+const INSTRUCTOR_UPDATE_THREADS = 30;
+
 /*
 MAIN IMPORTING SCRIPT THAT DOES EVERYTHING
   imports departments
@@ -91,14 +95,6 @@ as many times as necessary.
 Logs progress information throughout and timing information at the end.
 
 Example timing:
-  Departments took 0 mins
-  Semester took 4 mins
-  CourseDetail took 115 mins
-  CourseEvaluation took 97 mins
-  Instructor took 16 mins
-  CourseUpdate took 21 mins
-  ---------------------
-  buildDatabase took 253 mins
 
 2017-08-19T07:43:05.209Z - warn: Departments took 0 mins
 2017-08-19T07:43:05.210Z - warn: Semester took 4 mins
@@ -108,6 +104,16 @@ Example timing:
 2017-08-19T07:43:05.213Z - warn: CourseUpdate took 26 mins
 2017-08-19T07:43:05.214Z - warn: ---------------------
 2017-08-19T07:43:05.223Z - warn: buildDatabase took 265 mins
+
+2018-02-02T05:20:22.215Z - warn: Departments took 0 mins
+2018-02-02T05:20:22.216Z - warn: Semester took 3 mins
+2018-02-02T05:20:22.217Z - warn: CourseDetail took 113 mins
+2018-02-02T05:20:22.218Z - warn: CourseEvaluation took 95 mins
+2018-02-02T05:20:22.219Z - warn: Instructor took 17 mins
+2018-02-02T05:20:22.233Z - warn: CourseUpdate took 18 mins
+2018-02-02T05:20:22.234Z - warn: InstructorUpdate took 3 mins
+2018-02-02T05:20:22.235Z - warn: ---------------------
+2018-02-02T05:20:22.236Z - warn: buildDatabase took 249 mins
 */
 const buildDatabase = function() {
   let startDepartments = new Date();
@@ -116,6 +122,7 @@ const buildDatabase = function() {
   let startCourseEvaluation;
   let startInstructor;
   let startCourseUpdate;
+  let startInstructorUpdate;
   let finish;
   return Promise.resolve()
     .then(
@@ -135,14 +142,16 @@ const buildDatabase = function() {
     })
     .then(function() {
       startCourseDetail = new Date();
-      return Semester.find().lean().then(function(semesters) {
-        let courseIds = [];
-        for (let i = 0; i < semesters.length; i++) {
-          const semester = semesters[i];
-          courseIds = courseIds.concat(semester.courses);
-        }
-        return courseIds;
-      });
+      return Semester.find({ _id: { $in: SEMESTERS } })
+        .lean()
+        .then(function(semesters) {
+          let courseIds = [];
+          for (let i = 0; i < semesters.length; i++) {
+            const semester = semesters[i];
+            courseIds = courseIds.concat(semester.courses);
+          }
+          return courseIds;
+        });
     })
     .then(function(courseIds) {
       // scrape course details
@@ -201,6 +210,20 @@ const buildDatabase = function() {
       );
     })
     .then(function() {
+      startInstructorUpdate = new Date();
+      return Instructor.find().lean().distinct('_id');
+    })
+    .then(function(instructorIds) {
+      // update course ratings
+      return scraper.scrapeAll(
+        scraper.scrapeInstructorUpdate,
+        instructorIds,
+        'instructorUpdate',
+        INSTRUCTOR_UPDATE_INTERVAL,
+        INSTRUCTOR_UPDATE_THREADS
+      );
+    })
+    .then(function() {
       finish = new Date();
 
       const formatDelta = function(delta) {
@@ -235,7 +258,12 @@ const buildDatabase = function() {
       logger.log(
         'warn',
         'CourseUpdate took %s',
-        formatDelta(finish - startCourseUpdate)
+        formatDelta(startInstructorUpdate - startCourseUpdate)
+      );
+      logger.log(
+        'warn',
+        'InstructorUpdate took %s',
+        formatDelta(finish - startInstructorUpdate)
       );
       logger.log('warn', '--------------------- ');
       logger.log(
@@ -259,13 +287,15 @@ with the registrar.
 Logs progress information throughout and timing information at the end.
 
 Example timing:
-  Departments took 0 mins
-  Semester took 2 mins
-  CourseDetail took 8 mins
-  Instructor took 0 mins
-  CourseUpdate took 0 mins
-  ---------------------
-  updateDatabase took 10 mins
+
+2018-02-06T00:52:43.558Z - warn: Departments took 0 mins
+2018-02-06T00:52:43.560Z - warn: Semester took 0 mins
+2018-02-06T00:52:43.568Z - warn: CourseDetail took 6 mins
+2018-02-06T00:52:43.570Z - warn: Instructor took 0 mins
+2018-02-06T00:52:43.582Z - warn: CourseUpdate took 0 mins
+2018-02-06T00:52:43.585Z - warn: InstructorUpdate took 0 mins
+2018-02-06T00:52:43.587Z - warn: ---------------------
+2018-02-06T00:52:43.590Z - warn: updateDatabase took 7 mins
 */
 const updateDatabase = function() {
   let startDepartments = new Date();
@@ -273,6 +303,7 @@ const updateDatabase = function() {
   let startCourseDetail;
   let startInstructor;
   let startCourseUpdate;
+  let startInstructorUpdate;
   let finish;
   return Promise.resolve()
     .then(
@@ -350,6 +381,22 @@ const updateDatabase = function() {
       );
     })
     .then(function() {
+      startInstructorUpdate = new Date();
+      return Instructor.find({ history: { $exists: false } })
+        .lean()
+        .distinct('_id');
+    })
+    .then(function(instructorIds) {
+      // update course ratings
+      return scraper.scrapeAll(
+        scraper.scrapeInstructorUpdate,
+        instructorIds,
+        'instructorUpdate',
+        INSTRUCTOR_UPDATE_INTERVAL,
+        INSTRUCTOR_UPDATE_THREADS
+      );
+    })
+    .then(function() {
       finish = new Date();
 
       const formatDelta = function(delta) {
@@ -379,7 +426,12 @@ const updateDatabase = function() {
       logger.log(
         'warn',
         'CourseUpdate took %s',
-        formatDelta(finish - startCourseUpdate)
+        formatDelta(startInstructorUpdate - startCourseUpdate)
+      );
+      logger.log(
+        'warn',
+        'InstructorUpdate took %s',
+        formatDelta(finish - startInstructorUpdate)
       );
       logger.log('warn', '--------------------- ');
       logger.log(

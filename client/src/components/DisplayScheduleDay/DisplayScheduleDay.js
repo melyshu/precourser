@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import DisplayScheduleSession from '../DisplayScheduleSession/DisplayScheduleSession';
 import './DisplayScheduleDay.css';
 
-const DAYS = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const DAYS = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
 class DisplayScheduleDay extends Component {
   render() {
@@ -260,7 +260,14 @@ class DisplayScheduleDay extends Component {
       const bottom = (maxTime - bottomTime) / (maxTime - minTime) * 100 + '%';
       const style = { top: top, bottom: bottom };
       cells.push(
-        <div key={i} className="DisplayScheduleDay-cell" style={style}>
+        <div
+          key={i}
+          className={
+            'DisplayScheduleDay-cell' +
+            (i % 3 ? '' : ' DisplayScheduleDay-cell-main')
+          }
+          style={style}
+        >
           {labels
             ? <div className="DisplayScheduleDay-cell-label">
                 <div className="DisplayScheduleDay-cell-text">

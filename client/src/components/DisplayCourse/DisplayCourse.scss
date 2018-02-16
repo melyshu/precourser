@@ -17,10 +17,11 @@
     align-items: stretch;
 
     .DisplayCourse-summary {
-      font-size: 1.1rem;
+      font-size: 1rem;
       padding: $padding;
       flex: 0 0 auto;
       background: $empty;
+      border-bottom: $border solid $half;
 
       z-index: 10;
     }
@@ -32,8 +33,9 @@
       justify-content: flex-start;
       align-items: stretch;
 
-      box-shadow: 0 0 $shadow 0 $full;
-      background: $half;
+      // box-shadow: 0 0 $shadow 0 $full;
+      // background: $half;
+      border-bottom: $border solid $half;
       text-align: center;
       line-height: $block;
       height: $block;

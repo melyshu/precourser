@@ -2,6 +2,8 @@ API ENDPOINTS
 
 App handler mapping
 
+App.js
+
 componentDidMount               GET    /api/startup
 handleChangeSemester            GET    /api/semester/:semesterId[?courseSearch=query (optional)]
 handleChangeSchedule            GET    /api/schedule/:scheduleId
@@ -17,6 +19,8 @@ handleRemoveCourseFromSchedule  DELETE /api/schedule/:scheduleId/course/:courseI
 handleAddSectionToSchedule      PUT    /api/schedule/:scheduleId/section/:sectionId
 handleRemoveSectionFromSchedule DELETE /api/schedule/:scheduleId/section/:sectionId
 handleChangeInstructorSearch    GET    /api/instructor/search/:query ***
+
+handleInstructorLoad            GET    /api/instructor/:instructorId
 
 Routing
 

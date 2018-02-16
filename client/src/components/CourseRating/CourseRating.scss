@@ -2,8 +2,25 @@
 
 .CourseRating {
   font-weight: bolder;
+  min-width: 4em;
+  width: 4em;
+  padding: $border;
+  border-radius: 1em;
+  color: $full;
+  text-align: center;
+  text-shadow: 0 0 $shadow $empty, 0 0 $shadow $empty;
 
   &.CourseRating-new {
     color: $md-light-blue;
+    padding: 0;
+    border: $border solid $md-light-blue;
+    text-shadow: none;
+  }
+
+  &.CourseRating-none {
+    color: $half;
+    padding: 0;
+    border: $border solid $half;
+    text-shadow: none;
   }
 }

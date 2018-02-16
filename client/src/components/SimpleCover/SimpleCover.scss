@@ -1,0 +1,89 @@
+@import '../../common.scss';
+
+.SimpleCover {
+  min-height: calc(100vh - #{2*$block + $border});
+  box-sizing: border-box;
+  padding: $block;
+  text-align: center;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+
+  .SimpleCover-top {
+    font-size: 2rem;
+    z-index: 10;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+
+    .SimpleCover-title {
+      padding: 0 0.5*$padding;
+    }
+
+    .SimpleCover-logo {
+      height: 3rem;
+      padding: 0 0.5*$padding;
+    }
+  }
+
+  .SimpleCover-middle {
+    margin-bottom: $padding;
+    color: $default;
+    font-size: 0.8rem;
+    position: relative;
+    align-self: stretch;
+  }
+
+  .SimpleCover-bottom {
+    margin-bottom: $padding;
+    font-size: 0.8rem;
+    z-index: 10;
+
+    .SimpleCover-button {
+      display: block;
+      line-height: $block;
+      padding: 0 $padding;
+      border: $border solid $orange;
+      border-radius: 2*$border;
+      color: $orange;
+      cursor: pointer;
+      text-decoration: none;
+
+      &:hover {
+        cursor: pointer;
+        color: $empty;
+        background: $orange;
+      }
+    }
+  }
+
+  .SimpleCover-narrow {
+    color: $orange;
+    font-size: 0.5rem;
+    font-weight: bolder;
+    margin-bottom: $padding;
+
+    @media (min-width: $minwidth) {
+      height: 0;
+      overflow: hidden;
+    }
+  }
+
+  .SimpleCover-message {
+    color: $default;
+    font-size: 0.7rem;
+  }
+
+  .SimpleCover-link {
+    color: $orange;
+    text-decoration: none;
+
+    &:hover {
+      font-weight: bolder;
+    }
+  }
+}

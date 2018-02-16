@@ -90,38 +90,51 @@ class DisplayCourseDetails extends Component {
     );
   }
 
-  renderEvaluations(evaluations, semesterLookup) {
-    return [
-      <div key="numeric" className="DisplayCourseDetails-field">
+  renderNumericEvaluations(evaluations, semesterLookup) {
+    return evaluations.semester &&
+    evaluations.numeric &&
+    evaluations.written &&
+    Object.keys(evaluations.numeric).length
+      ? <div key="numeric" className="DisplayCourseDetails-field">
+          <div className="DisplayCourseDetails-field-title">
+            {'Numeric Evaluations from ' +
+              semesterLookup[evaluations.semester].name}
+          </div>
+          <ul className="DisplayCourseDetails-field-content">
+            {evaluations.numeric.map(item =>
+              <li
+                key={item.field}
+                className="DisplayCourseDetails-evaluations-numeric"
+              >
+                <CourseRating score={item.score} />
+                <span className="DisplayCourseDetails-evaluations-field">
+                  {item.field}
+                </span>
+              </li>
+            )}
+          </ul>
+        </div>
+      : null;
+  }
+
+  renderWrittenEvaluations(evaluations, semesterLookup) {
+    return (
+      <div key="written" className="DisplayCourseDetails-field">
         <div className="DisplayCourseDetails-field-title">
-          {evaluations.semester
-            ? 'Course evaluations from ' +
+          {evaluations.semester &&
+          evaluations.numeric &&
+          evaluations.written &&
+          Object.keys(evaluations.numeric).length
+            ? evaluations.written.length +
+              ' Comments from ' +
               semesterLookup[evaluations.semester].name
-            : 'No course evaluations available'}
+            : 'No Course Evaluations Available'}
         </div>
         {evaluations.semester &&
-          <table className="DisplayCourseDetails-field-content">
-            <tbody>
-              {evaluations.numeric.map(item =>
-                <tr
-                  key={item.field}
-                  className="DisplayCourseDetails-evaluations-numeric"
-                >
-                  <td className="DisplayCourseDetails-evaluations-score">
-                    <CourseRating score={item.score} />
-                  </td>
-                  <td className="DisplayCourseDetails-evaluations-field">
-                    {item.field}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>}
-      </div>,
-      evaluations.written && evaluations.written.length
-        ? <div key="written" className="DisplayCourseDetails-field">
-            <div className="DisplayCourseDetails-field-title">Comments</div>
-            <ul className="DisplayCourseDetails-field-content">
+        evaluations.numeric &&
+        evaluations.written &&
+        Object.keys(evaluations.numeric).length
+          ? <ul className="DisplayCourseDetails-field-content">
               {evaluations.written.map(item =>
                 <li
                   key={item}
@@ -131,9 +144,9 @@ class DisplayCourseDetails extends Component {
                 </li>
               )}
             </ul>
-          </div>
-        : null
-    ];
+          : null}
+      </div>
+    );
   }
 
   render() {
@@ -144,6 +157,10 @@ class DisplayCourseDetails extends Component {
       <div className="DisplayCourseDetails">
         {this.renderBanner(selectedCourse.banner)}
         {this.renderText('Description', selectedCourse.description)}
+        {this.renderNumericEvaluations(
+          selectedCourse.evaluations,
+          semesterLookup
+        )}
         {this.renderGrading(selectedCourse.grading)}
         {this.renderText('Assignments', selectedCourse.assignments)}
         {this.renderText('Prerequisites', selectedCourse.prerequisites)}
@@ -158,7 +175,10 @@ class DisplayCourseDetails extends Component {
         )}
         {this.renderReservedSeats(selectedCourse.reservedSeats)}
         {this.renderReadings(selectedCourse.readings)}
-        {this.renderEvaluations(selectedCourse.evaluations, semesterLookup)}
+        {this.renderWrittenEvaluations(
+          selectedCourse.evaluations,
+          semesterLookup
+        )}
       </div>
     );
   }

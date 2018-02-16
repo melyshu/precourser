@@ -164,6 +164,7 @@ class SidePane extends Component {
         renderSpinner={renderSpinner}
         renderContent={renderContent}
         captionNouns={captionNouns}
+        edge="right"
       />
     );
   }

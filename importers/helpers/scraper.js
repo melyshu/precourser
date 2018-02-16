@@ -30,6 +30,10 @@ Exported functions:
     copies over evaluations from most recent and relevant semester if this
       semester doesn't have any
 
+  scrapeInstructorUpdate(instructorId)
+    REQUIRES ALL COURSE UPDATES TO BE IN THE DATABASE already
+    assigns history to each instructor based on what is in the database already
+
   ------
 
   scrapeAll(f, ids, interval, description)
@@ -282,9 +286,7 @@ const scrapeInstructor = function(instructorId) {
   const courseData = Course.find({
     instructors: instructorId
   })
-    .sort({
-      _id: -1
-    })
+    .sort({ _id: -1 })
     .limit(1)
     .lean()
     .then(function(courses) {
@@ -294,14 +296,12 @@ const scrapeInstructor = function(instructorId) {
           'scrapeInstructor: instructor %s is not in any courses',
           instructorId
         );
-        return Promise.resolve();
+        return;
       }
 
       const recentCourse = courses[0];
       const index = recentCourse.instructors.indexOf(instructorId);
-      const fullName = recentCourse._instructorNames[index];
-
-      return fullName;
+      return recentCourse._instructorNames[index];
     });
 
   const webpageData = rp({
@@ -551,6 +551,80 @@ const scrapeCourseUpdate = function(courseId) {
         new: true,
         upsert: false,
         runValidators: true
+      });
+    });
+};
+
+/*
+Takes a 9-digit id of the relevant instructor.
+
+Technically does no scraping. The name is for uniformity.
+
+Assigns the following fields to the instructor:
+  history.courses
+  history.ratedCourses
+and attempts to assign the following fields:
+  history.rating
+  history.firstSemester
+
+Returns a Promise (resolved to the saved instructor).
+
+NOTE: All courses must be in the database and updated before running this.
+*/
+const scrapeInstructorUpdate = function(instructorId) {
+  return Course.find({ instructors: instructorId })
+    .lean()
+    .then(function(courses) {
+      const instructor = { _id: instructorId };
+
+      if (!courses || !courses.length) {
+        logger.log(
+          'debug',
+          'scrapeInstructorUpdate: instructor %s is not in any courses',
+          instructorId
+        );
+        return Promise.resolve('unreal');
+      }
+
+      // aggregate history
+      let count = 0;
+      let sum = 0;
+      let firstSemester = '';
+      const length = courses.length;
+      for (let i = 0; i < length; i++) {
+        const course = courses[i];
+        if (
+          course.rating &&
+          course.rating.score &&
+          course.rating.semester &&
+          course.rating.semester === course.semester
+        ) {
+          sum += course.rating.score;
+          count += 1;
+        }
+
+        if (!firstSemester || course.semester < firstSemester) {
+          firstSemester = course.semester;
+        }
+      }
+
+      // assign history
+      const history = {
+        courses: length,
+        ratedCourses: count
+      };
+      if (firstSemester) history.firstSemester = firstSemester;
+      if (count) history.rating = sum / count;
+      instructor.history = history;
+
+      // store
+      instructor.lastModified = new Date();
+
+      return Instructor.findByIdAndUpdate(instructor._id, instructor, {
+        new: true,
+        upsert: true,
+        runValidators: true,
+        setDefaultsOnInsert: true
       });
     });
 };
@@ -809,4 +883,5 @@ module.exports.scrapeCourseDetail = scrapeCourseDetail;
 module.exports.scrapeCourseEvaluation = scrapeCourseEvaluation;
 module.exports.scrapeInstructor = scrapeInstructor;
 module.exports.scrapeCourseUpdate = scrapeCourseUpdate;
+module.exports.scrapeInstructorUpdate = scrapeInstructorUpdate;
 module.exports.scrapeAll = scrapeAll;

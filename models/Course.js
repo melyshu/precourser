@@ -158,12 +158,7 @@ courseSchema.query.getFullAndExec = function() {
   return this.select(mongoose.model('Course').fullSelector)
     .populate({
       path: 'instructors',
-      select: mongoose.model('Instructor').fullSelector,
-      populate: {
-        path: 'courses',
-        select: mongoose.model('Course').briefSelector,
-        options: { sort: '-semester' }
-      }
+      select: mongoose.model('Instructor').briefSelector
     })
     .populate({
       path: 'courses',

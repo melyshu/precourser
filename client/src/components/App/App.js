@@ -3,6 +3,7 @@ import Loading from '../Loading/Loading';
 import Navbar from '../Navbar/Navbar';
 import MenuPane from '../MenuPane/MenuPane';
 import DisplayPane from '../DisplayPane/DisplayPane';
+import Virtual from '../Virtual/Virtual';
 import './App.css';
 
 const TIMEOUT_DELAY = 500;
@@ -33,6 +34,9 @@ class App extends Component {
       now: new Date()
     };
 
+    this.fetchJson = Virtual.fetchJson;
+    this.fetchJsonAndSetState = Virtual.fetchJsonAndSetState;
+
     const functionsToBind = [
       'fetchJsonAndSetState',
       'handleChangeSemester',
@@ -61,6 +65,7 @@ class App extends Component {
     }
   }
 
+  /*
   // https://stackoverflow.com/questions/44326797/express-session-not-working-for-ajax-call
   // (same problem for ../registerServiceWorker.js)
   fetchJson(string, init) {
@@ -83,7 +88,7 @@ class App extends Component {
 
   fetchJsonAndSetState(string, init) {
     return this.fetchJson(string, init).then(object => this.setState(object));
-  }
+  }*/
 
   handleChangeSemester(semesterId) {
     const courseSearch = this.state.courseSearch;
@@ -319,6 +324,7 @@ class App extends Component {
       semesterLookup[semester._id] = semester;
     }
 
+    /*
     // make a hash for randomizing colors based on schedule id
     let N = parseInt(selectedSchedule._id, 16);
     const remainders = [1];
@@ -337,16 +343,16 @@ class App extends Component {
         }
       }
       hash[position] = i;
-    }
+    }*/
 
     // make color lookup
     const colorLookup = {};
     for (let i = 0; i < selectedSchedule.courses.length; i++) {
-      colorLookup[selectedSchedule.courses[i]._id] = 'color' + hash[i % COLORS];
+      colorLookup[selectedSchedule.courses[i]._id] = 'color' + i % COLORS; //hash[i % COLORS];
     }
     if (hoveredCourse && !colorLookup[hoveredCourse._id]) {
       colorLookup[hoveredCourse._id] =
-        'color' + hash[selectedSchedule.courses.length % COLORS];
+        'color' + selectedSchedule.courses.length % COLORS; // hash[selectedSchedule.courses.length % COLORS];
     }
 
     const distributionLookup = {
