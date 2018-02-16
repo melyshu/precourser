@@ -324,6 +324,7 @@ class App extends Component {
       semesterLookup[semester._id] = semester;
     }
 
+    /*
     // make a hash for randomizing colors based on schedule id
     let N = parseInt(selectedSchedule._id, 16);
     const remainders = [1];
@@ -342,16 +343,16 @@ class App extends Component {
         }
       }
       hash[position] = i;
-    }
+    }*/
 
     // make color lookup
     const colorLookup = {};
     for (let i = 0; i < selectedSchedule.courses.length; i++) {
-      colorLookup[selectedSchedule.courses[i]._id] = 'color' + hash[i % COLORS];
+      colorLookup[selectedSchedule.courses[i]._id] = 'color' + i % COLORS; //hash[i % COLORS];
     }
     if (hoveredCourse && !colorLookup[hoveredCourse._id]) {
       colorLookup[hoveredCourse._id] =
-        'color' + hash[selectedSchedule.courses.length % COLORS];
+        'color' + selectedSchedule.courses.length % COLORS; // hash[selectedSchedule.courses.length % COLORS];
     }
 
     const distributionLookup = {

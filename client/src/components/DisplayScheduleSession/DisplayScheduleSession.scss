@@ -5,8 +5,9 @@
   $dimmed: mix($color, $empty, 30%);
 
   border-color: $color; //mix($color, $white, 30%);
+  border-radius: 2*$border;
   background-color: $empty;
-  color: $full;
+  color: $color;
 
   &.DisplayScheduleSession-course-hovered,
   &.DisplayScheduleSession-section-type-hovered {
@@ -17,11 +18,13 @@
   &.DisplayScheduleSession-section-hovered {
     border-color: $color;
     background-color: $color;
+    color: $empty;
+    /*
     color: if(
       abs(lightness($color) - lightness($full)) > 1.5*abs(lightness($color) - lightness($empty)),
       $full,
       $empty
-    );
+    );*/
   }
 
   &.DisplayScheduleSession-selected.DisplayScheduleSession-section-hovered {
@@ -31,7 +34,7 @@
 
   &.DisplayScheduleSession-selected.DisplayScheduleSession-course-hovered {
     background-color: $dimmed;
-    color: $full;
+    color: $color;
   }
 }
 
@@ -61,6 +64,7 @@
     align-items: stretch;
 
     .DisplayScheduleSession-listing {
+      font-weight: bolder;
       margin-right: 0.1rem;
     }
 

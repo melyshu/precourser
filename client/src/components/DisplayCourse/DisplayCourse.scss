@@ -34,7 +34,8 @@
       align-items: stretch;
 
       // box-shadow: 0 0 $shadow 0 $full;
-      background: $half;
+      // background: $half;
+      border-bottom: $border solid $half;
       text-align: center;
       line-height: $block;
       height: $block;

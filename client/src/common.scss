@@ -71,6 +71,36 @@ $md-brown: #795548;
 $md-grey: #9e9e9e;
 $md-blue-grey: #607d8b;
 
+
+$gc-radicchio: #AD1457;
+$gc-tangerine: #F4511E;
+$gc-citron: #E4C441;
+$gc-basil: #0B8043;
+$gc-blueberry: #3F51B5;
+$gc-grape: #8E24AA;
+
+$gc-cherry-blossom: #D81B60;
+$gc-pumpkin: #EF6C00;
+$gc-avocado: #C0CA33;
+$gc-eucalyptus: #009688;
+$gc-lavender: #7986CB;
+$gc-cocoa: #795548;
+
+$gc-tomato: #D50000;
+$gc-mango: #F09300;
+$gc-pistachio: #7CB342;
+$gc-peacock: #039BE5;
+$gc-wisteria: #B39DDB;
+$gc-graphite: #616161;
+
+$gc-flamingo: #E67C73;
+$gc-banana: #F6BF26;
+$gc-sage: #33B679;
+$gc-cobalt: #4285F4;
+$gc-amethyst: #9E69AF;
+$gc-birch: #A79B8E;
+
+
 // colors for courses (total 19)
 /*
 $colors: $md-blue-grey, $md-red, $md-pink, $md-deep-purple, $md-cyan, $md-deep-orange,
@@ -78,6 +108,18 @@ $colors: $md-blue-grey, $md-red, $md-pink, $md-deep-purple, $md-cyan, $md-deep-o
   $md-light-green, $md-purple, $md-blue, $md-lime, $md-indigo, $md-green
 */
 
+$colors: $gc-cobalt, $gc-banana, $gc-pumpkin, $gc-pistachio, $gc-amethyst, $gc-cocoa,
+  $gc-cherry-blossom, $gc-blueberry, $gc-basil, $gc-birch;
+
+/*
+$colors: $gc-cherry-blossom, $gc-pumpkin, $gc-banana, $gc-pistachio, $gc-basil, $gc-cobalt, $gc-blueberry,
+  $gc-amethyst, $gc-cocoa, $gc-birch; //*/
+
+/*
+$colors: $gc-cherry-blossom, $gc-pumpkin, $gc-avocado, $gc-eucalyptus, $gc-lavender,
+  $gc-cocoa, $gc-peacock, $gc-grape, $gc-banana, $gc-birch; //*/
+
+/*
 // selected colors (total 10)
 $colors: $md-deep-purple, $md-blue, $md-red, $md-yellow, $md-light-blue, $md-green,
-  $md-blue-grey, $md-brown, $md-cyan, $md-amber, $md-purple, $md-indigo, $md-pink, $md-teal;
+  $md-blue-grey, $md-brown, $md-cyan, $md-amber, $md-purple, $md-indigo, $md-pink, $md-teal; //*/

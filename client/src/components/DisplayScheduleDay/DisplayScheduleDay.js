@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import DisplayScheduleSession from '../DisplayScheduleSession/DisplayScheduleSession';
 import './DisplayScheduleDay.css';
 
-const DAYS = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const DAYS = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
 class DisplayScheduleDay extends Component {
   render() {
