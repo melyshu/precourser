@@ -88,11 +88,16 @@ class MenuPane extends Component {
       if (tab > 1) return;
       return (
         <input
+          key={tab}
           className="SideMenu-input"
           type="text"
           value={tab ? instructorSearch : courseSearch}
           onChange={tab ? onChangeInstructorSearch : onChangeCourseSearch}
           placeholder="search"
+          autoFocus={true}
+          onFocus={event => {
+            event.target.select();
+          }}
         />
       );
     };
