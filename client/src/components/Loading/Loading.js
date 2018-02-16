@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Navbar from '../Navbar/Navbar';
-import Cover from '../Cover/Cover';
+import SimpleCover from '../SimpleCover/SimpleCover';
 import './Loading.css';
 
 class Loading extends Component {
@@ -8,7 +8,7 @@ class Loading extends Component {
     return (
       <div className="Loading">
         <Navbar isEmpty={true} />
-        <Cover loading={true} />
+        <SimpleCover loading={true} />
       </div>
     );
   }

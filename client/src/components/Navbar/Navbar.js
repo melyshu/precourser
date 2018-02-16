@@ -43,7 +43,9 @@ class Navbar extends Component {
       fetch(url, { method: 'POST' }).catch(err => {
         // ignore if it's a cors issue, it goes through anyway
         if (
-          err.includes(
+          err &&
+          err.message &&
+          err.message.includes(
             "No 'Access-Control-Allow-Origin' header is present on the requested resource."
           )
         ) {

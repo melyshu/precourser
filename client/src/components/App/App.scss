@@ -9,6 +9,10 @@
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: stretch;
+
+  min-width: $minwidth;
+  min-height: $minheight;
+  overflow: auto;
 }
 
 .App-page {
