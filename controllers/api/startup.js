@@ -14,32 +14,37 @@ const router = express.Router();
 router.get('/', function(req, res) {
   const userId = req.session.netid;
 
-  req.object = Semester.findFull().then(function(semesterObject) {
-    if (!semesterObject || semesterObject.semesters.length === 0) return null;
+  const semesterPromise = Semester.findFull();
+  const userPromise = User.findFullById(userId);
+
+  req.object = Promise.join(semesterPromise, userPromise, function(
+    semesterObject,
+    userObject
+  ) {
+    if (!semesterObject || !semesterObject.semesters.length || !userObject)
+      return null;
+
     const semesterId = semesterObject.semesters[0]._id;
 
     const departmentPromise = Department.findFull();
     const schedulePromise = Schedule.findByUserAndSemester(userId, semesterId);
-    const userPromise = User.findFullById(userId);
 
-    return Promise.join(
-      departmentPromise,
-      schedulePromise,
-      userPromise,
-      function(departmentObject, scheduleObject, userObject) {
-        if (!departmentObject || !scheduleObject || !userObject) return null;
+    return Promise.join(departmentPromise, schedulePromise, function(
+      departmentObject,
+      scheduleObject
+    ) {
+      if (!departmentObject || !scheduleObject) return null;
 
-        return {
-          departments: departmentObject.departments,
-          semesters: semesterObject.semesters,
-          selectedSemester: semesterId,
-          user: userObject.user,
-          schedules: scheduleObject.schedules,
-          selectedSchedule: scheduleObject.selectedSchedule,
-          loading: false
-        };
-      }
-    );
+      return {
+        departments: departmentObject.departments,
+        semesters: semesterObject.semesters,
+        selectedSemester: semesterId,
+        user: userObject.user,
+        schedules: scheduleObject.schedules,
+        selectedSchedule: scheduleObject.selectedSchedule,
+        loading: false
+      };
+    });
   });
 });
 
