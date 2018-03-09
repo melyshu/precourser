@@ -1,10 +1,4 @@
 @import '../../common.scss';
-
-// mixin for different colors
-@mixin CourseResult-color($color) {
-  border-color: $color; // mix($color, $white, 70%);
-}
-
 .CourseResult {
   font-size: 0.8rem;
   border: $border solid $empty;
@@ -60,13 +54,6 @@
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: stretch;
-
-    @for $i from 1 through length($colors) {
-      $j: $i - 1;
-      &.CourseResult-color#{$j} {
-        @include CourseResult-color(nth($colors, $i));
-      }
-    }
 
     .CourseSummary-title {
       transition: max-height 0.6s ease;

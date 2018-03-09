@@ -3,6 +3,8 @@ const Promise = require('bluebird');
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
+require('./ColorRecord.js');
+
 const scheduleSchema = new mongoose.Schema({
   /* _id: { type: mongoose.Schema.Types.ObjectId }, */
   created: { type: Date, required: 'created required' },
@@ -13,6 +15,13 @@ const scheduleSchema = new mongoose.Schema({
   courses: [{ type: String, ref: 'Course' }],
   sections: [{ type: String, ref: 'Section' }],
   public: Boolean
+});
+
+scheduleSchema.virtual('colors', {
+  ref: 'ColorRecord',
+  localField: '_id',
+  foreignField: 'schedule',
+  justOne: false
 });
 
 // removes unnecessary whitespace
@@ -36,6 +45,10 @@ scheduleSchema.query.getFullAndExec = function() {
       path: 'courses',
       select: mongoose.model('Course').briefSelector,
       populate: { path: 'sections' }
+    })
+    .populate({
+      path: 'colors',
+      select: mongoose.model('ColorRecord').fullSelector
     })
     .lean()
     .exec();
@@ -195,8 +208,13 @@ scheduleSchema.statics.deleteByUserAndId = function(userId, scheduleId) {
       if (!schedule) return null;
 
       return mongoose
-        .model('Schedule')
-        .findByUserAndSemester(userId, schedule.semester);
+        .model('ColorRecord')
+        .remove({ schedule: scheduleId })
+        .then(function() {
+          return mongoose
+            .model('Schedule')
+            .findByUserAndSemester(userId, schedule.semester);
+        });
     });
 };
 
@@ -211,6 +229,13 @@ scheduleSchema.statics.addCourseByUserAndId = function(
     .count({ _id: courseId })
     .then(function(count) {
       if (!count) return null;
+
+      return mongoose
+        .model('ColorRecord')
+        .createByScheduleAndCourse(scheduleId, courseId);
+    })
+    .then(function(colorRecord) {
+      if (!colorRecord) return null;
 
       const semesterId = courseId.substr(0, 4);
 
@@ -244,6 +269,13 @@ scheduleSchema.statics.removeCourseByUserAndId = function(
     .then(function(count) {
       if (!count) return null;
 
+      return mongoose
+        .model('ColorRecord')
+        .remove({ schedule: scheduleId, course: courseId });
+    })
+    .then(function(colorRecords) {
+      if (!colorRecords) return null;
+
       const coursePrefixRegex = '^' + courseId;
 
       return mongoose
@@ -273,15 +305,22 @@ scheduleSchema.statics.addSectionByUserAndId = function(
   scheduleId,
   sectionId
 ) {
+  const semesterId = sectionId.substr(0, 4);
+  const courseId = sectionId.substr(0, 10);
+  const sectionPrefixRegex = '^' + sectionId.substr(0, 11);
+
   return mongoose
     .model('Section')
     .count({ _id: sectionId })
     .then(function(count) {
       if (!count) return null;
 
-      const semesterId = sectionId.substr(0, 4);
-      const courseId = sectionId.substr(0, 10);
-      const sectionPrefixRegex = '^' + sectionId.substr(0, 11);
+      return mongoose
+        .model('ColorRecord')
+        .createByScheduleAndCourse(scheduleId, courseId);
+    })
+    .then(function(colorRecord) {
+      if (!colorRecord) return null;
 
       // first remove any conflicting sections
       return mongoose

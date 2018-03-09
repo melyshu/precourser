@@ -44,20 +44,11 @@ class DisplayScheduleSession extends Component {
 
     const courseHovered = hoveredCourse && course._id === hoveredCourse._id;
 
-    const color = colorLookup[course._id];
+    const color = colorLookup && colorLookup[course._id];
 
     return (
       <div
-        className={
-          'DisplayScheduleSession' +
-          (color ? ' DisplayScheduleSession-' + color : '') +
-          (selected ? ' DisplayScheduleSession-selected' : '') +
-          (sectionHovered ? ' DisplayScheduleSession-section-hovered' : '') +
-          (courseHovered ? ' DisplayScheduleSession-course-hovered' : '') +
-          (sectionTypeHovered
-            ? ' DisplayScheduleSession-section-type-hovered'
-            : '')
-        }
+        className="DisplayScheduleSession"
         title={
           course.department +
           course.catalogNumber +
@@ -89,7 +80,17 @@ class DisplayScheduleSession extends Component {
           top: top,
           bottom: bottom,
           left: position.left,
-          right: position.right
+          right: position.right,
+          borderColor: color,
+          color: selected || sectionTypeHovered || courseHovered ? null : color,
+          backgroundColor:
+            selected || sectionTypeHovered || courseHovered ? color : null,
+          opacity:
+            (!selected && courseHovered) ||
+            (selected && sectionHovered) ||
+            (sectionTypeHovered && !sectionHovered)
+              ? 0.5
+              : null
         }}
         onClick={(selected
           ? onRemoveSectionFromSchedule

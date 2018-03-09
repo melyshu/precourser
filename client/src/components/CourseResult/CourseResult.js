@@ -65,11 +65,7 @@ class CourseResult extends Component {
         onMouseOver={validButtons ? onMouseOverCourse.bind(null, course) : null}
         onMouseOut={validButtons ? onMouseOutCourse.bind(null, course) : null}
       >
-        <div
-          className={
-            'CourseResult-main' + (color ? ' CourseResult-' + color : '')
-          }
-        >
+        <div className="CourseResult-main" style={{ borderColor: color }}>
           <CourseSummary
             user={user}
             now={now}
