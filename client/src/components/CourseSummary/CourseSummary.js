@@ -59,30 +59,32 @@ class CourseSummary extends Component {
                 )}
               </span>
             : null}
-          {course.distribution
-            ? <span
-                className="CourseSummary-distribution"
-                title={distributionLookup[course.distribution]}
-              >
-                {course.distribution}
-              </span>
-            : null}
-          {course.pdf
-            ? <span
-                className={'CourseSummary-' + course.pdf.toLowerCase()}
-                title={pdfLookup[course.pdf]}
-              >
-                {course.pdf}
-              </span>
-            : null}
-          {course.audit
-            ? <span
-                className={'CourseSummary-' + course.audit.toLowerCase()}
-                title={auditLookup[course.audit]}
-              >
-                {course.audit.slice(0, -4)}
-              </span>
-            : null}
+          <span className="CourseSummary-tags">
+            {course.distribution
+              ? <span
+                  className="CourseSummary-distribution"
+                  title={distributionLookup[course.distribution]}
+                >
+                  {course.distribution}
+                </span>
+              : null}
+            {course.pdf
+              ? <span
+                  className={'CourseSummary-' + course.pdf.toLowerCase()}
+                  title={pdfLookup[course.pdf]}
+                >
+                  {course.pdf}
+                </span>
+              : null}
+            {course.audit
+              ? <span
+                  className={'CourseSummary-' + course.audit.toLowerCase()}
+                  title={auditLookup[course.audit]}
+                >
+                  {course.audit.slice(0, -4)}
+                </span>
+              : null}
+          </span>
           <span className="CourseSummary-stretch" />
           {saved
             ? <span className="CourseSummary-saved" title="Saved course">
