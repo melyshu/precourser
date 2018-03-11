@@ -23,8 +23,20 @@ class CourseSummary extends Component {
       saved |= user.savedCourses[i]._id === course._id;
     }
 
+    const title =
+      course.department +
+      course.catalogNumber +
+      course.crossListings
+        .map(
+          crossListing =>
+            ' / ' + crossListing.department + crossListing.catalogNumber
+        )
+        .join('') +
+      '\n' +
+      course.title;
+
     return (
-      <div className="CourseSummary">
+      <div className="CourseSummary" title={title}>
         <div className="CourseSummary-top">
           <span className="CourseSummary-listing">
             {showInstructors
