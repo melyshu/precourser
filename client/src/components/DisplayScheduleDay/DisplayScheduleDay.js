@@ -165,12 +165,29 @@ class DisplayScheduleDay extends Component {
             !currentEntry.position;
             currentEntry = currentEntry.upLeft
           ) {
+            // downLefts may already have been positioned
+            let downLeftPositioned = false;
+            for (let k = 0; k < currentEntry.downLeft.length; k++) {
+              if (currentEntry.downLeft[k].position) downLeftPositioned = true;
+            }
             entryChain.push(currentEntry);
+            if (downLeftPositioned) break;
           }
 
           // try a fit
           const length = entryChain.length;
-          const xStart = entryChain[length - 1].upLeft.position.right;
+          const lastEntry = entryChain[length - 1];
+          let xStart = 0;
+          if (lastEntry.upLeft.position)
+            xStart = lastEntry.upLeft.position.right;
+          for (let k = 0; k < lastEntry.downLeft.length; k++) {
+            const downLeft = lastEntry.downLeft[k];
+            if (downLeft.position)
+              xStart =
+                xStart > downLeft.position.right
+                  ? xStart
+                  : downLeft.position.right;
+          }
           const xEnd = entry.upRight.position.left;
           const widthPer = (xEnd - xStart) / length;
 
@@ -183,6 +200,7 @@ class DisplayScheduleDay extends Component {
             // uh oh... we stretched too far to the right and it's overlapping!
             if (
               currentEntry.upRight &&
+              currentEntry.upRight.position &&
               currentEntry.upRight.position.left < currentRight
             ) {
               // this is how many we can fit without overlapping
