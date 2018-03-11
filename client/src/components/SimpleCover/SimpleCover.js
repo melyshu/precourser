@@ -14,7 +14,7 @@ class SimpleCover extends Component {
         </div>
         <div className="SimpleCover-middle">
           <div className="SimpleCover-subtitle">
-            redefining course selection at Princeton
+            redefining Princeton course selection
           </div>
         </div>
         <div className="SimpleCover-bottom">

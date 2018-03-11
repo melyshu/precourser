@@ -6,8 +6,7 @@ import DisplayPane from '../DisplayPane/DisplayPane';
 import Virtual from '../Virtual/Virtual';
 import './App.css';
 
-const TIMEOUT_DELAY = 500;
-const COLORS = 10;
+const TIMEOUT_DELAY = 200;
 const REFRESH_INTERVAL = 60000;
 
 class App extends Component {
@@ -30,6 +29,7 @@ class App extends Component {
       searchedInstructors: [],
       hoveredCourse: null,
       hoveredSection: null,
+      colors: [],
       loading: true,
       now: new Date()
     };
@@ -64,31 +64,6 @@ class App extends Component {
       this[functionsToBind[i]] = this[functionsToBind[i]].bind(this);
     }
   }
-
-  /*
-  // https://stackoverflow.com/questions/44326797/express-session-not-working-for-ajax-call
-  // (same problem for ../registerServiceWorker.js)
-  fetchJson(string, init) {
-    if (!init) init = {};
-    init.credentials = 'same-origin';
-    return fetch(string, init)
-      .then(response => {
-        if (response.status >= 200 && response.status < 300) {
-          return response;
-        }
-
-        const error = new Error(`HTTP Error ${response.statusText}`);
-        error.status = response.statusText;
-        error.response = response;
-        console.error(error); // eslint-disable-line no-console
-        throw error;
-      })
-      .then(res => res.json());
-  }
-
-  fetchJsonAndSetState(string, init) {
-    return this.fetchJson(string, init).then(object => this.setState(object));
-  }*/
 
   handleChangeSemester(semesterId) {
     const courseSearch = this.state.courseSearch;
@@ -235,7 +210,7 @@ class App extends Component {
   handleMouseOverCourse(course) {
     clearTimeout(this.hoveredCourseTimeout);
     this.hoveredCourseTimeout = setTimeout(
-      () => this.setState({ hoveredCourse: course }),
+      () => this.setState({ hoveredCourse: course, hoveredSection: null }),
       TIMEOUT_DELAY
     );
   }
@@ -249,7 +224,7 @@ class App extends Component {
   }
 
   handleMouseOverSection(sectionId) {
-    this.setState({ hoveredSection: sectionId });
+    this.setState({ hoveredCourse: null, hoveredSection: sectionId });
   }
 
   handleMouseOutSection(sectionId) {
@@ -287,6 +262,7 @@ class App extends Component {
     const searchedInstructors = this.state.searchedInstructors;
     const hoveredCourse = this.state.hoveredCourse;
     const hoveredSection = this.state.hoveredSection;
+    const colors = this.state.colors;
     const now = this.state.now;
 
     const handleChangeSemester = this.handleChangeSemester;
@@ -345,14 +321,21 @@ class App extends Component {
       hash[position] = i;
     }*/
 
+    // make color name lookup
+    const colorNameLookup = {};
+    for (let i = 0; i < colors.length; i++) {
+      colorNameLookup[colors[i]._id] = colors[i].name;
+    }
+
     // make color lookup
     const colorLookup = {};
-    for (let i = 0; i < selectedSchedule.courses.length; i++) {
-      colorLookup[selectedSchedule.courses[i]._id] = 'color' + i % COLORS; //hash[i % COLORS];
+    for (let i = 0; i < selectedSchedule.colors.length; i++) {
+      colorLookup[selectedSchedule.colors[i].course] =
+        '#' + selectedSchedule.colors[i].color;
     }
+
     if (hoveredCourse && !colorLookup[hoveredCourse._id]) {
-      colorLookup[hoveredCourse._id] =
-        'color' + selectedSchedule.courses.length % COLORS; // hash[selectedSchedule.courses.length % COLORS];
+      colorLookup[hoveredCourse._id] = '#7F7F7F';
     }
 
     const distributionLookup = {

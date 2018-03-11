@@ -23,8 +23,20 @@ class CourseSummary extends Component {
       saved |= user.savedCourses[i]._id === course._id;
     }
 
+    const title =
+      course.department +
+      course.catalogNumber +
+      course.crossListings
+        .map(
+          crossListing =>
+            ' / ' + crossListing.department + crossListing.catalogNumber
+        )
+        .join('') +
+      '\n' +
+      course.title;
+
     return (
-      <div className="CourseSummary">
+      <div className="CourseSummary" title={title}>
         <div className="CourseSummary-top">
           <span className="CourseSummary-listing">
             {showInstructors
@@ -47,30 +59,32 @@ class CourseSummary extends Component {
                 )}
               </span>
             : null}
-          {course.distribution
-            ? <span
-                className="CourseSummary-distribution"
-                title={distributionLookup[course.distribution]}
-              >
-                {course.distribution}
-              </span>
-            : null}
-          {course.pdf
-            ? <span
-                className={'CourseSummary-' + course.pdf.toLowerCase()}
-                title={pdfLookup[course.pdf]}
-              >
-                {course.pdf}
-              </span>
-            : null}
-          {course.audit
-            ? <span
-                className={'CourseSummary-' + course.audit.toLowerCase()}
-                title={auditLookup[course.audit]}
-              >
-                {course.audit.slice(0, -4)}
-              </span>
-            : null}
+          <span className="CourseSummary-tags">
+            {course.distribution
+              ? <span
+                  className="CourseSummary-distribution"
+                  title={distributionLookup[course.distribution]}
+                >
+                  {course.distribution}
+                </span>
+              : null}
+            {course.pdf
+              ? <span
+                  className={'CourseSummary-' + course.pdf.toLowerCase()}
+                  title={pdfLookup[course.pdf]}
+                >
+                  {course.pdf}
+                </span>
+              : null}
+            {course.audit
+              ? <span
+                  className={'CourseSummary-' + course.audit.toLowerCase()}
+                  title={auditLookup[course.audit]}
+                >
+                  {course.audit.slice(0, -4)}
+                </span>
+              : null}
+          </span>
           <span className="CourseSummary-stretch" />
           {saved
             ? <span className="CourseSummary-saved" title="Saved course">

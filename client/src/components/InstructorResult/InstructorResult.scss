@@ -80,11 +80,11 @@
   }
 
   .InstructorResult-courses {
-    transition: margin-bottom 1s ease;
+    transition: margin-bottom 0.5s ease;
     margin-bottom: 0;
 
     .InstructorResult-course {
-      transition: max-height 1s ease;
+      transition: max-height 0.5s ease;
       max-height: 0;
       overflow: hidden;
       box-sizing: border-box;
@@ -94,7 +94,7 @@
       margin-bottom: $padding;
 
       .InstructorResult-course {
-        max-height: 10rem;
+        max-height: 2.71rem;
       }
     }
   }

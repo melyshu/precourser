@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
 require('./Section.js');
-const User = require('./User.js');
+require('./User.js');
 
 const courseSchema = new mongoose.Schema({
   _id: { type: String, required: '_id required' },
@@ -174,10 +174,13 @@ courseSchema.query.getFullAndExec = function() {
     .then(function(course) {
       if (!course) return null;
 
-      return User.count({ savedCourses: course._id }).then(function(count) {
-        course.saves = count;
-        return course;
-      });
+      return mongoose
+        .model('User')
+        .count({ savedCourses: course._id })
+        .then(function(count) {
+          course.saves = count;
+          return course;
+        });
     });
 };
 

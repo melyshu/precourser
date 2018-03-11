@@ -83,4 +83,20 @@ router.delete('/:scheduleId/section/:sectionId', function(req, res) {
   req.object = Schedule.removeSectionByUserAndId(userId, scheduleId, sectionId);
 });
 
+// handleChangeCourseColorInSchedule
+// PUT /api/schedule/:scheduleId/course/:courseId/color/:colorId
+router.put('/:scheduleId/course/:courseId/color/:colorId', function(req, res) {
+  const userId = req.session.netid;
+  const scheduleId = req.params.scheduleId;
+  const courseId = req.params.courseId;
+  const colorId = req.params.colorId;
+
+  req.object = Schedule.changeCourseColor(
+    userId,
+    scheduleId,
+    courseId,
+    colorId
+  );
+});
+
 module.exports = router;

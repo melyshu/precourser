@@ -4,23 +4,28 @@ App handler mapping
 
 App.js
 
-componentDidMount               GET    /api/startup
-handleChangeSemester            GET    /api/semester/:semesterId[?courseSearch=query (optional)]
-handleChangeSchedule            GET    /api/schedule/:scheduleId
-handleCreateSchedule            POST   /api/schedule/semester/:semesterId/name/:name
-handleRenameSchedule            PUT    /api/schedule/:scheduleId/name/:name
-handleDeleteSchedule            DELETE /api/schedule/:scheduleId
-handleChangeCourseSearch        GET    /api/course/semester/:semesterId/search/:query
-handleSelectCourse              GET    /api/course/:courseId
-handleSaveCourse                PUT    /api/save/course/:courseId
-handleUnsaveCourse              DELETE /api/save/course/:courseId
-handleAddCourseToSchedule       PUT    /api/schedule/:scheduleId/course/:courseId
-handleRemoveCourseFromSchedule  DELETE /api/schedule/:scheduleId/course/:courseId
-handleAddSectionToSchedule      PUT    /api/schedule/:scheduleId/section/:sectionId
-handleRemoveSectionFromSchedule DELETE /api/schedule/:scheduleId/section/:sectionId
-handleChangeInstructorSearch    GET    /api/instructor/search/:query ***
+componentDidMount                 GET    /api/startup
+handleChangeSemester              GET    /api/semester/:semesterId[?courseSearch=query (optional)]
+handleChangeSchedule              GET    /api/schedule/:scheduleId
+handleCreateSchedule              POST   /api/schedule/semester/:semesterId/name/:name
+handleRenameSchedule              PUT    /api/schedule/:scheduleId/name/:name
+handleDeleteSchedule              DELETE /api/schedule/:scheduleId
+handleChangeCourseSearch          GET    /api/course/semester/:semesterId/search/:query
+handleSelectCourse                GET    /api/course/:courseId
+handleSaveCourse                  PUT    /api/save/course/:courseId
+handleUnsaveCourse                DELETE /api/save/course/:courseId
+handleAddCourseToSchedule         PUT    /api/schedule/:scheduleId/course/:courseId
+handleRemoveCourseFromSchedule    DELETE /api/schedule/:scheduleId/course/:courseId
+handleAddSectionToSchedule        PUT    /api/schedule/:scheduleId/section/:sectionId
+handleRemoveSectionFromSchedule   DELETE /api/schedule/:scheduleId/section/:sectionId
+handleChangeInstructorSearch      GET    /api/instructor/search/:query ***
+
+handleChangeCourseColorInSchedule PUT    /api/schedule/:scheduleId/course/:courseId/color/:colorId
+
+InstructorResult.js
 
 handleInstructorLoad            GET    /api/instructor/:instructorId
+
 
 Routing
 

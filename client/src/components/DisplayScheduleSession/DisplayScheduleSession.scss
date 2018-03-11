@@ -1,43 +1,5 @@
 @import '../../common.scss';
 
-// mixin for different colors
-@mixin DisplayScheduleSession-color($color) {
-  $dimmed: mix($color, $empty, 30%);
-
-  border-color: $color; //mix($color, $white, 30%);
-  border-radius: 2*$border;
-  background-color: $empty;
-  color: $color;
-
-  &.DisplayScheduleSession-course-hovered,
-  &.DisplayScheduleSession-section-type-hovered {
-    background-color: $dimmed;
-  }
-
-  &.DisplayScheduleSession-selected,
-  &.DisplayScheduleSession-section-hovered {
-    border-color: $color;
-    background-color: $color;
-    color: $empty;
-    /*
-    color: if(
-      abs(lightness($color) - lightness($full)) > 1.5*abs(lightness($color) - lightness($empty)),
-      $full,
-      $empty
-    );*/
-  }
-
-  &.DisplayScheduleSession-selected.DisplayScheduleSession-section-hovered {
-    border-color: $dimmed;
-    background-color: $dimmed;
-  }
-
-  &.DisplayScheduleSession-selected.DisplayScheduleSession-course-hovered {
-    background-color: $dimmed;
-    color: $color;
-  }
-}
-
 .DisplayScheduleSession {
   position: absolute;
   font-size: 0.4rem;
@@ -45,13 +7,9 @@
   overflow: hidden;
 
   border: $border solid $empty;
-
-  @for $i from 1 through length($colors) {
-    $j: $i - 1;
-    &.DisplayScheduleSession-color#{$j} {
-      @include DisplayScheduleSession-color(nth($colors, $i));
-    }
-  }
+  border-radius: 2*$border;
+  background-color: $empty;
+  color: $empty;
 
   &:hover {
     cursor: pointer;

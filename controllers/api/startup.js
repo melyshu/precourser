@@ -6,6 +6,7 @@ const Semester = require('../../models/Semester.js');
 const Department = require('../../models/Department.js');
 const User = require('../../models/User.js');
 const Schedule = require('../../models/Schedule.js');
+const Color = require('../../models/Color.js');
 
 const router = express.Router();
 
@@ -14,20 +15,36 @@ const router = express.Router();
 router.get('/', function(req, res) {
   const userId = req.session.netid;
 
-  req.object = Semester.findFull().then(function(semesterObject) {
-    if (!semesterObject || semesterObject.semesters.length === 0) return null;
-    const semesterId = semesterObject.semesters[0]._id;
+  const semesterPromise = Semester.findFull();
+  const userPromise = User.findFullById(userId);
+  const colorPromise = Color.findFull();
 
-    const departmentPromise = Department.findFull();
-    const schedulePromise = Schedule.findByUserAndSemester(userId, semesterId);
-    const userPromise = User.findFullById(userId);
+  req.object = Promise.join(
+    semesterPromise,
+    userPromise,
+    colorPromise,
+    function(semesterObject, userObject, colorObject) {
+      if (
+        !semesterObject ||
+        !semesterObject.semesters.length ||
+        !userObject ||
+        !colorObject
+      )
+        return null;
 
-    return Promise.join(
-      departmentPromise,
-      schedulePromise,
-      userPromise,
-      function(departmentObject, scheduleObject, userObject) {
-        if (!departmentObject || !scheduleObject || !userObject) return null;
+      const semesterId = semesterObject.semesters[0]._id;
+
+      const departmentPromise = Department.findFull();
+      const schedulePromise = Schedule.findByUserAndSemester(
+        userId,
+        semesterId
+      );
+
+      return Promise.join(departmentPromise, schedulePromise, function(
+        departmentObject,
+        scheduleObject
+      ) {
+        if (!departmentObject || !scheduleObject) return null;
 
         return {
           departments: departmentObject.departments,
@@ -36,11 +53,12 @@ router.get('/', function(req, res) {
           user: userObject.user,
           schedules: scheduleObject.schedules,
           selectedSchedule: scheduleObject.selectedSchedule,
+          colors: colorObject.colors,
           loading: false
         };
-      }
-    );
-  });
+      });
+    }
+  );
 });
 
 module.exports = router;

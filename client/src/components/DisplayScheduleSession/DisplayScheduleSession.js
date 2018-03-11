@@ -44,53 +44,57 @@ class DisplayScheduleSession extends Component {
 
     const courseHovered = hoveredCourse && course._id === hoveredCourse._id;
 
-    const color = colorLookup[course._id];
+    const color = colorLookup && colorLookup[course._id];
+
+    const title =
+      course.department +
+      course.catalogNumber +
+      ' ' +
+      section.name +
+      '\n' +
+      section.meetings
+        .map(
+          meeting =>
+            meeting.days.map(day => DAYS[day]).join('') +
+            ' ' +
+            minsToString(meeting.startTime) +
+            ' \u2013 ' +
+            minsToString(meeting.endTime) +
+            '\n'
+        )
+        .join('') +
+      section.status +
+      ' ' +
+      (section.seatsTaken >= 0 ? section.seatsTaken : '\u2013') +
+      ' / ' +
+      (section.seatsTotal >= 0 ? section.seatsTotal : '\u2013') +
+      '\n' +
+      (meeting.building && meeting.room
+        ? meeting.building + ' ' + meeting.room + '\n'
+        : '');
+
+    const style = {
+      top: top,
+      bottom: bottom,
+      left: position.left,
+      right: position.right,
+      borderColor: color,
+      color: selected || sectionTypeHovered || courseHovered ? null : color,
+      backgroundColor:
+        selected || sectionTypeHovered || courseHovered ? color : null,
+      opacity:
+        (!selected && courseHovered) ||
+        (selected && sectionHovered) ||
+        (sectionTypeHovered && !sectionHovered)
+          ? 0.5
+          : null
+    };
 
     return (
       <div
-        className={
-          'DisplayScheduleSession' +
-          (color ? ' DisplayScheduleSession-' + color : '') +
-          (selected ? ' DisplayScheduleSession-selected' : '') +
-          (sectionHovered ? ' DisplayScheduleSession-section-hovered' : '') +
-          (courseHovered ? ' DisplayScheduleSession-course-hovered' : '') +
-          (sectionTypeHovered
-            ? ' DisplayScheduleSession-section-type-hovered'
-            : '')
-        }
-        title={
-          course.department +
-          course.catalogNumber +
-          ' ' +
-          section.name +
-          '\n' +
-          section.meetings
-            .map(
-              meeting =>
-                meeting.days.map(day => DAYS[day]).join('') +
-                ' ' +
-                minsToString(meeting.startTime) +
-                ' \u2013 ' +
-                minsToString(meeting.endTime) +
-                '\n'
-            )
-            .join('') +
-          section.status +
-          ' ' +
-          (section.seatsTaken >= 0 ? section.seatsTaken : '\u2013') +
-          ' / ' +
-          (section.seatsTotal >= 0 ? section.seatsTotal : '\u2013') +
-          '\n' +
-          (meeting.building && meeting.room
-            ? meeting.building + ' ' + meeting.room + '\n'
-            : '')
-        }
-        style={{
-          top: top,
-          bottom: bottom,
-          left: position.left,
-          right: position.right
-        }}
+        className="DisplayScheduleSession"
+        title={title}
+        style={style}
         onClick={(selected
           ? onRemoveSectionFromSchedule
           : onAddSectionToSchedule).bind(null, section._id)}
