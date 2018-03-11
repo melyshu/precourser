@@ -12,6 +12,8 @@ const colorRecordSchema = new mongoose.Schema({
 
 colorRecordSchema.statics.fullSelector = '-_id course color';
 
+// ColorRecord.createByScheduleAndCourse
+// ColorRecord.createByScheduleCourseAndColor
 colorRecordSchema.query.getFullAndExec = function() {
   return this.select(mongoose.model('ColorRecord').fullSelector).lean().exec();
 };
@@ -22,11 +24,20 @@ colorRecordSchema.statics.createByScheduleAndCourse = function(
   scheduleId,
   courseId
 ) {
-  return mongoose
+  const schedulePromise = mongoose.model('Schedule').count({ _id: scheduleId });
+  const coursePromise = mongoose.model('Schedule').count({ _id: courseId });
+  const colorRecordPromise = mongoose
     .model('ColorRecord')
-    .count({ schedule: scheduleId, course: courseId })
-    .then(function(count) {
-      if (count)
+    .count({ schedule: scheduleId, course: courseId });
+
+  return Promise.join(
+    schedulePromise,
+    coursePromise,
+    colorRecordPromise,
+    function(scheduleCount, courseCount, colorRecordCount) {
+      if (!scheduleCount || !courseCount) return null;
+
+      if (colorRecordCount)
         return mongoose
           .model('ColorRecord')
           .findOne({ schedule: scheduleId, course: courseId })
@@ -53,7 +64,40 @@ colorRecordSchema.statics.createByScheduleAndCourse = function(
             )
             .getFullAndExec();
         });
-    });
+    }
+  );
+};
+
+// Schedule.changeCourseColor
+colorRecordSchema.statics.createByScheduleCourseAndColor = function(
+  scheduleId,
+  courseId,
+  colorId
+) {
+  const schedulePromise = mongoose.model('Schedule').count({ _id: scheduleId });
+  const coursePromise = mongoose.model('Schedule').count({ _id: courseId });
+  const colorPromise = mongoose.model('Color').count({ _id: colorId });
+
+  return Promise.join(schedulePromise, coursePromise, colorPromise, function(
+    scheduleCount,
+    courseCount,
+    colorCount
+  ) {
+    if (!scheduleCount || !courseCount || !colorCount) return null;
+
+    return mongoose
+      .model('ColorRecord')
+      .findOneAndUpdate(
+        { schedule: scheduleId, course: courseId },
+        {
+          schedule: scheduleId,
+          course: courseId,
+          color: colorId
+        },
+        { upsert: true, new: true }
+      )
+      .getFullAndExec();
+  });
 };
 
 const ColorRecord = mongoose.model('ColorRecord', colorRecordSchema);

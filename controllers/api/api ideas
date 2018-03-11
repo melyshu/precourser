@@ -20,7 +20,7 @@ handleAddSectionToSchedule        PUT    /api/schedule/:scheduleId/section/:sect
 handleRemoveSectionFromSchedule   DELETE /api/schedule/:scheduleId/section/:sectionId
 handleChangeInstructorSearch      GET    /api/instructor/search/:query ***
 
-handleChangeCourseColorInSchedule PUT    /api/schedule/:scheduleId/course/:courseId/:colorId
+handleChangeCourseColorInSchedule PUT    /api/schedule/:scheduleId/course/:courseId/color/:colorId
 
 InstructorResult.js
 

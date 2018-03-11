@@ -386,6 +386,33 @@ scheduleSchema.statics.removeSectionByUserAndId = function(
     });
 };
 
+// PUT /api/schedule/:scheduleId/course/:courseId/color/:colorId
+scheduleSchema.statics.changeCourseColor = function(
+  userId,
+  scheduleId,
+  courseId,
+  colorId
+) {
+  return mongoose
+    .model('Schedule')
+    .count({ _id: scheduleId, user: userId })
+    .then(function(count) {
+      if (!count) return null;
+
+      return mongoose
+        .model('ColorRecord')
+        .createByScheduleCourseAndColor(scheduleId, courseId, colorId);
+    })
+    .then(function(colorRecord) {
+      if (!colorRecord) return null;
+
+      return mongoose
+        .model('Schedule')
+        .findOne({ _id: scheduleId, user: userId })
+        .getFullAndExec();
+    });
+};
+
 const Schedule = mongoose.model('Schedule', scheduleSchema);
 
 // Export the Schedule model
