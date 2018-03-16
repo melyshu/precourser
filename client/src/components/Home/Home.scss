@@ -15,117 +15,124 @@
 
   .Home-page {
     flex: 1 1 auto;
-    overflow-y: auto;
+
+    padding: $block;
+    text-align: center;
     color: $full;
 
-    .Home-heading {
-      text-align: center;
-      margin-bottom: $padding;
-    }
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
 
-    .Home-features {
-      background: $half;
-      padding: $block;
+    background: url('../../images/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100%;
+    overflow: hidden;
 
-      .Home-apps {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: center;
-        align-items: stretch;
+    .Home-box {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+      margin: $block;
+      padding: $padding;
+      background: rgba($empty, 0.8);
+      border-radius: 2*$border;
+      border: $border solid $orange;
 
-        .Home-app {
-          margin: 0.5*$block;
-          background: $empty;
-          box-shadow: 0 0 $shadow 0 $full;
-          width: 5*$block;
+      .Home-top {
+        font-size: 2rem;
+        z-index: 10;
 
-          display: flex;
-          flex-flow: column nowrap;
-          justify-content: space-between;
-          align-items: stretch;
-
-          .Home-app-princetoncourses,
-          .Home-app-recal {
-            padding: $padding;
-            text-align: center;
-            border-bottom: $border solid $empty;
-            color: inherit;
-            cursor: pointer;
-            text-decoration: none;
-          }
-
-          .Home-app-princetoncourses {
-            border-color: $orange;
-            &:hover {
-              background: $orange;
-              color: $black;
-            }
-          }
-
-          .Home-app-recal {
-            border-color: $recal;
-            &:hover {
-              background: $recal;
-              color: $white;
-            }
-          }
-
-          .Home-app-features {
-            padding: $padding $padding 0;
-            font-size: 0.8rem;
-            li {
-              margin-bottom: $padding;
-            }
-          }
-
-          .Home-app-contributors {
-            flex: 1 1 auto;
-            padding: $padding;
-            background: $half;
-            color: $default;
-            font-size: 0.6rem;
-            font-weight: bolder;
-            text-align: center;
-
-            li {
-              display: inline;
-            }
-          }
-        }
-      }
-    }
-
-    .Home-tools {
-      padding: $block;
-
-      .Home-tools-logos {
         display: flex;
         flex-flow: row wrap;
         justify-content: center;
         align-items: center;
-        padding: $padding;
 
-        .Home-tools-logo {
-          height: 1.5*$block;
-          margin: $padding;
+        .Home-title {
+          padding: 0 0.5*$padding;
         }
+
+        .Home-logo {
+          height: 3rem;
+          padding: 0 0.5*$padding;
+        }
+      }
+
+      .Home-middle {
+        margin-bottom: $padding;
+        color: $default;
+        font-size: 0.8rem;
+        position: relative;
+      }
+
+      .Home-bottom {
+        margin-bottom: $padding;
+        font-size: 0.8rem;
+        z-index: 10;
+
+        .Home-button {
+          display: block;
+          line-height: $block;
+          padding: 0 $padding;
+          border: $border solid $orange;
+          border-radius: 2*$border;
+          color: $orange;
+          cursor: pointer;
+          text-decoration: none;
+
+          &:hover {
+            cursor: pointer;
+            color: $empty;
+            background: $orange;
+          }
+        }
+      }
+
+      .Home-narrow {
+        color: $orange;
+        font-size: 0.5rem;
+        font-weight: bolder;
+        margin-bottom: $padding;
+
+        @media (min-width: $minwidth) {
+          height: 0;
+          margin: 0;
+          overflow: hidden;
+        }
+      }
+
+      .Home-message {
+        //color: $default;
+        font-size: 0.4rem;
       }
     }
 
-    .Home-footer {
-      background: $half;
-      font-size: 0.6rem;
-      text-align: center;
-      padding: $block;
+    .Home-link {
+      text-decoration: none;
+      color: inherit;
 
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: center;
-      align-items: stretch;
-
-      .Home-footer-name {
-        margin: 0 $padding;
+      &:hover {
+        font-weight: bolder;
       }
+    }
+
+    .Home-footer-left,
+    .Home-footer-right {
+      position: fixed;
+      bottom: 0;
+      font-size: 0.4rem;
+      color: $empty;
+      padding: $border;
+    }
+
+    .Home-footer-right {
+      right: 0;
+    }
+
+    .Home-footer-left {
+      left: 0;
     }
   }
 }
