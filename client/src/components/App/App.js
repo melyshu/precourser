@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import Loading from '../Loading/Loading';
+import ReactGA from 'react-ga';
 import Navbar from '../Navbar/Navbar';
 import MenuPane from '../MenuPane/MenuPane';
 import DisplayPane from '../DisplayPane/DisplayPane';
 import Virtual from '../Virtual/Virtual';
 import './App.css';
+
+ReactGA.initialize('UA-115536526-1', { debug: true });
 
 const TIMEOUT_DELAY = 200;
 const REFRESH_INTERVAL = 60000;
@@ -232,7 +234,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchJsonAndSetState(`/api/startup`);
+    this.fetchJson(`/api/startup`).then(object => {
+      this.setState(object);
+      ReactGA.set({ userId: object.user._id });
+      ReactGA.pageview('/');
+    });
+
     this.nowInterval = setInterval(
       () => this.setState({ now: new Date() }),
       REFRESH_INTERVAL
@@ -245,7 +252,7 @@ class App extends Component {
 
   render() {
     const loading = this.state.loading;
-    if (loading) return <Loading />;
+    if (loading) return null;
 
     const departments = this.state.departments;
     const semesters = this.state.semesters;
@@ -299,27 +306,6 @@ class App extends Component {
       const semester = semesters[i];
       semesterLookup[semester._id] = semester;
     }
-
-    /*
-    // make a hash for randomizing colors based on schedule id
-    let N = parseInt(selectedSchedule._id, 16);
-    const remainders = [1];
-    for (let i = 2; i <= COLORS; i++) {
-      remainders.push(N % i + 1);
-      N = Math.floor(N / i);
-    }
-    const hash = {};
-    let position = 0;
-    for (let i = 0; i < COLORS; i++) {
-      let placesToMove = remainders[COLORS - i];
-      while (placesToMove) {
-        position = (position + 1) % COLORS;
-        if (hash[position] === undefined) {
-          placesToMove--;
-        }
-      }
-      hash[position] = i;
-    }*/
 
     // make color name lookup
     const colorNameLookup = {};
