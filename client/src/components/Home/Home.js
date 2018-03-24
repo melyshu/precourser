@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import ReactGA from 'react-ga';
 import Navbar from '../Navbar/Navbar';
 import Logo from '../../images/precourser.svg';
@@ -26,16 +25,19 @@ class Home extends Component {
               </div>
             </div>
             <div className="Home-bottom">
-              <Link
+              <a
                 to={process.env.NODE_ENV === 'production' ? '/auth/login' : '/'}
                 className="Home-button"
               >
                 select courses
-              </Link>
+              </a>
             </div>
             <div className="Home-narrow">
-              Your screen may be too narrow. For the best experience, use a
-              larger device.
+              {
+                process.env.HELLO
+                /*Your screen may be too narrow. For the best experience, use a
+              larger device.*/
+              }
             </div>
             <div className="Home-message">
               By using precourser, you agree to your data being stored and
