@@ -55,6 +55,9 @@
       overflow: hidden;
       margin-left: 0;
 
+      display: flex;
+      flex: row nowrap;
+
       > * {
         margin-left: 5*$border;
       }

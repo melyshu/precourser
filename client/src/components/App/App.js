@@ -6,8 +6,6 @@ import DisplayPane from '../DisplayPane/DisplayPane';
 import Virtual from '../Virtual/Virtual';
 import './App.css';
 
-ReactGA.initialize('UA-115536526-1', { debug: true });
-
 const TIMEOUT_DELAY = 200;
 const REFRESH_INTERVAL = 60000;
 
@@ -36,6 +34,7 @@ class App extends Component {
       now: new Date()
     };
 
+    this.history = props.history;
     this.fetchJson = Virtual.fetchJson;
     this.fetchJsonAndSetState = Virtual.fetchJsonAndSetState;
 
@@ -138,10 +137,13 @@ class App extends Component {
   }
 
   handleSelectCourse(courseId) {
-    this.fetchJsonAndSetState(`/api/course/${courseId}`);
+    this.history.push(`/course/${courseId}`);
+    ReactGA.pageview(`/course/${courseId}`);
   }
 
   handleUnselectCourse() {
+    this.history.push(`/`);
+    ReactGA.pageview('/');
     this.setState({ selectedCourse: null });
   }
 
@@ -237,7 +239,7 @@ class App extends Component {
     this.fetchJson(`/api/startup`).then(object => {
       this.setState(object);
       ReactGA.set({ userId: object.user._id });
-      ReactGA.pageview('/');
+      ReactGA.pageview(this.history.location.pathname);
     });
 
     this.nowInterval = setInterval(
@@ -252,7 +254,12 @@ class App extends Component {
 
   render() {
     const loading = this.state.loading;
-    if (loading) return null;
+    if (loading)
+      return (
+        <div className="App">
+          <Navbar isEmpty={true} />
+        </div>
+      );
 
     const departments = this.state.departments;
     const semesters = this.state.semesters;
@@ -350,6 +357,23 @@ class App extends Component {
       NAUDIT: 'No audit',
       XAUDIT: 'No audit data'
     };
+
+    const urlCourseId = this.props.match.params.courseId;
+    if (
+      urlCourseId &&
+      (!selectedCourse || selectedCourse._id !== urlCourseId)
+    ) {
+      this.fetchJsonAndSetState(`/api/course/${urlCourseId}`).catch(err => {
+        console.error(err);
+        this.history.replace(`/`);
+      });
+    }
+
+    if (selectedCourse) {
+      document.title = `precourser | ${selectedCourse.department}${selectedCourse.catalogNumber} ${selectedCourse.title}`;
+    } else {
+      document.title = `precourser | ${selectedSchedule.name}`;
+    }
 
     return (
       <div className="App">
