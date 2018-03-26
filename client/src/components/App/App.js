@@ -6,7 +6,8 @@ import DisplayPane from '../DisplayPane/DisplayPane';
 import Virtual from '../Virtual/Virtual';
 import './App.css';
 
-const TIMEOUT_DELAY = 200;
+const HOVER_TIMEOUT_DELAY = 200;
+const SEARCH_TIMEOUT_DELAY = 2000;
 const REFRESH_INTERVAL = 60000;
 
 class App extends Component {
@@ -21,10 +22,12 @@ class App extends Component {
       schedules: [],
       selectedSchedule: { courses: [] },
       courseSearch: '',
+      waitingCourseSearch: false,
       loadingCourseSearch: false,
       searchedCourses: [],
       selectedCourse: null,
       instructorSearch: '',
+      waitingInstructorSearch: false,
       loadingInstructorSearch: false,
       searchedInstructors: [],
       hoveredCourse: null,
@@ -46,6 +49,7 @@ class App extends Component {
       'handleRenameSchedule',
       'handleDeleteSchedule',
       'handleChangeCourseSearch',
+      'handleSearchCourse',
       'handleSelectCourse',
       'handleUnselectCourse',
       'handleSaveCourse',
@@ -55,6 +59,7 @@ class App extends Component {
       'handleAddSectionToSchedule',
       'handleRemoveSectionFromSchedule',
       'handleChangeInstructorSearch',
+      'handleSearchInstructor',
       'handleMouseOverCourse',
       'handleMouseOutCourse',
       'handleMouseOverSection',
@@ -113,27 +118,50 @@ class App extends Component {
   handleChangeCourseSearch(event) {
     const query = event.target.value;
     const semesterId = this.state.selectedSemester;
-    this.setState({ courseSearch: query, loadingCourseSearch: true });
-    if (query.length < 3) {
-      this.setState({ searchedCourses: [], loadingCourseSearch: false });
+
+    this.setState({
+      courseSearch: query,
+      waitingCourseSearch: true,
+      loadingCourseSearch: false
+    });
+    if (query.length < 1) {
+      this.setState({
+        searchedCourses: [],
+        waitingCourseSearch: false,
+        loadingCourseSearch: false
+      });
       return;
     }
 
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
-      this.fetchJson(
-        `/api/course/semester/${this.state
-          .selectedSemester}/search/${encodeURIComponent(query)}`
-      ).then(object => {
-        if (
-          this.state.courseSearch === query &&
-          this.state.selectedSemester === semesterId
-        ) {
-          this.searchTimeout = null;
-          this.setState(object);
-        }
-      });
-    }, TIMEOUT_DELAY);
+      this.handleSearchCourse(query, semesterId);
+    }, SEARCH_TIMEOUT_DELAY);
+  }
+
+  handleSearchCourse(query, semesterId) {
+    if (
+      this.state.courseSearch === query &&
+      this.state.selectedSemester === semesterId &&
+      !this.state.waitingCourseSearch
+    ) {
+      return;
+    }
+    this.setState({ waitingCourseSearch: false, loadingCourseSearch: true });
+
+    this.fetchJson(
+      `/api/course/semester/${semesterId}/search/${encodeURIComponent(query)}`
+    ).then(object => {
+      if (
+        this.state.courseSearch === query &&
+        this.state.selectedSemester === semesterId &&
+        this.state.loadingCourseSearch
+      ) {
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = null;
+        this.setState(object);
+      }
+    });
   }
 
   handleSelectCourse(courseId) {
@@ -186,13 +214,18 @@ class App extends Component {
       { method: 'DELETE' }
     );
   }
-
   handleChangeInstructorSearch(event) {
     const query = event.target.value;
-    this.setState({ instructorSearch: query, loadingInstructorSearch: true });
-    if (query.length < 3) {
+
+    this.setState({
+      instructorSearch: query,
+      waitingInstructorSearch: true,
+      loadingInstructorSearch: false
+    });
+    if (query.length < 1) {
       this.setState({
         searchedInstructors: [],
+        waitingInstructorSearch: false,
         loadingInstructorSearch: false
       });
       return;
@@ -200,22 +233,41 @@ class App extends Component {
 
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
-      this.fetchJson(
-        `/api/instructor/search/${encodeURIComponent(query)}`
-      ).then(object => {
-        if (this.state.instructorSearch === query) {
-          this.searchTimeout = null;
-          this.setState(object);
-        }
-      });
-    }, TIMEOUT_DELAY);
+      this.handleSearchInstructor(query);
+    }, SEARCH_TIMEOUT_DELAY);
+  }
+
+  handleSearchInstructor(query) {
+    if (
+      this.state.instructorSearch === query &&
+      !this.state.waitingInstructorSearch
+    ) {
+      return;
+    }
+    this.setState({
+      waitingInstructorSearch: false,
+      loadingInstructorSearch: true
+    });
+
+    this.fetchJson(
+      `/api/instructor/search/${encodeURIComponent(query)}`
+    ).then(object => {
+      if (
+        this.state.instructorSearch === query &&
+        this.state.loadingInstructorSearch
+      ) {
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = null;
+        this.setState(object);
+      }
+    });
   }
 
   handleMouseOverCourse(course) {
     clearTimeout(this.hoveredCourseTimeout);
     this.hoveredCourseTimeout = setTimeout(
       () => this.setState({ hoveredCourse: course, hoveredSection: null }),
-      TIMEOUT_DELAY
+      HOVER_TIMEOUT_DELAY
     );
   }
 
@@ -223,7 +275,7 @@ class App extends Component {
     clearTimeout(this.hoveredCourseTimeout);
     this.hoveredCourseTimeout = setTimeout(
       () => this.setState({ hoveredCourse: null }),
-      TIMEOUT_DELAY
+      HOVER_TIMEOUT_DELAY
     );
   }
 
@@ -268,10 +320,12 @@ class App extends Component {
     const schedules = this.state.schedules;
     const selectedSchedule = this.state.selectedSchedule;
     const courseSearch = this.state.courseSearch;
+    const waitingCourseSearch = this.state.waitingCourseSearch;
     const loadingCourseSearch = this.state.loadingCourseSearch;
     const searchedCourses = this.state.searchedCourses;
     const selectedCourse = this.state.selectedCourse;
     const instructorSearch = this.state.instructorSearch;
+    const waitingInstructorSearch = this.state.waitingInstructorSearch;
     const loadingInstructorSearch = this.state.loadingInstructorSearch;
     const searchedInstructors = this.state.searchedInstructors;
     const hoveredCourse = this.state.hoveredCourse;
@@ -285,6 +339,7 @@ class App extends Component {
     const handleRenameSchedule = this.handleRenameSchedule;
     const handleDeleteSchedule = this.handleDeleteSchedule;
     const handleChangeCourseSearch = this.handleChangeCourseSearch;
+    const handleSearchCourse = this.handleSearchCourse;
     const handleSelectCourse = this.handleSelectCourse;
     const handleUnselectCourse = this.handleUnselectCourse;
     const handleSaveCourse = this.handleSaveCourse;
@@ -295,6 +350,7 @@ class App extends Component {
     const handleRemoveSectionFromSchedule = this
       .handleRemoveSectionFromSchedule;
     const handleChangeInstructorSearch = this.handleChangeInstructorSearch;
+    const handleSearchInstructor = this.handleSearchInstructor;
     const handleMouseOverCourse = this.handleMouseOverCourse;
     const handleMouseOutCourse = this.handleMouseOutCourse;
     const handleMouseOverSection = this.handleMouseOverSection;
@@ -396,10 +452,12 @@ class App extends Component {
             user={user}
             selectedSchedule={selectedSchedule}
             courseSearch={courseSearch}
+            waitingCourseSearch={waitingCourseSearch}
             loadingCourseSearch={loadingCourseSearch}
             searchedCourses={searchedCourses}
             selectedCourse={selectedCourse}
             instructorSearch={instructorSearch}
+            waitingInstructorSearch={waitingInstructorSearch}
             loadingInstructorSearch={loadingInstructorSearch}
             searchedInstructors={searchedInstructors}
             now={now}
@@ -409,6 +467,7 @@ class App extends Component {
             pdfLookup={pdfLookup}
             auditLookup={auditLookup}
             onChangeCourseSearch={handleChangeCourseSearch}
+            onSearchCourse={handleSearchCourse}
             onSelectCourse={handleSelectCourse}
             onUnselectCourse={handleUnselectCourse}
             onSaveCourse={handleSaveCourse}
@@ -416,6 +475,7 @@ class App extends Component {
             onAddCourseToSchedule={handleAddCourseToSchedule}
             onRemoveCourseFromSchedule={handleRemoveCourseFromSchedule}
             onChangeInstructorSearch={handleChangeInstructorSearch}
+            onSearchInstructor={handleSearchInstructor}
             onMouseOverCourse={handleMouseOverCourse}
             onMouseOutCourse={handleMouseOutCourse}
           />

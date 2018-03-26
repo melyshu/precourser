@@ -78,6 +78,7 @@ instructorSchema.statics.searchByQuery = function(query) {
       if (!instructors) return null;
       return {
         searchedInstructors: instructors,
+        waitingInstructorSearch: false,
         loadingInstructorSearch: false
       };
     });

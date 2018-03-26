@@ -117,10 +117,15 @@
       border: none;
     }
 
-    .SideMenu-spinner {
+    .SideMenu-waiting,
+    .SideMenu-loading {
       flex: 0 0 auto;
       font-size: 0.7rem;
       margin-left: $padding;
+      color: $half;
+    }
+
+    .SideMenu-loading {
       color: $md-blue;
       animation: 0.6s spin linear infinite;
     }

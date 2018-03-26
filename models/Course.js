@@ -295,7 +295,10 @@ courseSchema.statics.searchBySemesterAndQuery = function(semesterId, query) {
   if (departmentQueries.length && !catalogNumberQueries.length) {
     queryDocument.$or = [
       { department: { $regex: joinRegexOr(departmentQueries) } },
-      { 'crossListings.department': { $regex: joinRegexOr(departmentQueries) } }
+      {
+        'crossListings.department': { $regex: joinRegexOr(departmentQueries) }
+      },
+      { title: { $regex: joinRegexOr(departmentQueries) } }
     ];
   }
 
@@ -319,7 +322,8 @@ courseSchema.statics.searchBySemesterAndQuery = function(semesterId, query) {
             'crossListings.department': {
               $regex: joinRegexOr(departmentQueries)
             }
-          }
+          },
+          { title: { $regex: joinRegexOr(departmentQueries) } }
         ]
       },
       {
@@ -349,7 +353,11 @@ courseSchema.statics.searchBySemesterAndQuery = function(semesterId, query) {
     .getBriefAndExec()
     .then(function(courses) {
       if (!courses) return null;
-      return { searchedCourses: courses, loadingCourseSearch: false };
+      return {
+        searchedCourses: courses,
+        waitingCourseSearch: false,
+        loadingCourseSearch: false
+      };
     });
 };
 
