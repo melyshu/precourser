@@ -28,12 +28,19 @@ class InstructorResult extends Component {
       this.setState({ expanded: !this.state.expanded });
     } else {
       this.handleLoadInstructor(this.state.instructor._id);
-      ReactGA.pageview(`/instructor/${this.state.instructor._id}`);
     }
   }
 
   handleLoadInstructor(instructorId) {
     if (this.state.loaded === false) return;
+
+    ReactGA.pageview(`/instructor/${this.state.instructor._id}`);
+    ReactGA.event({
+      category: 'Instructor',
+      action: 'Opened Instructor',
+      label: instructorId
+    });
+
     this.setState({ loaded: false });
     this.fetchJson(`/api/instructor/${instructorId}`).then(object => {
       object.loaded = true;
