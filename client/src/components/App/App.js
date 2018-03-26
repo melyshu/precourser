@@ -72,8 +72,14 @@ class App extends Component {
   }
 
   handleChangeSemester(semesterId) {
+    ReactGA.event({
+      category: 'Navigation',
+      action: 'Changed Semester',
+      label: semesterId
+    });
+
     const courseSearch = this.state.courseSearch;
-    if (courseSearch.length < 3) {
+    if (courseSearch.length < 1) {
       this.fetchJsonAndSetState(`/api/semester/${semesterId}`);
     } else {
       this.fetchJsonAndSetState(
@@ -85,10 +91,20 @@ class App extends Component {
   }
 
   handleChangeSchedule(scheduleId) {
+    ReactGA.event({
+      category: 'Navigation',
+      action: 'Changed Schedule'
+    });
+
     this.fetchJsonAndSetState(`/api/schedule/${scheduleId}`);
   }
 
   handleCreateSchedule(name) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Created Schedule'
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/semester/${this.state
         .selectedSemester}/name/${encodeURIComponent(name)}`,
@@ -97,6 +113,11 @@ class App extends Component {
   }
 
   handleRenameSchedule(name) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Renamed Schedule'
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule
         ._id}/name/${encodeURIComponent(name)}`,
@@ -107,6 +128,11 @@ class App extends Component {
   }
 
   handleDeleteSchedule() {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Deleted Schedule'
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule._id}`,
       {
@@ -147,6 +173,12 @@ class App extends Component {
     ) {
       return;
     }
+
+    ReactGA.pageview(`/search/course?q=${encodeURIComponent(query)}`);
+    ReactGA.event({
+      category: 'Search',
+      action: 'Searched Course'
+    });
     this.setState({ waitingCourseSearch: false, loadingCourseSearch: true });
 
     this.fetchJson(
@@ -165,29 +197,58 @@ class App extends Component {
   }
 
   handleSelectCourse(courseId) {
-    this.history.push(`/course/${courseId}`);
     ReactGA.pageview(`/course/${courseId}`);
+    ReactGA.event({
+      category: 'Course',
+      action: 'Opened Course',
+      label: courseId
+    });
+
+    this.history.push(`/course/${courseId}`);
   }
 
   handleUnselectCourse() {
-    this.history.push(`/`);
     ReactGA.pageview('/');
+    ReactGA.event({
+      category: 'Course',
+      action: 'Closed Course'
+    });
+
     this.setState({ selectedCourse: null });
+    this.history.push(`/`);
   }
 
   handleSaveCourse(courseId) {
+    ReactGA.event({
+      category: 'Course',
+      action: 'Saved Course',
+      label: courseId
+    });
+
     this.fetchJsonAndSetState(`/api/save/course/${courseId}`, {
       method: 'PUT'
     });
   }
 
   handleUnsaveCourse(courseId) {
+    ReactGA.event({
+      category: 'Course',
+      action: 'Unsaved Course',
+      label: courseId
+    });
+
     this.fetchJsonAndSetState(`/api/save/course/${courseId}`, {
       method: 'DELETE'
     });
   }
 
   handleAddCourseToSchedule(courseId) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Added Course',
+      label: courseId
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule._id}/course/${courseId}`,
       { method: 'PUT' }
@@ -195,6 +256,12 @@ class App extends Component {
   }
 
   handleRemoveCourseFromSchedule(courseId) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Removed Course',
+      label: courseId
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule._id}/course/${courseId}`,
       { method: 'DELETE' }
@@ -202,6 +269,12 @@ class App extends Component {
   }
 
   handleAddSectionToSchedule(sectionId) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Added Section',
+      label: sectionId
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule._id}/section/${sectionId}`,
       { method: 'PUT' }
@@ -209,11 +282,18 @@ class App extends Component {
   }
 
   handleRemoveSectionFromSchedule(sectionId) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Removed Section',
+      label: sectionId
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule._id}/section/${sectionId}`,
       { method: 'DELETE' }
     );
   }
+
   handleChangeInstructorSearch(event) {
     const query = event.target.value;
 
@@ -244,6 +324,12 @@ class App extends Component {
     ) {
       return;
     }
+
+    ReactGA.pageview(`/search/instructor?q=${encodeURIComponent(query)}`);
+    ReactGA.event({
+      category: 'Search',
+      action: 'Searched Instructor'
+    });
     this.setState({
       waitingInstructorSearch: false,
       loadingInstructorSearch: true

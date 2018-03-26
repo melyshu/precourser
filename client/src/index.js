@@ -18,9 +18,9 @@ initOpbeat({
 const OpbeatRouter = wrapRouter(BrowserRouter);
 
 // Google Analytics tracking
-if (process.env.NODE_ENV === 'production') {
-  ReactGA.initialize('UA-115536526-1');
-}
+//if (process.env.NODE_ENV === 'production') {
+  ReactGA.initialize('UA-115536526-1', {debug: true});
+//}
 
 ReactDOM.render(
   <OpbeatRouter>

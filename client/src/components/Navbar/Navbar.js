@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactGA from 'react-ga';
 import MdArrowDropDown from 'react-icons/lib/md/arrow-drop-down';
 import MdEdit from 'react-icons/lib/md/edit';
 import MdAddCircleOutline from 'react-icons/lib/md/add-circle-outline';
@@ -37,6 +38,11 @@ class Navbar extends Component {
     const isEmpty = this.props.isEmpty;
 
     const handleSubmitFeedback = text => {
+      ReactGA.event({
+        category: 'Navigation',
+        action: 'Submitted Feedback'
+      });
+
       const feedback = encodeURIComponent(text);
       const url = `${BASE_URL}${FORM_KEY}/formResponse?${ENTRY_ID}=${feedback}`;
 
@@ -56,6 +62,11 @@ class Navbar extends Component {
     };
 
     const handleLogoutClick = () => {
+      ReactGA.event({
+        category: 'Navigation',
+        action: 'Logged out'
+      });
+
       if (process.env.NODE_ENV === 'production') {
         window.location.href = '/auth/logout';
       } else {
