@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactGA from 'react-ga';
 import FaCircleONotch from 'react-icons/lib/fa/circle-o-notch';
 import CourseResult from '../CourseResult/CourseResult';
 import CourseRating from '../CourseRating/CourseRating';
@@ -23,9 +24,12 @@ class InstructorResult extends Component {
   }
 
   toggle() {
-    if (this.state.loaded === true)
+    if (this.state.loaded === true) {
       this.setState({ expanded: !this.state.expanded });
-    else this.handleLoadInstructor(this.state.instructor._id);
+    } else {
+      this.handleLoadInstructor(this.state.instructor._id);
+      ReactGA.pageview(`/instructor/${this.state.instructor._id}`);
+    }
   }
 
   handleLoadInstructor(instructorId) {
@@ -72,7 +76,11 @@ class InstructorResult extends Component {
     const toggle = this.toggle;
 
     return (
-      <li className="InstructorResult">
+      <li
+        className={
+          'InstructorResult' + (expanded ? ' InstructorResult-expanded' : '')
+        }
+      >
         <div className="InstructorResult-header" onClick={toggle}>
           <div className="InstructorResult-top">
             <span className="InstructorResult-name">
@@ -106,7 +114,12 @@ class InstructorResult extends Component {
               {instructor.history.courses}
             </span>
           </div>
-          <ul className="InstructorResult-bottom">
+          <ul
+            className="InstructorResult-bottom"
+            onClick={e => {
+              e.stopPropagation();
+            }}
+          >
             {instructor.phone &&
               <li className="InstructorResult-detail">
                 {instructor.phone}
@@ -122,12 +135,7 @@ class InstructorResult extends Component {
           </ul>
         </div>
         {loaded
-          ? <ul
-              className={
-                'InstructorResult-courses' +
-                (expanded ? ' InstructorResult-expanded' : '')
-              }
-            >
+          ? <ul className="InstructorResult-courses">
               {instructor.courses.map(course =>
                 <div key={course._id} className="InstructorResult-course">
                   <CourseResult

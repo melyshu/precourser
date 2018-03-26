@@ -37,7 +37,7 @@
       align-items: center;
       margin: $block;
       padding: $padding;
-      background: rgba($empty, 0.8);
+      background: rgba($empty, 0.9);
       border-radius: 2*$border;
       border: $border solid $orange;
 
@@ -125,6 +125,7 @@
       font-size: 0.4rem;
       color: $empty;
       padding: $border;
+      text-shadow: 0 0 $shadow $full, 0 0 $shadow $full;
     }
 
     .Home-footer-right {

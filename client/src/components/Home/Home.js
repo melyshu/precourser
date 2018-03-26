@@ -26,18 +26,17 @@ class Home extends Component {
             </div>
             <div className="Home-bottom">
               <a
-                to={process.env.NODE_ENV === 'production' ? '/auth/login' : '/'}
+                href={
+                  process.env.NODE_ENV === 'production' ? '/auth/login' : '/'
+                }
                 className="Home-button"
               >
                 select courses
               </a>
             </div>
             <div className="Home-narrow">
-              {
-                process.env.HELLO
-                /*Your screen may be too narrow. For the best experience, use a
-              larger device.*/
-              }
+              Your screen may be too narrow. For the best experience, use a
+              larger device.
             </div>
             <div className="Home-message">
               By using precourser, you agree to your data being stored and
