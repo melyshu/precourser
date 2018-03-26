@@ -6,9 +6,8 @@ import DisplayPane from '../DisplayPane/DisplayPane';
 import Virtual from '../Virtual/Virtual';
 import './App.css';
 
-ReactGA.initialize('UA-115536526-1', { debug: true });
-
-const TIMEOUT_DELAY = 200;
+const HOVER_TIMEOUT_DELAY = 200;
+const SEARCH_TIMEOUT_DELAY = 2000;
 const REFRESH_INTERVAL = 60000;
 
 class App extends Component {
@@ -23,10 +22,12 @@ class App extends Component {
       schedules: [],
       selectedSchedule: { courses: [] },
       courseSearch: '',
+      waitingCourseSearch: false,
       loadingCourseSearch: false,
       searchedCourses: [],
       selectedCourse: null,
       instructorSearch: '',
+      waitingInstructorSearch: false,
       loadingInstructorSearch: false,
       searchedInstructors: [],
       hoveredCourse: null,
@@ -36,6 +37,7 @@ class App extends Component {
       now: new Date()
     };
 
+    this.history = props.history;
     this.fetchJson = Virtual.fetchJson;
     this.fetchJsonAndSetState = Virtual.fetchJsonAndSetState;
 
@@ -47,6 +49,7 @@ class App extends Component {
       'handleRenameSchedule',
       'handleDeleteSchedule',
       'handleChangeCourseSearch',
+      'handleSearchCourse',
       'handleSelectCourse',
       'handleUnselectCourse',
       'handleSaveCourse',
@@ -56,6 +59,7 @@ class App extends Component {
       'handleAddSectionToSchedule',
       'handleRemoveSectionFromSchedule',
       'handleChangeInstructorSearch',
+      'handleSearchInstructor',
       'handleMouseOverCourse',
       'handleMouseOutCourse',
       'handleMouseOverSection',
@@ -68,8 +72,14 @@ class App extends Component {
   }
 
   handleChangeSemester(semesterId) {
+    ReactGA.event({
+      category: 'Navigation',
+      action: 'Changed Semester',
+      label: semesterId
+    });
+
     const courseSearch = this.state.courseSearch;
-    if (courseSearch.length < 3) {
+    if (courseSearch.length < 1) {
       this.fetchJsonAndSetState(`/api/semester/${semesterId}`);
     } else {
       this.fetchJsonAndSetState(
@@ -81,10 +91,20 @@ class App extends Component {
   }
 
   handleChangeSchedule(scheduleId) {
+    ReactGA.event({
+      category: 'Navigation',
+      action: 'Changed Schedule'
+    });
+
     this.fetchJsonAndSetState(`/api/schedule/${scheduleId}`);
   }
 
   handleCreateSchedule(name) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Created Schedule'
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/semester/${this.state
         .selectedSemester}/name/${encodeURIComponent(name)}`,
@@ -93,6 +113,11 @@ class App extends Component {
   }
 
   handleRenameSchedule(name) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Renamed Schedule'
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule
         ._id}/name/${encodeURIComponent(name)}`,
@@ -103,6 +128,11 @@ class App extends Component {
   }
 
   handleDeleteSchedule() {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Deleted Schedule'
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule._id}`,
       {
@@ -114,50 +144,111 @@ class App extends Component {
   handleChangeCourseSearch(event) {
     const query = event.target.value;
     const semesterId = this.state.selectedSemester;
-    this.setState({ courseSearch: query, loadingCourseSearch: true });
-    if (query.length < 3) {
-      this.setState({ searchedCourses: [], loadingCourseSearch: false });
+
+    this.setState({
+      courseSearch: query,
+      waitingCourseSearch: true,
+      loadingCourseSearch: false
+    });
+    if (query.length < 1) {
+      this.setState({
+        searchedCourses: [],
+        waitingCourseSearch: false,
+        loadingCourseSearch: false
+      });
       return;
     }
 
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
-      this.fetchJson(
-        `/api/course/semester/${this.state
-          .selectedSemester}/search/${encodeURIComponent(query)}`
-      ).then(object => {
-        if (
-          this.state.courseSearch === query &&
-          this.state.selectedSemester === semesterId
-        ) {
-          this.searchTimeout = null;
-          this.setState(object);
-        }
-      });
-    }, TIMEOUT_DELAY);
+      this.handleSearchCourse(query, semesterId);
+    }, SEARCH_TIMEOUT_DELAY);
+  }
+
+  handleSearchCourse(query, semesterId) {
+    if (
+      this.state.courseSearch === query &&
+      this.state.selectedSemester === semesterId &&
+      !this.state.waitingCourseSearch
+    ) {
+      return;
+    }
+
+    ReactGA.pageview(`/search/course?q=${encodeURIComponent(query)}`);
+    ReactGA.event({
+      category: 'Search',
+      action: 'Searched Course'
+    });
+    this.setState({ waitingCourseSearch: false, loadingCourseSearch: true });
+
+    this.fetchJson(
+      `/api/course/semester/${semesterId}/search/${encodeURIComponent(query)}`
+    ).then(object => {
+      if (
+        this.state.courseSearch === query &&
+        this.state.selectedSemester === semesterId &&
+        this.state.loadingCourseSearch
+      ) {
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = null;
+        this.setState(object);
+      }
+    });
   }
 
   handleSelectCourse(courseId) {
-    this.fetchJsonAndSetState(`/api/course/${courseId}`);
+    ReactGA.pageview(`/course/${courseId}`);
+    ReactGA.event({
+      category: 'Course',
+      action: 'Opened Course',
+      label: courseId
+    });
+
+    this.history.push(`/course/${courseId}`);
   }
 
   handleUnselectCourse() {
+    ReactGA.pageview('/');
+    ReactGA.event({
+      category: 'Course',
+      action: 'Closed Course'
+    });
+
     this.setState({ selectedCourse: null });
+    this.history.push(`/`);
   }
 
   handleSaveCourse(courseId) {
+    ReactGA.event({
+      category: 'Course',
+      action: 'Saved Course',
+      label: courseId
+    });
+
     this.fetchJsonAndSetState(`/api/save/course/${courseId}`, {
       method: 'PUT'
     });
   }
 
   handleUnsaveCourse(courseId) {
+    ReactGA.event({
+      category: 'Course',
+      action: 'Unsaved Course',
+      label: courseId
+    });
+
     this.fetchJsonAndSetState(`/api/save/course/${courseId}`, {
       method: 'DELETE'
     });
   }
 
   handleAddCourseToSchedule(courseId) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Added Course',
+      label: courseId
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule._id}/course/${courseId}`,
       { method: 'PUT' }
@@ -165,6 +256,12 @@ class App extends Component {
   }
 
   handleRemoveCourseFromSchedule(courseId) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Removed Course',
+      label: courseId
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule._id}/course/${courseId}`,
       { method: 'DELETE' }
@@ -172,6 +269,12 @@ class App extends Component {
   }
 
   handleAddSectionToSchedule(sectionId) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Added Section',
+      label: sectionId
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule._id}/section/${sectionId}`,
       { method: 'PUT' }
@@ -179,6 +282,12 @@ class App extends Component {
   }
 
   handleRemoveSectionFromSchedule(sectionId) {
+    ReactGA.event({
+      category: 'Schedule',
+      action: 'Removed Section',
+      label: sectionId
+    });
+
     this.fetchJsonAndSetState(
       `/api/schedule/${this.state.selectedSchedule._id}/section/${sectionId}`,
       { method: 'DELETE' }
@@ -187,10 +296,16 @@ class App extends Component {
 
   handleChangeInstructorSearch(event) {
     const query = event.target.value;
-    this.setState({ instructorSearch: query, loadingInstructorSearch: true });
-    if (query.length < 3) {
+
+    this.setState({
+      instructorSearch: query,
+      waitingInstructorSearch: true,
+      loadingInstructorSearch: false
+    });
+    if (query.length < 1) {
       this.setState({
         searchedInstructors: [],
+        waitingInstructorSearch: false,
         loadingInstructorSearch: false
       });
       return;
@@ -198,22 +313,47 @@ class App extends Component {
 
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
-      this.fetchJson(
-        `/api/instructor/search/${encodeURIComponent(query)}`
-      ).then(object => {
-        if (this.state.instructorSearch === query) {
-          this.searchTimeout = null;
-          this.setState(object);
-        }
-      });
-    }, TIMEOUT_DELAY);
+      this.handleSearchInstructor(query);
+    }, SEARCH_TIMEOUT_DELAY);
+  }
+
+  handleSearchInstructor(query) {
+    if (
+      this.state.instructorSearch === query &&
+      !this.state.waitingInstructorSearch
+    ) {
+      return;
+    }
+
+    ReactGA.pageview(`/search/instructor?q=${encodeURIComponent(query)}`);
+    ReactGA.event({
+      category: 'Search',
+      action: 'Searched Instructor'
+    });
+    this.setState({
+      waitingInstructorSearch: false,
+      loadingInstructorSearch: true
+    });
+
+    this.fetchJson(
+      `/api/instructor/search/${encodeURIComponent(query)}`
+    ).then(object => {
+      if (
+        this.state.instructorSearch === query &&
+        this.state.loadingInstructorSearch
+      ) {
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = null;
+        this.setState(object);
+      }
+    });
   }
 
   handleMouseOverCourse(course) {
     clearTimeout(this.hoveredCourseTimeout);
     this.hoveredCourseTimeout = setTimeout(
       () => this.setState({ hoveredCourse: course, hoveredSection: null }),
-      TIMEOUT_DELAY
+      HOVER_TIMEOUT_DELAY
     );
   }
 
@@ -221,7 +361,7 @@ class App extends Component {
     clearTimeout(this.hoveredCourseTimeout);
     this.hoveredCourseTimeout = setTimeout(
       () => this.setState({ hoveredCourse: null }),
-      TIMEOUT_DELAY
+      HOVER_TIMEOUT_DELAY
     );
   }
 
@@ -237,7 +377,7 @@ class App extends Component {
     this.fetchJson(`/api/startup`).then(object => {
       this.setState(object);
       ReactGA.set({ userId: object.user._id });
-      ReactGA.pageview('/');
+      ReactGA.pageview(this.history.location.pathname);
     });
 
     this.nowInterval = setInterval(
@@ -252,7 +392,12 @@ class App extends Component {
 
   render() {
     const loading = this.state.loading;
-    if (loading) return null;
+    if (loading)
+      return (
+        <div className="App">
+          <Navbar isEmpty={true} />
+        </div>
+      );
 
     const departments = this.state.departments;
     const semesters = this.state.semesters;
@@ -261,10 +406,12 @@ class App extends Component {
     const schedules = this.state.schedules;
     const selectedSchedule = this.state.selectedSchedule;
     const courseSearch = this.state.courseSearch;
+    const waitingCourseSearch = this.state.waitingCourseSearch;
     const loadingCourseSearch = this.state.loadingCourseSearch;
     const searchedCourses = this.state.searchedCourses;
     const selectedCourse = this.state.selectedCourse;
     const instructorSearch = this.state.instructorSearch;
+    const waitingInstructorSearch = this.state.waitingInstructorSearch;
     const loadingInstructorSearch = this.state.loadingInstructorSearch;
     const searchedInstructors = this.state.searchedInstructors;
     const hoveredCourse = this.state.hoveredCourse;
@@ -278,6 +425,7 @@ class App extends Component {
     const handleRenameSchedule = this.handleRenameSchedule;
     const handleDeleteSchedule = this.handleDeleteSchedule;
     const handleChangeCourseSearch = this.handleChangeCourseSearch;
+    const handleSearchCourse = this.handleSearchCourse;
     const handleSelectCourse = this.handleSelectCourse;
     const handleUnselectCourse = this.handleUnselectCourse;
     const handleSaveCourse = this.handleSaveCourse;
@@ -288,6 +436,7 @@ class App extends Component {
     const handleRemoveSectionFromSchedule = this
       .handleRemoveSectionFromSchedule;
     const handleChangeInstructorSearch = this.handleChangeInstructorSearch;
+    const handleSearchInstructor = this.handleSearchInstructor;
     const handleMouseOverCourse = this.handleMouseOverCourse;
     const handleMouseOutCourse = this.handleMouseOutCourse;
     const handleMouseOverSection = this.handleMouseOverSection;
@@ -351,6 +500,23 @@ class App extends Component {
       XAUDIT: 'No audit data'
     };
 
+    const urlCourseId = this.props.match.params.courseId;
+    if (
+      urlCourseId &&
+      (!selectedCourse || selectedCourse._id !== urlCourseId)
+    ) {
+      this.fetchJsonAndSetState(`/api/course/${urlCourseId}`).catch(err => {
+        console.error(err);
+        this.history.replace(`/`);
+      });
+    }
+
+    if (selectedCourse) {
+      document.title = `precourser | ${selectedCourse.department}${selectedCourse.catalogNumber} ${selectedCourse.title}`;
+    } else {
+      document.title = `precourser | ${selectedSchedule.name}`;
+    }
+
     return (
       <div className="App">
         <Navbar
@@ -372,10 +538,12 @@ class App extends Component {
             user={user}
             selectedSchedule={selectedSchedule}
             courseSearch={courseSearch}
+            waitingCourseSearch={waitingCourseSearch}
             loadingCourseSearch={loadingCourseSearch}
             searchedCourses={searchedCourses}
             selectedCourse={selectedCourse}
             instructorSearch={instructorSearch}
+            waitingInstructorSearch={waitingInstructorSearch}
             loadingInstructorSearch={loadingInstructorSearch}
             searchedInstructors={searchedInstructors}
             now={now}
@@ -385,6 +553,7 @@ class App extends Component {
             pdfLookup={pdfLookup}
             auditLookup={auditLookup}
             onChangeCourseSearch={handleChangeCourseSearch}
+            onSearchCourse={handleSearchCourse}
             onSelectCourse={handleSelectCourse}
             onUnselectCourse={handleUnselectCourse}
             onSaveCourse={handleSaveCourse}
@@ -392,6 +561,7 @@ class App extends Component {
             onAddCourseToSchedule={handleAddCourseToSchedule}
             onRemoveCourseFromSchedule={handleRemoveCourseFromSchedule}
             onChangeInstructorSearch={handleChangeInstructorSearch}
+            onSearchInstructor={handleSearchInstructor}
             onMouseOverCourse={handleMouseOverCourse}
             onMouseOutCourse={handleMouseOutCourse}
           />

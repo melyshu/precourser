@@ -9,6 +9,8 @@ import FaSortAmountAsc from 'react-icons/lib/fa/sort-amount-asc';
 import FaSortAmountDesc from 'react-icons/lib/fa/sort-amount-desc';
 import FaSortNumericAsc from 'react-icons/lib/fa/sort-numeric-asc';
 import FaSortNumericDesc from 'react-icons/lib/fa/sort-numeric-desc';
+import FaEllipsisH from 'react-icons/lib/fa/ellipsis-h';
+import FaCircleONotch from 'react-icons/lib/fa/circle-o-notch';
 import SideMenu from '../SideMenu/SideMenu';
 import CourseResult from '../CourseResult/CourseResult';
 import InstructorResult from '../InstructorResult/InstructorResult';
@@ -20,10 +22,12 @@ class MenuPane extends Component {
     const user = this.props.user;
     const selectedSchedule = this.props.selectedSchedule;
     const courseSearch = this.props.courseSearch;
+    const waitingCourseSearch = this.props.waitingCourseSearch;
     const loadingCourseSearch = this.props.loadingCourseSearch;
     const searchedCourses = this.props.searchedCourses;
     const selectedCourse = this.props.selectedCourse;
     const instructorSearch = this.props.instructorSearch;
+    const waitingInstructorSearch = this.props.waitingInstructorSearch;
     const loadingInstructorSearch = this.props.loadingInstructorSearch;
     const searchedInstructors = this.props.searchedInstructors;
     const now = this.props.now;
@@ -33,6 +37,7 @@ class MenuPane extends Component {
     const pdfLookup = this.props.pdfLookup;
     const auditLookup = this.props.auditLookup;
     const onChangeCourseSearch = this.props.onChangeCourseSearch;
+    const onSearchCourse = this.props.onSearchCourse;
     const onSelectCourse = this.props.onSelectCourse;
     const onUnselectCourse = this.props.onUnselectCourse;
     const onSaveCourse = this.props.onSaveCourse;
@@ -40,6 +45,7 @@ class MenuPane extends Component {
     const onAddCourseToSchedule = this.props.onAddCourseToSchedule;
     const onRemoveCourseFromSchedule = this.props.onRemoveCourseFromSchedule;
     const onChangeInstructorSearch = this.props.onChangeInstructorSearch;
+    const onSearchInstructor = this.props.onSearchInstructor;
     const onMouseOverCourse = this.props.onMouseOverCourse;
     const onMouseOutCourse = this.props.onMouseOutCourse;
 
@@ -84,6 +90,15 @@ class MenuPane extends Component {
       'Selected Course'
     ];
 
+    const handleKeyDown = tab => {
+      return event => {
+        if (event.key === 'Enter') {
+          if (tab === 0) onSearchCourse(courseSearch, selectedSemester);
+          if (tab === 1) onSearchInstructor(instructorSearch);
+        }
+      };
+    };
+
     const renderInput = tab => {
       if (tab > 1) return;
       return (
@@ -93,6 +108,7 @@ class MenuPane extends Component {
           type="text"
           value={tab ? instructorSearch : courseSearch}
           onChange={tab ? onChangeInstructorSearch : onChangeCourseSearch}
+          onKeyDown={handleKeyDown(tab)}
           placeholder="search"
           autoFocus={true}
           onFocus={event => {
@@ -102,11 +118,19 @@ class MenuPane extends Component {
       );
     };
 
-    const renderSpinner = tab => {
-      return (
+    const renderIcon = tab => {
+      if (tab > 1) return;
+      if (
+        (tab === 0 && waitingCourseSearch) ||
+        (tab === 1 && waitingInstructorSearch)
+      ) {
+        return <FaEllipsisH className="SideMenu-waiting" />;
+      } else if (
         (tab === 0 && loadingCourseSearch) ||
         (tab === 1 && loadingInstructorSearch)
-      );
+      ) {
+        return <FaCircleONotch className="SideMenu-loading" />;
+      }
     };
 
     // s is sign in sorting functions
@@ -239,7 +263,7 @@ class MenuPane extends Component {
         sortLabels={sortLabels}
         sortDescriptions={sortDescriptions}
         renderInput={renderInput}
-        renderSpinner={renderSpinner}
+        renderIcon={renderIcon}
         renderContent={renderContent}
         captionNouns={captionNouns}
         edge="left"

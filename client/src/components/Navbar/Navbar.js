@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import FaCaretDown from 'react-icons/lib/fa/caret-down';
-import FaPencil from 'react-icons/lib/fa/pencil';
-import FaCalendarPlusO from 'react-icons/lib/fa/calendar-plus-o';
-import FaTrash from 'react-icons/lib/fa/trash';
-import FaEdit from 'react-icons/lib/fa/edit';
+import ReactGA from 'react-ga';
+import MdArrowDropDown from 'react-icons/lib/md/arrow-drop-down';
+import MdEdit from 'react-icons/lib/md/edit';
+import MdAddCircleOutline from 'react-icons/lib/md/add-circle-outline';
+import MdDelete from 'react-icons/lib/md/delete';
+import MdFeedback from 'react-icons/lib/md/feedback';
 import NavbarItem from '../NavbarItem/NavbarItem';
 import NavbarDropdown from '../NavbarDropdown/NavbarDropdown';
 import NavbarInput from '../NavbarInput/NavbarInput';
@@ -37,6 +38,11 @@ class Navbar extends Component {
     const isEmpty = this.props.isEmpty;
 
     const handleSubmitFeedback = text => {
+      ReactGA.event({
+        category: 'Navigation',
+        action: 'Submitted Feedback'
+      });
+
       const feedback = encodeURIComponent(text);
       const url = `${BASE_URL}${FORM_KEY}/formResponse?${ENTRY_ID}=${feedback}`;
 
@@ -56,6 +62,11 @@ class Navbar extends Component {
     };
 
     const handleLogoutClick = () => {
+      ReactGA.event({
+        category: 'Navigation',
+        action: 'Logged out'
+      });
+
       if (process.env.NODE_ENV === 'production') {
         window.location.href = '/auth/logout';
       } else {
@@ -78,8 +89,7 @@ class Navbar extends Component {
                 key="semester"
                 display={
                   <span>
-                    {semesterLookup[selectedSemester].name}
-                    <FaCaretDown />
+                    {semesterLookup[selectedSemester].name} <MdArrowDropDown />
                   </span>
                 }
                 description="Change semester"
@@ -97,8 +107,7 @@ class Navbar extends Component {
                 key="schedule"
                 display={
                   <span>
-                    {selectedSchedule.name}
-                    <FaCaretDown />
+                    {selectedSchedule.name} <MdArrowDropDown />
                   </span>
                 }
                 description="Change schedule"
@@ -114,7 +123,7 @@ class Navbar extends Component {
               </NavbarItem>,
               <NavbarItem
                 key="rename"
-                display={<FaPencil />}
+                display={<MdEdit />}
                 description="Rename schedule"
               >
                 <NavbarInput
@@ -126,7 +135,7 @@ class Navbar extends Component {
               </NavbarItem>,
               <NavbarItem
                 key="create"
-                display={<FaCalendarPlusO />}
+                display={<MdAddCircleOutline />}
                 description="Create schedule"
               >
                 <NavbarInput
@@ -138,7 +147,7 @@ class Navbar extends Component {
               </NavbarItem>,
               <NavbarItem
                 key="delete"
-                display={<FaTrash />}
+                display={<MdDelete />}
                 description="Delete schedule"
               >
                 <NavbarInput
@@ -154,7 +163,7 @@ class Navbar extends Component {
             ]}
         <div className="Navbar-stretch" />
         <NavbarItem
-          display={<FaEdit />}
+          display={<MdFeedback />}
           description={'Feedback'}
           alignRight={true}
         >

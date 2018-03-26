@@ -1,5 +1,12 @@
 // Main script running the server!
 
+// opbeat performance tracking
+const opbeat = require('opbeat').start({
+  appId: '001906db99',
+  organizationId: 'af6e6dcefd2748bebdabf76661867211',
+  secretToken: 'c913876fc23972481c0d507c231527142e6ac929'
+});
+
 console.log('Launching...');
 
 const config = require('./config.js');
@@ -98,6 +105,9 @@ if (process.env.NODE_ENV === 'production') {
 app.all('*', function(req, res) {
   res.redirect('/home');
 });
+
+// Add the Opbeat middleware after your regular middleware
+app.use(opbeat.middleware.express());
 
 app.listen(config.port, () => {
   console.log(`precourser listening at ${config.host} on port ${config.port}!`);

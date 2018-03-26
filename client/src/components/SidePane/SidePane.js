@@ -45,8 +45,8 @@ class SidePane extends Component {
       return;
     };
 
-    const renderSpinner = tab => {
-      return false;
+    const renderIcon = tab => {
+      return;
     };
 
     // s is sign in sorting functions
@@ -161,7 +161,7 @@ class SidePane extends Component {
         sortLabels={sortLabels}
         sortDescriptions={sortDescriptions}
         renderInput={renderInput}
-        renderSpinner={renderSpinner}
+        renderIcon={renderIcon}
         renderContent={renderContent}
         captionNouns={captionNouns}
         edge="right"

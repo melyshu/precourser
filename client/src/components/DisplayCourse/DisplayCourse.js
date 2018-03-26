@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import ReactGA from 'react-ga';
 import FaStar from 'react-icons/lib/fa/star';
 import FaClose from 'react-icons/lib/fa/close';
-import FaExternalLink from 'react-icons/lib/fa/external-link';
+import FaListAlt from 'react-icons/lib/fa/list-alt';
+import FaBarChart from 'react-icons/lib/fa/bar-chart';
 import FaHome from 'react-icons/lib/fa/home';
 import CourseSummary from '../CourseSummary/CourseSummary';
 import DisplayCourseDetails from '../DisplayCourseDetails/DisplayCourseDetails';
@@ -66,25 +68,37 @@ class DisplayCourse extends Component {
               <FaStar />
             </button>
             <div className="DisplayCourse-stretch" />
-            <a
+            <ReactGA.OutboundLink
               className="DisplayCourse-button"
-              title="Registrar page"
-              href={`https://registrar.princeton.edu/course-offerings/course_details.xml?courseid=${selectedCourse.systemId}&term=${selectedCourse.semester}`}
+              title="Registrar course information page"
+              eventLabel="Clicked registrar course information page"
+              to={`https://registrar.princeton.edu/course-offerings/course_details.xml?courseid=${selectedCourse.systemId}&term=${selectedCourse.semester}`}
               rel="noopener noreferrer"
               target="_blank"
             >
-              <FaExternalLink />
-            </a>
+              <FaListAlt />
+            </ReactGA.OutboundLink>
+            <ReactGA.OutboundLink
+              className="DisplayCourse-button"
+              title="Registrar course evaluation page"
+              eventLabel="Clicked registrar course evaluation page"
+              to={`https://reg-captiva.princeton.edu/chart/index.php?terminfo=${selectedCourse.semester}&courseinfo=${selectedCourse.systemId}`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <FaBarChart />
+            </ReactGA.OutboundLink>
             {selectedCourse.website
-              ? <a
+              ? <ReactGA.OutboundLink
                   className="DisplayCourse-button"
                   title="Course website"
-                  href={selectedCourse.website}
+                  eventLabel="Clicked course website"
+                  to={selectedCourse.website}
                   rel="noopener noreferrer"
                   target="_blank"
                 >
                   <FaHome />
-                </a>
+                </ReactGA.OutboundLink>
               : null}
           </div>
           <div className="DisplayCourse-content">

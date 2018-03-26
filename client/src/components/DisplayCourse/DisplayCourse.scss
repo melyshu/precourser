@@ -20,8 +20,17 @@
       font-size: 1rem;
       padding: $padding;
       flex: 0 0 auto;
+
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: stretch;
+
       background: $empty;
       border-bottom: $border solid $half;
+
+      height: 2*$block + $border;
+      box-sizing: border-box;
 
       z-index: 10;
     }
@@ -90,6 +99,5 @@
 
     display: flex;
     flex-flow: row nowrap;
-
   }
 }

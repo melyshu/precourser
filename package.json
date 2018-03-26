@@ -37,6 +37,7 @@
     "express": "^4.15.4",
     "express-session": "^1.15.5",
     "mongoose": "^4.11.7",
+    "opbeat": "^4.17.0",
     "react-icons": "^2.2.5",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
