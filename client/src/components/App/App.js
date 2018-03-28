@@ -174,7 +174,7 @@ class App extends Component {
       return;
     }
 
-    ReactGA.pageview(`/search/course?q=${encodeURIComponent(query)}`);
+    ReactGA.pageview(`/search?sc=course&q=${encodeURIComponent(query)}`);
     ReactGA.event({
       category: 'Search',
       action: 'Searched Course'
@@ -325,7 +325,7 @@ class App extends Component {
       return;
     }
 
-    ReactGA.pageview(`/search/instructor?q=${encodeURIComponent(query)}`);
+    ReactGA.pageview(`/search?sc=instructor&q=${encodeURIComponent(query)}`);
     ReactGA.event({
       category: 'Search',
       action: 'Searched Instructor'
