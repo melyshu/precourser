@@ -1,3 +1,6 @@
+# database backups
+_db_*
+
 ##################
 # DEFAULTS BELOW #
 ##################
