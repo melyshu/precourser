@@ -13,6 +13,7 @@
   color: $default;
   background: $empty;
   box-sizing: border-box;
+  overflow: hidden;
 
   &.SideMenu-left {
     border-right: $border solid $half;

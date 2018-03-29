@@ -24,7 +24,9 @@
 
   .NavbarItem-dropdown {
     z-index: 60;
-    box-shadow: 0 0 $shadow 0 $full;
+    border: $border solid $orange;
+    border-radius: 2*$border;
+    //box-shadow: 0 0 $shadow 0 $full;
 
     position: absolute;
     top: 100%;
