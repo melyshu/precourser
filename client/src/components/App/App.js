@@ -145,13 +145,11 @@ class App extends Component {
     const query = event.target.value;
     const semesterId = this.state.selectedSemester;
 
-    this.setState({
-      courseSearch: query,
-      waitingCourseSearch: true,
-      loadingCourseSearch: false
-    });
+    clearTimeout(this.searchTimeout);
+
     if (query.length < 1) {
       this.setState({
+        courseSearch: query,
         searchedCourses: [],
         waitingCourseSearch: false,
         loadingCourseSearch: false
@@ -159,7 +157,12 @@ class App extends Component {
       return;
     }
 
-    clearTimeout(this.searchTimeout);
+    this.setState({
+      courseSearch: query,
+      waitingCourseSearch: true,
+      loadingCourseSearch: false
+    });
+
     this.searchTimeout = setTimeout(() => {
       this.handleSearchCourse(query, semesterId);
     }, SEARCH_TIMEOUT_DELAY);
@@ -190,7 +193,6 @@ class App extends Component {
         this.state.loadingCourseSearch
       ) {
         clearTimeout(this.searchTimeout);
-        this.searchTimeout = null;
         this.setState(object);
       }
     });
@@ -297,13 +299,11 @@ class App extends Component {
   handleChangeInstructorSearch(event) {
     const query = event.target.value;
 
-    this.setState({
-      instructorSearch: query,
-      waitingInstructorSearch: true,
-      loadingInstructorSearch: false
-    });
+    clearTimeout(this.searchTimeout);
+
     if (query.length < 1) {
       this.setState({
+        instructorSearch: query,
         searchedInstructors: [],
         waitingInstructorSearch: false,
         loadingInstructorSearch: false
@@ -311,7 +311,12 @@ class App extends Component {
       return;
     }
 
-    clearTimeout(this.searchTimeout);
+    this.setState({
+      instructorSearch: query,
+      waitingInstructorSearch: true,
+      loadingInstructorSearch: false
+    });
+
     this.searchTimeout = setTimeout(() => {
       this.handleSearchInstructor(query);
     }, SEARCH_TIMEOUT_DELAY);
@@ -343,7 +348,6 @@ class App extends Component {
         this.state.loadingInstructorSearch
       ) {
         clearTimeout(this.searchTimeout);
-        this.searchTimeout = null;
         this.setState(object);
       }
     });
