@@ -91,6 +91,7 @@ router.get('/:fileName', function(req, res) {
           }
         }
 
+        res.set({ 'Content-Disposition': `attachment; filename=${fileName}` });
         res.send(cal.toString());
       });
   });
