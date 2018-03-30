@@ -17,6 +17,7 @@ const semesterSchema = new mongoose.Schema({
 semesterSchema.statics.fullSelector = '-courses';
 
 // Semester.findFull
+// GET /ical/:fileName
 semesterSchema.query.getFullAndExec = function() {
   return this.select(mongoose.model('Semester').fullSelector)
     .sort('-_id')

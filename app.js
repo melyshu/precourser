@@ -1,11 +1,14 @@
 // Main script running the server!
 
 // opbeat performance tracking
-const opbeat = require('opbeat').start({
-  appId: '001906db99',
-  organizationId: 'af6e6dcefd2748bebdabf76661867211',
-  secretToken: 'c913876fc23972481c0d507c231527142e6ac929'
-});
+const opbeat =
+  process.env.NODE_ENV === 'production'
+    ? require('opbeat').start({
+        appId: '001906db99',
+        organizationId: 'af6e6dcefd2748bebdabf76661867211',
+        secretToken: 'c913876fc23972481c0d507c231527142e6ac929'
+      })
+    : null;
 
 console.log('Launching...');
 
@@ -20,6 +23,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 
 const auth = require('./controllers/auth.js');
 const api = require('./controllers/api.js');
+const ical = require('./controllers/ical.js');
 
 console.log('Dependencies loaded...');
 
@@ -62,6 +66,7 @@ app.use(auth.enforceAuth);
 
 app.use('/auth', auth.router);
 app.use('/api', api.router);
+app.use('/ical', ical.router);
 
 // production uses static assets from react build
 if (process.env.NODE_ENV === 'production') {
@@ -107,7 +112,9 @@ app.all('*', function(req, res) {
 });
 
 // Add the Opbeat middleware after your regular middleware
-app.use(opbeat.middleware.express());
+if (process.env.NODE_ENV === 'production') {
+  app.use(opbeat.middleware.express());
+}
 
 app.listen(config.port, () => {
   console.log(`precourser listening at ${config.host} on port ${config.port}!`);
