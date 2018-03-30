@@ -39,6 +39,7 @@ scheduleSchema.statics.fullSelector = '-public';
 // Schedule.removeCourseByUserAndId
 // Schedule.addSectionByUserAndId
 // Schedule.removeSectionByUserAndId
+// GET /ical/:fileName
 scheduleSchema.query.getFullAndExec = function() {
   return this.select(mongoose.model('Schedule').fullSelector)
     .populate({

@@ -1,35 +1,11 @@
 BUGS
 
-cover subtitle isn't perfect
-
-tokenise search on client side - four spaces make an empty search of everything!
-
-switching semesters on empty search
-
-mobile layout
-
-edge hates flexbox
-
-first login loading forever
+firefox hates flexbox
 
 THINGS TO IMPROVE
 
-selected course highlighting
+search stuff
 
-course result - expanding a little clunky?
+color selection in schedule
 
-SEARCH
-
-simple
-
-distribution
-  /^(LA|EM|SA|HA|STN|QR|STL|EC|W)$/i
-pdf
-  /^(NPDF|PDFO|PDF|XPDF)$/i
-audit
-  /^(AUDIT|NAUDIT|XAUDIT)$/i
-  /^(A|NA|XA)$/i
-department code
-
- - department
-111? - catalogNumber
+walkthroughs / demos
