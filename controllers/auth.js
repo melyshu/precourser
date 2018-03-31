@@ -8,7 +8,7 @@ const cas = new CASAuthentication({
   service: config.host + '/auth/verify'
 });
 
-const PUBLIC_PATHS = /\/client\/.*|\/auth\/login|\/auth\/verify|\/home/;
+const PUBLIC_PATHS = /\/client\/.*|\/auth\/login|\/auth\/verify|\/home|\/ical\/.*/;
 
 const router = express.Router();
 
