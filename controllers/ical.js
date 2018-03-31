@@ -8,7 +8,7 @@ const Schedule = require('../models/Schedule.js');
 const DAYS = ['su', 'mo', 'tu', 'we', 'th', 'fr', 'sa'];
 
 // get iCal .ics file
-router.get('/:fileName', function(req, res) {
+router.all('/:fileName', function(req, res) {
   const fileName = req.params.fileName;
 
   // not a valid file
@@ -91,7 +91,10 @@ router.get('/:fileName', function(req, res) {
           }
         }
 
-        res.set({ 'Content-Disposition': `attachment; filename=${fileName}` });
+        res.set({
+          'Content-disposition': `attachment; filename=${fileName}`,
+          'Content-type': 'text/calendar'
+        });
         res.send(cal.toString());
       });
   });
