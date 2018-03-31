@@ -176,7 +176,7 @@ class Navbar extends Component {
                 description="Export schedule to iCal"
               >
                 <NavbarInput
-                  prompt={'Add to Google Calendar or save as iCal!'}
+                  prompt={'Add to Google Calendar or save to iCal:'}
                   defaultValue={`${window.location
                     .origin}/ical/${selectedSchedule._id}.ics`}
                   onSubmit={handleDownloadIcal}

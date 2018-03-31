@@ -92,7 +92,7 @@ router.all('/:fileName', function(req, res) {
         }
 
         res.set({
-          'Content-disposition': `attachment; filename=${fileName}`,
+          'Content-disposition': `attachment; filename=schedule.ics`,
           'Content-type': 'text/calendar'
         });
         res.send(cal.toString());
