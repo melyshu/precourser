@@ -10,12 +10,14 @@ class NavbarInput extends Component {
 
     this.state = {
       value: this.props.defaultValue,
+      copied: false,
       error: null
     };
 
     this.handleSubmitClick = this.handleSubmitClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleCopy = this.handleCopy.bind(this);
     this.setRef = this.setRef.bind(this);
   }
 
@@ -26,6 +28,7 @@ class NavbarInput extends Component {
     const defaultValue = this.props.defaultValue;
     const isFeedback = this.props.isFeedback;
     const onSubmit = this.props.onSubmit;
+    const isReadOnly = this.props.isReadOnly;
 
     if (!defaultValue) {
       onSubmit();
@@ -44,7 +47,7 @@ class NavbarInput extends Component {
           error: 'Tongue tied?'
         });
       }
-    } else {
+    } else if (!isReadOnly) {
       if (trimmedValue.length > MAX_NAME_LENGTH) {
         return this.setState({ error: 'Please enter a shorter name' });
       }
@@ -68,17 +71,24 @@ class NavbarInput extends Component {
     }
   }
 
+  handleCopy() {
+    this.inputRef.select();
+    document.execCommand('Copy');
+    this.setState({ copied: true });
+  }
+
   setRef(node) {
     this.inputRef = node;
   }
 
-  componentDidMount() {
-    if (this.props.defaultValue) this.inputRef.select();
-  }
+  // componentDidMount() {
+  //   if (this.props.defaultValue) this.inputRef.select();
+  // }
 
   render() {
     const value = this.state.value;
     const error = this.state.error;
+    const copied = this.state.copied;
 
     const collapseParent = this.props.collapseParent;
     const prompt = this.props.prompt;
@@ -86,10 +96,12 @@ class NavbarInput extends Component {
     const isFeedback = this.props.isFeedback;
     // const onSubmit = this.props.onSubmit;
     const verb = this.props.verb;
+    const isReadOnly = this.props.isReadOnly;
 
     const handleSubmitClick = this.handleSubmitClick;
     const handleChange = this.handleChange;
     const handleKeyDown = this.handleKeyDown;
+    const handleCopy = this.handleCopy;
     const setRef = this.setRef;
 
     return (
@@ -106,6 +118,18 @@ class NavbarInput extends Component {
               maxLength={isFeedback ? MAX_FEEDBACK_LENGTH : MAX_NAME_LENGTH}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
+              onFocus={event => {
+                event.target.select();
+              }}
+              onClick={
+                isReadOnly
+                  ? event => {
+                      event.target.select();
+                    }
+                  : null
+              }
+              autoFocus={true}
+              readOnly={isReadOnly}
             />
           : null}
         {error
@@ -114,8 +138,14 @@ class NavbarInput extends Component {
             </div>
           : null}
         <div className="NavbarInput-buttons">
-          <button className="NavbarInput-cancel" onClick={collapseParent}>
-            Cancel
+          <button
+            className={isReadOnly ? 'NavbarInput-submit' : 'NavbarInput-cancel'}
+            onClick={isReadOnly ? handleCopy : collapseParent}
+            onMouseOut={() => {
+              this.setState({ copied: false });
+            }}
+          >
+            {isReadOnly ? (copied ? 'Copied' : 'Copy') : 'Cancel'}
           </button>
           <button className="NavbarInput-submit" onClick={handleSubmitClick}>
             {verb}
