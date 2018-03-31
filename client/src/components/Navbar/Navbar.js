@@ -5,6 +5,7 @@ import MdEdit from 'react-icons/lib/md/edit';
 import MdAddCircleOutline from 'react-icons/lib/md/add-circle-outline';
 import MdDelete from 'react-icons/lib/md/delete';
 import MdFeedback from 'react-icons/lib/md/feedback';
+import MdFileDownload from 'react-icons/lib/md/file-download';
 import NavbarItem from '../NavbarItem/NavbarItem';
 import NavbarDropdown from '../NavbarDropdown/NavbarDropdown';
 import NavbarInput from '../NavbarInput/NavbarInput';
@@ -61,7 +62,7 @@ class Navbar extends Component {
       });
     };
 
-    const handleLogoutClick = () => {
+    const handleLogout = () => {
       ReactGA.event({
         category: 'Navigation',
         action: 'Logged out'
@@ -72,6 +73,15 @@ class Navbar extends Component {
       } else {
         window.location.href = '/home';
       }
+    };
+
+    const handleDownloadIcal = () => {
+      ReactGA.event({
+        category: 'Navigation',
+        action: 'Downloaded iCal'
+      });
+
+      window.location.href = `/ical/${selectedSchedule._id}.ics`;
     };
 
     return (
@@ -159,6 +169,20 @@ class Navbar extends Component {
                   onSubmit={onDeleteSchedule}
                   verb="Delete"
                 />
+              </NavbarItem>,
+              <NavbarItem
+                key="ical"
+                display={<MdFileDownload />}
+                description="Export schedule to iCal"
+              >
+                <NavbarInput
+                  prompt={'Add to Google Calendar or save as iCal!'}
+                  defaultValue={`${window.location
+                    .origin}/ical/${selectedSchedule._id}.ics`}
+                  onSubmit={handleDownloadIcal}
+                  verb="Save"
+                  isReadOnly={true}
+                />
               </NavbarItem>
             ]}
         <div className="Navbar-stretch" />
@@ -192,7 +216,7 @@ class Navbar extends Component {
           : <NavbarItem display={user._id} alignRight={true}>
               <NavbarInput
                 prompt="Would you like to logout?"
-                onSubmit={handleLogoutClick}
+                onSubmit={handleLogout}
                 verb="Logout"
               />
             </NavbarItem>}
