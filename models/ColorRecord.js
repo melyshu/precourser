@@ -75,7 +75,7 @@ colorRecordSchema.statics.createByScheduleCourseAndColor = function(
   colorId
 ) {
   const schedulePromise = mongoose.model('Schedule').count({ _id: scheduleId });
-  const coursePromise = mongoose.model('Schedule').count({ _id: courseId });
+  const coursePromise = mongoose.model('Course').count({ _id: courseId });
   const colorPromise = mongoose.model('Color').count({ _id: colorId });
 
   return Promise.join(schedulePromise, coursePromise, colorPromise, function(

@@ -30,6 +30,7 @@ class MenuPane extends Component {
     const waitingInstructorSearch = this.props.waitingInstructorSearch;
     const loadingInstructorSearch = this.props.loadingInstructorSearch;
     const searchedInstructors = this.props.searchedInstructors;
+    const colors = this.props.colors;
     const now = this.props.now;
     const departmentLookup = this.props.departmentLookup;
     const colorLookup = this.props.colorLookup;
@@ -49,6 +50,8 @@ class MenuPane extends Component {
     const onSearchInstructor = this.props.onSearchInstructor;
     const onMouseOverCourse = this.props.onMouseOverCourse;
     const onMouseOutCourse = this.props.onMouseOutCourse;
+    const onChangeCourseColorInSchedule = this.props
+      .onChangeCourseColorInSchedule;
 
     const tabLabels = [<FaSearch />, <FaUser />, <FaStar />, <FaCalendar />];
     const tabDescriptions = [
@@ -194,6 +197,7 @@ class MenuPane extends Component {
               user={user}
               selectedSchedule={selectedSchedule}
               selectedCourse={selectedCourse}
+              colors={colors}
               now={now}
               departmentLookup={departmentLookup}
               semesterLookup={semesterLookup}
@@ -209,6 +213,7 @@ class MenuPane extends Component {
               onRemoveCourseFromSchedule={onRemoveCourseFromSchedule}
               onMouseOverCourse={onMouseOverCourse}
               onMouseOutCourse={onMouseOutCourse}
+              onChangeCourseColorInSchedule={onChangeCourseColorInSchedule}
               key={instructor._id}
               instructor={instructor}
               showButtons={true}
@@ -234,6 +239,7 @@ class MenuPane extends Component {
             user={user}
             selectedSchedule={selectedSchedule}
             selectedCourse={selectedCourse}
+            colors={colors}
             now={now}
             departmentLookup={departmentLookup}
             semesterLookup={semesterLookup}
@@ -249,6 +255,7 @@ class MenuPane extends Component {
             onRemoveCourseFromSchedule={onRemoveCourseFromSchedule}
             onMouseOverCourse={onMouseOverCourse}
             onMouseOutCourse={onMouseOutCourse}
+            onChangeCourseColorInSchedule={onChangeCourseColorInSchedule}
             key={course._id}
             course={course}
             showButtons={true}

@@ -3,6 +3,7 @@ import FaStar from 'react-icons/lib/fa/star';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaMinus from 'react-icons/lib/fa/minus';
 import CourseSummary from '../CourseSummary/CourseSummary';
+import ColorPicker from '../ColorPicker/ColorPicker';
 import './CourseResult.css';
 
 class CourseResult extends Component {
@@ -11,6 +12,7 @@ class CourseResult extends Component {
     const user = this.props.user;
     const selectedSchedule = this.props.selectedSchedule; // if showButtons is enabled
     const selectedCourse = this.props.selectedCourse;
+    const colors = this.props.colors;
     const now = this.props.now;
     const departmentLookup = this.props.departmentLookup;
     const semesterLookup = this.props.semesterLookup;
@@ -28,6 +30,8 @@ class CourseResult extends Component {
     const onRemoveCourseFromSchedule = this.props.onRemoveCourseFromSchedule;
     const onMouseOverCourse = this.props.onMouseOverCourse;
     const onMouseOutCourse = this.props.onMouseOutCourse;
+    const onChangeCourseColorInSchedule = this.props
+      .onChangeCourseColorInSchedule;
 
     const course = this.props.course;
     const showButtons = this.props.showButtons;
@@ -63,9 +67,12 @@ class CourseResult extends Component {
         onMouseOut={validButton ? onMouseOutCourse.bind(null, course) : null}
       >
         {showButtons
-          ? <div
-              className="CourseResult-bar"
-              style={{ backgroundColor: color }}
+          ? <ColorPicker
+              colors={colors}
+              colorLookup={colorLookup}
+              onChangeCourseColorInSchedule={onChangeCourseColorInSchedule}
+              course={course}
+              color={color}
             />
           : null}
         <div className="CourseResult-main">

@@ -63,7 +63,8 @@ class App extends Component {
       'handleMouseOverCourse',
       'handleMouseOutCourse',
       'handleMouseOverSection',
-      'handleMouseOutSection'
+      'handleMouseOutSection',
+      'handleChangeCourseColorInSchedule'
     ];
 
     for (let i = 0; i < functionsToBind.length; i++) {
@@ -377,6 +378,14 @@ class App extends Component {
     this.setState({ hoveredSection: null });
   }
 
+  handleChangeCourseColorInSchedule(courseId, colorId) {
+    this.fetchJsonAndSetState(
+      `/api/schedule/${this.state.selectedSchedule
+        ._id}/course/${courseId}/color/${colorId}`,
+      { method: 'PUT' }
+    );
+  }
+
   componentDidMount() {
     this.fetchJson(`/api/startup`).then(object => {
       this.setState(object);
@@ -445,6 +454,8 @@ class App extends Component {
     const handleMouseOutCourse = this.handleMouseOutCourse;
     const handleMouseOverSection = this.handleMouseOverSection;
     const handleMouseOutSection = this.handleMouseOutSection;
+    const handleChangeCourseColorInSchedule = this
+      .handleChangeCourseColorInSchedule;
 
     // make department lookup
     const departmentLookup = {};
@@ -473,9 +484,10 @@ class App extends Component {
         '#' + selectedSchedule.colors[i].color;
     }
 
+    /*
     if (hoveredCourse && !colorLookup[hoveredCourse._id]) {
       colorLookup[hoveredCourse._id] = '#7F7F7F';
-    }
+    }*/
 
     const distributionLookup = {
       EC: 'Epistemology and Cognition',
@@ -550,6 +562,7 @@ class App extends Component {
             waitingInstructorSearch={waitingInstructorSearch}
             loadingInstructorSearch={loadingInstructorSearch}
             searchedInstructors={searchedInstructors}
+            colors={colors}
             now={now}
             departmentLookup={departmentLookup}
             colorLookup={colorLookup}
@@ -569,6 +582,7 @@ class App extends Component {
             onSearchInstructor={handleSearchInstructor}
             onMouseOverCourse={handleMouseOverCourse}
             onMouseOutCourse={handleMouseOutCourse}
+            onChangeCourseColorInSchedule={handleChangeCourseColorInSchedule}
           />
           <DisplayPane
             user={user}

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './DisplayScheduleSession.css';
 
 const DAYS = ['', 'M', 'T', 'W', 'Th', 'F'];
+const DEFAULT_COLOR = '#7F7F7F';
 
 class DisplayScheduleSession extends Component {
   minsToString(mins) {
@@ -44,7 +45,7 @@ class DisplayScheduleSession extends Component {
 
     const courseHovered = hoveredCourse && course._id === hoveredCourse._id;
 
-    const color = colorLookup && colorLookup[course._id];
+    const color = (colorLookup && colorLookup[course._id]) || DEFAULT_COLOR;
 
     const title =
       course.department +
