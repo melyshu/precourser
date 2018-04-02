@@ -83,7 +83,7 @@ class DisplayScheduleSession extends Component {
       backgroundColor:
         selected || sectionTypeHovered || courseHovered ? color : null,
       opacity:
-        (!selected && courseHovered) ||
+        courseHovered ||
         (selected && sectionHovered) ||
         (sectionTypeHovered && !sectionHovered)
           ? 0.5

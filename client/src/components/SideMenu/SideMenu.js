@@ -3,7 +3,7 @@ import FaAngleUp from 'react-icons/lib/fa/angle-up';
 import FaAngleDown from 'react-icons/lib/fa/angle-down';
 import './SideMenu.css';
 
-const MAX_ENTRIES = 20;
+const MAX_ENTRIES = 50;
 
 class SideMenu extends Component {
   constructor(props) {
@@ -50,14 +50,25 @@ class SideMenu extends Component {
   handleSortClick(sort) {
     const sortState = this.state.sort.slice();
     const signState = this.state.sign.slice();
+    const positionState = this.state.position.slice();
+
+    const stateUpdate = {};
+    positionState[this.state.tab] = 0;
+    stateUpdate.position = positionState;
+
     if (sortState[this.state.tab] === sort) {
       signState[this.state.tab] *= -1;
-      this.setState({ sign: signState });
+      stateUpdate.sign = signState;
     } else {
       sortState[this.state.tab] = sort;
       signState[this.state.tab] = 1;
-      this.setState({ sort: sortState, sign: signState });
+      stateUpdate.sort = sortState;
+      stateUpdate.sign = signState;
     }
+
+    this.setState(stateUpdate, () => {
+      this.contentTop.scrollIntoView();
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -151,6 +162,7 @@ class SideMenu extends Component {
           className="SideMenu-content-header"
           onClick={handlePositionUp}
           key="up"
+          title="Previous page"
         >
           <FaAngleUp />
         </li>
@@ -164,6 +176,7 @@ class SideMenu extends Component {
           className="SideMenu-content-footer"
           onClick={handlePositionDown}
           key="down"
+          title="Next page"
         >
           <FaAngleDown />
         </li>
