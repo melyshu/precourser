@@ -157,6 +157,8 @@ class SidePane extends Component {
         );
     };
 
+    const keys = ['semester', 'instructor'];
+
     return (
       <SideMenu
         tabLabels={tabLabels}
@@ -168,6 +170,7 @@ class SidePane extends Component {
         renderContent={renderContent}
         captionNouns={captionNouns}
         edge="right"
+        keys={keys}
       />
     );
   }

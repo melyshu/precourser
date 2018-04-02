@@ -259,6 +259,8 @@ class MenuPane extends Component {
         );
     };
 
+    const keys = [searchedCourses, searchedInstructors, 'Saved', 'Selected'];
+
     return (
       <SideMenu
         tabLabels={tabLabels}
@@ -270,6 +272,7 @@ class MenuPane extends Component {
         renderContent={renderContent}
         captionNouns={captionNouns}
         edge="left"
+        keys={keys}
       />
     );
   }
