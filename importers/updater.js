@@ -2,9 +2,29 @@
   Updates the database at regular intervals.
 */
 
-const SCRAPING_INTERVAL = 1000 * 60 * 60 * 12; // every twelve hours
-
+require('../config.js');
+const Promise = require('bluebird');
+const fs = Promise.promisifyAll(require('fs'));
 const updateDatabase = require('./importer.js').updateDatabase;
 
-setTimeout(updateDatabase, 1000 * 60); // scrape a minute after
-setInterval(updateDatabase, SCRAPING_INTERVAL);
+const SCRAPING_INTERVAL = 1000 * 60 * 60 * 4; // every twelve hours
+
+const loop = () => {
+  fs
+    .readFileAsync('__updater.log')
+    .then(function(content) {
+      const lastScraped = new Date(content);
+      const now = new Date();
+
+      if (now - lastScraped < SCRAPING_INTERVAL) {
+        setTimeout(loop, SCRAPING_INTERVAL + lastScraped - now);
+      } else throw Error('rescrape needed');
+    })
+    .catch(function(err) {
+      updateDatabase().then(function() {
+        fs.writeFileAsync('__updater.log', new Date());
+      });
+    });
+};
+
+loop();
