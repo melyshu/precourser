@@ -58,6 +58,7 @@ class InstructorResult extends Component {
     const selectedSchedule = this.props.selectedSchedule; // if showButtons is enabled
     const selectedCourse = this.props.selectedCourse;
     const now = this.props.now;
+    const departmentLookup = this.props.departmentLookup;
     const semesterLookup = this.props.semesterLookup;
     const distributionLookup = this.props.distributionLookup;
     const pdfLookup = this.props.pdfLookup;
@@ -151,6 +152,7 @@ class InstructorResult extends Component {
                     selectedSchedule={selectedSchedule}
                     selectedCourse={selectedCourse}
                     now={now}
+                    departmentLookup={departmentLookup}
                     semesterLookup={semesterLookup}
                     colorLookup={colorLookup}
                     distributionLookup={distributionLookup}

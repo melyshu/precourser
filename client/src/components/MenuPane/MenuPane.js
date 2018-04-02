@@ -31,6 +31,7 @@ class MenuPane extends Component {
     const loadingInstructorSearch = this.props.loadingInstructorSearch;
     const searchedInstructors = this.props.searchedInstructors;
     const now = this.props.now;
+    const departmentLookup = this.props.departmentLookup;
     const colorLookup = this.props.colorLookup;
     const semesterLookup = this.props.semesterLookup;
     const distributionLookup = this.props.distributionLookup;
@@ -194,6 +195,7 @@ class MenuPane extends Component {
               selectedSchedule={selectedSchedule}
               selectedCourse={selectedCourse}
               now={now}
+              departmentLookup={departmentLookup}
               semesterLookup={semesterLookup}
               colorLookup={colorLookup}
               distributionLookup={distributionLookup}
@@ -233,6 +235,7 @@ class MenuPane extends Component {
             selectedSchedule={selectedSchedule}
             selectedCourse={selectedCourse}
             now={now}
+            departmentLookup={departmentLookup}
             semesterLookup={semesterLookup}
             colorLookup={colorLookup}
             distributionLookup={distributionLookup}

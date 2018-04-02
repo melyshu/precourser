@@ -7,7 +7,7 @@ import Virtual from '../Virtual/Virtual';
 import './App.css';
 
 const HOVER_TIMEOUT_DELAY = 200;
-const SEARCH_TIMEOUT_DELAY = 2000;
+const SEARCH_TIMEOUT_DELAY = 1000;
 const REFRESH_INTERVAL = 60000;
 
 class App extends Component {
@@ -450,7 +450,7 @@ class App extends Component {
     const departmentLookup = {};
     for (let i = 0; i < departments.length; i++) {
       const department = departments[i];
-      departmentLookup[department._id] = department;
+      departmentLookup[department._id] = department.name;
     }
 
     // make semester lookup
@@ -551,6 +551,7 @@ class App extends Component {
             loadingInstructorSearch={loadingInstructorSearch}
             searchedInstructors={searchedInstructors}
             now={now}
+            departmentLookup={departmentLookup}
             colorLookup={colorLookup}
             semesterLookup={semesterLookup}
             distributionLookup={distributionLookup}
@@ -576,6 +577,7 @@ class App extends Component {
             hoveredCourse={hoveredCourse}
             hoveredSection={hoveredSection}
             now={now}
+            departmentLookup={departmentLookup}
             colorLookup={colorLookup}
             semesterLookup={semesterLookup}
             distributionLookup={distributionLookup}
