@@ -381,10 +381,23 @@ const updateDatabase = function() {
       );
     })
     .then(function() {
+      return Course.find({ lastModified: { $gte: startDepartments } })
+        .lean()
+        .distinct('instructors');
+    })
+    .then(function(courseInstructorIds) {
       startInstructorUpdate = new Date();
       return Instructor.find({ history: { $exists: false } })
         .lean()
-        .distinct('_id');
+        .distinct('_id')
+        .then(function(instructorIds) {
+          const newIds = [];
+          for (let i = 0; i < courseInstructorIds; i++) {
+            const id = courseInstructorIds[i];
+            if (instructorIds.indexOf(id) < 0) newIds.push(id);
+          }
+          return newIds;
+        });
     })
     .then(function(instructorIds) {
       // update course ratings

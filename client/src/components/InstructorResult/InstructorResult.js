@@ -57,7 +57,9 @@ class InstructorResult extends Component {
     const user = this.props.user;
     const selectedSchedule = this.props.selectedSchedule; // if showButtons is enabled
     const selectedCourse = this.props.selectedCourse;
+    const colors = this.props.colors;
     const now = this.props.now;
+    const departmentLookup = this.props.departmentLookup;
     const semesterLookup = this.props.semesterLookup;
     const distributionLookup = this.props.distributionLookup;
     const pdfLookup = this.props.pdfLookup;
@@ -73,6 +75,8 @@ class InstructorResult extends Component {
     const onRemoveCourseFromSchedule = this.props.onRemoveCourseFromSchedule;
     const onMouseOverCourse = this.props.onMouseOverCourse;
     const onMouseOutCourse = this.props.onMouseOutCourse;
+    const onChangeCourseColorInSchedule = this.props
+      .onChangeCourseColorInSchedule;
 
     const showButtons = this.props.showButtons;
 
@@ -150,7 +154,9 @@ class InstructorResult extends Component {
                     user={user}
                     selectedSchedule={selectedSchedule}
                     selectedCourse={selectedCourse}
+                    colors={colors}
                     now={now}
+                    departmentLookup={departmentLookup}
                     semesterLookup={semesterLookup}
                     colorLookup={colorLookup}
                     distributionLookup={distributionLookup}
@@ -164,6 +170,9 @@ class InstructorResult extends Component {
                     onRemoveCourseFromSchedule={onRemoveCourseFromSchedule}
                     onMouseOverCourse={onMouseOverCourse}
                     onMouseOutCourse={onMouseOutCourse}
+                    onChangeCourseColorInSchedule={
+                      onChangeCourseColorInSchedule
+                    }
                     key={course._id}
                     course={course}
                     showButtons={showButtons}

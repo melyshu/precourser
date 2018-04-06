@@ -17,6 +17,7 @@ class SidePane extends Component {
     const user = this.props.user;
     const selectedCourse = this.props.selectedCourse;
     const now = this.props.now;
+    const departmentLookup = this.props.departmentLookup;
     const semesterLookup = this.props.semesterLookup;
     const distributionLookup = this.props.distributionLookup;
     const pdfLookup = this.props.pdfLookup;
@@ -117,6 +118,7 @@ class SidePane extends Component {
               user={user}
               selectedCourse={selectedCourse}
               now={now}
+              departmentLookup={departmentLookup}
               semesterLookup={semesterLookup}
               distributionLookup={distributionLookup}
               pdfLookup={pdfLookup}
@@ -141,6 +143,7 @@ class SidePane extends Component {
           <InstructorResult
             user={user}
             now={now}
+            departmentLookup={departmentLookup}
             selectedCourse={selectedCourse}
             semesterLookup={semesterLookup}
             distributionLookup={distributionLookup}
@@ -154,6 +157,8 @@ class SidePane extends Component {
         );
     };
 
+    const keys = ['semester', 'instructor'];
+
     return (
       <SideMenu
         tabLabels={tabLabels}
@@ -165,6 +170,7 @@ class SidePane extends Component {
         renderContent={renderContent}
         captionNouns={captionNouns}
         edge="right"
+        keys={keys}
       />
     );
   }

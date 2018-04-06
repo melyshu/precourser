@@ -33,6 +33,9 @@ class DisplayCourseDetails extends Component {
 
   renderGrading(grading) {
     if (!grading || !grading.length) return;
+
+    grading = grading.slice().sort((i1, i2) => i2.percent - i1.percent);
+
     return (
       <div className="DisplayCourseDetails-field">
         <div className="DisplayCourseDetails-field-title">Grading</div>
@@ -101,17 +104,20 @@ class DisplayCourseDetails extends Component {
               semesterLookup[evaluations.semester].name}
           </div>
           <ul className="DisplayCourseDetails-field-content">
-            {evaluations.numeric.map(item =>
-              <li
-                key={item.field}
-                className="DisplayCourseDetails-evaluations-numeric"
-              >
-                <CourseRating score={item.score} />
-                <span className="DisplayCourseDetails-evaluations-field">
-                  {item.field}
-                </span>
-              </li>
-            )}
+            {evaluations.numeric
+              .slice()
+              .sort((i1, i2) => i2.score - i1.score)
+              .map(item =>
+                <li
+                  key={item.field}
+                  className="DisplayCourseDetails-evaluations-numeric"
+                >
+                  <CourseRating score={item.score} />
+                  <span className="DisplayCourseDetails-evaluations-field">
+                    {item.field}
+                  </span>
+                </li>
+              )}
           </ul>
         </div>
       : null;

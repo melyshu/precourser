@@ -136,5 +136,28 @@
     flex: 1 1 auto;
     overflow-y: auto;
     padding: 0 0 $padding;
+
+    .SideMenu-content-header,
+    .SideMenu-content-footer {
+      height: $block;
+      width: 100%;
+
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+
+      color: $orange;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $orange;
+        color: $empty;
+      }
+    }
+
+    .SideMenu-content-footer {
+      margin-bottom: -$padding;
+    }
   }
 }

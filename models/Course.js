@@ -297,8 +297,7 @@ courseSchema.statics.searchBySemesterAndQuery = function(semesterId, query) {
       { department: { $regex: joinRegexOr(departmentQueries) } },
       {
         'crossListings.department': { $regex: joinRegexOr(departmentQueries) }
-      },
-      { title: { $regex: joinRegexOr(departmentQueries) } }
+      }
     ];
   }
 
@@ -322,8 +321,7 @@ courseSchema.statics.searchBySemesterAndQuery = function(semesterId, query) {
             'crossListings.department': {
               $regex: joinRegexOr(departmentQueries)
             }
-          },
-          { title: { $regex: joinRegexOr(departmentQueries) } }
+          }
         ]
       },
       {

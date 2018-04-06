@@ -74,12 +74,17 @@ router.all('/:fileName', function(req, res) {
               end.setUTCHours(meeting.endTime / 60);
               end.setMinutes(meeting.endTime % 60, 0, 0);
 
+              const location =
+                meeting.building && meeting.room
+                  ? `${meeting.building} ${meeting.room}, Princeton, NJ`
+                  : 'Princeton, NJ';
+
               cal.createEvent({
                 id: `${section._id}_${k}`,
                 start: start,
                 end: end,
                 summary: `${course.department}${course.catalogNumber} ${section.name}`,
-                location: `${meeting.building} ${meeting.room}, Princeton, NJ`,
+                location: location,
                 timezone: 'US/Eastern',
                 repeating: {
                   freq: 'WEEKLY',

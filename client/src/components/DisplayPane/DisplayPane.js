@@ -11,6 +11,7 @@ class DisplayPane extends Component {
     const hoveredCourse = this.props.hoveredCourse;
     const hoveredSection = this.props.hoveredSection;
     const now = this.props.now;
+    const departmentLookup = this.props.departmentLookup;
     const colorLookup = this.props.colorLookup;
     const semesterLookup = this.props.semesterLookup;
     const distributionLookup = this.props.distributionLookup;
@@ -32,6 +33,7 @@ class DisplayPane extends Component {
               user={user}
               selectedCourse={selectedCourse}
               now={now}
+              departmentLookup={departmentLookup}
               semesterLookup={semesterLookup}
               distributionLookup={distributionLookup}
               pdfLookup={pdfLookup}

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import FaInfoCircle from 'react-icons/lib/fa/info-circle';
-import FaClose from 'react-icons/lib/fa/close';
 import FaStar from 'react-icons/lib/fa/star';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaMinus from 'react-icons/lib/fa/minus';
 import CourseSummary from '../CourseSummary/CourseSummary';
+import ColorPicker from '../ColorPicker/ColorPicker';
 import './CourseResult.css';
 
 class CourseResult extends Component {
@@ -13,7 +12,9 @@ class CourseResult extends Component {
     const user = this.props.user;
     const selectedSchedule = this.props.selectedSchedule; // if showButtons is enabled
     const selectedCourse = this.props.selectedCourse;
+    const colors = this.props.colors;
     const now = this.props.now;
+    const departmentLookup = this.props.departmentLookup;
     const semesterLookup = this.props.semesterLookup;
     const colorLookup = this.props.colorLookup; // if showButtons is enabled
     const distributionLookup = this.props.distributionLookup;
@@ -29,6 +30,8 @@ class CourseResult extends Component {
     const onRemoveCourseFromSchedule = this.props.onRemoveCourseFromSchedule;
     const onMouseOverCourse = this.props.onMouseOverCourse;
     const onMouseOutCourse = this.props.onMouseOutCourse;
+    const onChangeCourseColorInSchedule = this.props
+      .onChangeCourseColorInSchedule;
 
     const course = this.props.course;
     const showButtons = this.props.showButtons;
@@ -52,23 +55,31 @@ class CourseResult extends Component {
 
     const color = colorLookup && colorLookup[course._id];
 
-    const validButtons = showButtons && course.semester === selectedSemester;
+    const validButton = showButtons && course.semester === selectedSemester;
 
     return (
       <li
-        className={
-          'CourseResult' +
-          (showButtons ? '' : ' CourseResult-clickable') +
-          (selected ? ' CourseResult-selected' : '')
-        }
-        onClick={showButtons ? null : onSelectCourse.bind(null, course._id)}
-        onMouseOver={validButtons ? onMouseOverCourse.bind(null, course) : null}
-        onMouseOut={validButtons ? onMouseOutCourse.bind(null, course) : null}
+        className={'CourseResult' + (selected ? ' CourseResult-selected' : '')}
+        onClick={(showButtons && selected
+          ? onUnselectCourse
+          : onSelectCourse).bind(null, course._id)}
+        onMouseOver={validButton ? onMouseOverCourse.bind(null, course) : null}
+        onMouseOut={validButton ? onMouseOutCourse.bind(null, course) : null}
       >
-        <div className="CourseResult-main" style={{ borderColor: color }}>
+        {showButtons
+          ? <ColorPicker
+              colors={colors}
+              colorLookup={colorLookup}
+              onChangeCourseColorInSchedule={onChangeCourseColorInSchedule}
+              course={course}
+              color={color}
+            />
+          : null}
+        <div className="CourseResult-main">
           <CourseSummary
             user={user}
             now={now}
+            departmentLookup={departmentLookup}
             semesterLookup={semesterLookup}
             distributionLookup={distributionLookup}
             pdfLookup={pdfLookup}
@@ -79,57 +90,41 @@ class CourseResult extends Component {
             showSemester={showSemester}
           />
         </div>
+        {validButton
+          ? <button
+              title={
+                inSchedule
+                  ? 'Remove course from schedule'
+                  : 'Add course to schedule'
+              }
+              className={
+                'CourseResult-button CourseResult-' +
+                (inSchedule ? 'remove' : 'add')
+              }
+              onClick={e => {
+                (inSchedule
+                  ? onRemoveCourseFromSchedule
+                  : onAddCourseToSchedule)(course._id);
+                e.stopPropagation();
+              }}
+            >
+              {inSchedule ? <FaMinus /> : <FaPlus />}
+            </button>
+          : null}
         {showButtons
-          ? <div className="CourseResult-buttons">
-              <button
-                title={
-                  selected
-                    ? 'Hide course information'
-                    : 'Show course information'
-                }
-                className={
-                  'CourseResult-button CourseResult-' +
-                  (selected ? 'unselect' : 'select')
-                }
-                onClick={(selected ? onUnselectCourse : onSelectCourse).bind(
-                  null,
-                  course._id
-                )}
-              >
-                {selected ? <FaClose /> : <FaInfoCircle />}
-              </button>
-              <button
-                title={saved ? 'Unsave course' : 'Save course'}
-                className={
-                  'CourseResult-button CourseResult-' +
-                  (saved ? 'unsave' : 'save')
-                }
-                onClick={(saved ? onUnsaveCourse : onSaveCourse).bind(
-                  null,
-                  course._id
-                )}
-              >
-                <FaStar />
-              </button>
-              {validButtons
-                ? <button
-                    title={
-                      inSchedule
-                        ? 'Remove course from schedule'
-                        : 'Add course to schedule'
-                    }
-                    className={
-                      'CourseResult-button CourseResult-' +
-                      (inSchedule ? 'remove' : 'add')
-                    }
-                    onClick={(inSchedule
-                      ? onRemoveCourseFromSchedule
-                      : onAddCourseToSchedule).bind(null, course._id)}
-                  >
-                    {inSchedule ? <FaMinus /> : <FaPlus />}
-                  </button>
-                : null}
-            </div>
+          ? <button
+              title={saved ? 'Unsave course' : 'Save course'}
+              className={
+                'CourseResult-button CourseResult-' +
+                (saved ? 'unsave' : 'save')
+              }
+              onClick={e => {
+                (saved ? onUnsaveCourse : onSaveCourse)(course._id);
+                e.stopPropagation();
+              }}
+            >
+              <FaStar />
+            </button>
           : null}
       </li>
     );

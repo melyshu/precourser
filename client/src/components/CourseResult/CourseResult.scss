@@ -1,12 +1,12 @@
 @import '../../common.scss';
+
 .CourseResult {
   font-size: 0.8rem;
   border: $border solid $empty;
-  padding: 5*$border 8*$border;
-  cursor: default;
+  cursor: pointer;
 
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
   justify-content: flex-start;
   align-items: stretch;
 
@@ -21,86 +21,53 @@
   &:hover {
     border-color: $orange;
 
-    .CourseResult-buttons {
-      margin-top: 5*$border;
-
-      .CourseResult-button {
-        height: $block;
-      }
-    }
-
-    .CourseResult-main .CourseSummary-title {
-      max-height: 4rem;
-    }
-  }
-
-  &.CourseResult-clickable {
-    &:hover {
-      cursor: pointer;
-    }
-
-    .CourseResult-main {
-      border-left: none;
-      padding-left: 0;
+    .CourseResult-button {
+      width: $block;
+      // transition: width 0.3s ease 0.5s; // if delay wanted
     }
   }
 
   .CourseResult-main {
+    flex: 1 1 3*$block;
     font-size: 1em;
-    border-left: ($padding - 6*$border)/2 solid $empty;
-    padding-left: ($padding - 6*$border)/2;
+
+    padding: $padding/3;
 
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: stretch;
-
-    .CourseSummary-title {
-      transition: max-height 0.6s ease;
-      max-height: 1.3em;
-    }
+    overflow: hidden;
   }
 
-  .CourseResult-buttons {
-    margin-top: 0;
-    transition: margin-top 0.3s ease;
+  .CourseResult-button {
+    flex: 0 1 auto;
 
-    flex: 0 0 auto;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-end;
-    align-items: center;
+    background-color: $half;
+    width: 0;
+    transition: width 0.3s ease;
 
-    .CourseResult-button {
-      font-size: 0.8rem;
-      text-align: center;
-      transition: height 0.3s ease;
-      overflow: hidden;
-      height: 0;
-      width: $block;
+    font-size: 0.8rem;
+    text-align: center;
+    overflow: hidden;
 
+    cursor: pointer;
+
+    &:hover {
+      color: $empty;
+      background: $orange;
+    }
+
+    &.CourseResult-remove,
+    &.CourseResult-unsave {
       &:hover {
         color: $empty;
-        background: $orange;
-        cursor: pointer;
+        background: $default;
       }
+    }
 
-      &.CourseResult-unselect,
-      &.CourseResult-remove {
-        &:hover {
-          color: $empty;
-          background: $default;
-        }
-      }
-
-      &.CourseResult-unsave {
-        color: $orange;
-
-        &:hover {
-          color: $empty;
-          background: $default;
-        }
-      }
+    &.CourseResult-unsave {
+      color: $orange;
     }
   }
 }

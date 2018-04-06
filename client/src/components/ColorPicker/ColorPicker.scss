@@ -1,0 +1,51 @@
+@import '../../common.scss';
+
+.ColorPicker {
+  flex: 0 0 auto;
+  width: $padding/3;
+  margin: $padding/3 0 $padding/3 $padding/3;
+  position: relative;
+
+  &:hover {
+    opacity: 0.5;
+
+    &.ColorPicker-expanded {
+      opacity: 1;
+    }
+  }
+
+  .ColorPicker-picker {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    bottom: 0;
+
+    cursor: default;
+
+    padding: $padding/6;
+    margin-left: $padding/3;
+    background-color: $empty;
+    border: $border solid $orange;
+    border-radius: 2*$border;
+    width: 5.5*$padding;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+
+    .ColorPicker-pick {
+      width: $padding*0.75;
+      height: $padding*0.75;
+      margin: $padding/6;
+      opacity: 0.8;
+
+      cursor: pointer;
+      border-radius: 100%;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

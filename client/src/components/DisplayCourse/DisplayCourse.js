@@ -15,6 +15,7 @@ class DisplayCourse extends Component {
     const user = this.props.user;
     const selectedCourse = this.props.selectedCourse;
     const now = this.props.now;
+    const departmentLookup = this.props.departmentLookup;
     const semesterLookup = this.props.semesterLookup;
     const distributionLookup = this.props.distributionLookup;
     const pdfLookup = this.props.pdfLookup;
@@ -36,6 +37,7 @@ class DisplayCourse extends Component {
             <CourseSummary
               user={user}
               now={now}
+              departmentLookup={departmentLookup}
               semesterLookup={semesterLookup}
               distributionLookup={distributionLookup}
               pdfLookup={pdfLookup}
@@ -111,6 +113,7 @@ class DisplayCourse extends Component {
         <SidePane
           user={user}
           now={now}
+          departmentLookup={departmentLookup}
           selectedCourse={selectedCourse}
           semesterLookup={semesterLookup}
           distributionLookup={distributionLookup}

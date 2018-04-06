@@ -396,7 +396,7 @@ scheduleSchema.statics.changeCourseColor = function(
 ) {
   return mongoose
     .model('Schedule')
-    .count({ _id: scheduleId, user: userId })
+    .count({ _id: scheduleId, user: userId, courses: courseId })
     .then(function(count) {
       if (!count) return null;
 
@@ -411,6 +411,10 @@ scheduleSchema.statics.changeCourseColor = function(
         .model('Schedule')
         .findOne({ _id: scheduleId, user: userId })
         .getFullAndExec();
+    })
+    .then(function(schedule) {
+      if (!schedule) return null;
+      return { selectedSchedule: schedule };
     });
 };
 

@@ -9,6 +9,7 @@ class CourseSummary extends Component {
   render() {
     const user = this.props.user;
     const now = this.props.now;
+    const departmentLookup = this.props.departmentLookup;
     const semesterLookup = this.props.semesterLookup;
     const distributionLookup = this.props.distributionLookup;
     const pdfLookup = this.props.pdfLookup;
@@ -38,7 +39,10 @@ class CourseSummary extends Component {
     return (
       <div className="CourseSummary" title={title}>
         <div className="CourseSummary-top">
-          <span className="CourseSummary-listing">
+          <span
+            className="CourseSummary-listing"
+            title={showInstructors ? null : departmentLookup[course.department]}
+          >
             {showInstructors
               ? semesterLookup[course.semester].name
               : course.department + course.catalogNumber}
@@ -51,6 +55,7 @@ class CourseSummary extends Component {
                   <span
                     key={crossListing.department}
                     className="CourseSummary-crosslisting"
+                    title={departmentLookup[crossListing.department]}
                   >
                     {'/ ' +
                       crossListing.department +
