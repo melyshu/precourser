@@ -72,7 +72,7 @@ app.use('/ical', ical.router);
 if (process.env.NODE_ENV === 'production') {
   app.use('/client', express.static(path.join(__dirname, 'client', 'build')));
 
-  app.get(['/', '/home', '/course'], function(req, res) {
+  app.get(['/', '/home', '/course/:courseId'], function(req, res) {
     res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
   });
 } else {
