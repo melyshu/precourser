@@ -241,6 +241,10 @@ const scrapeCourseEvaluation = function(courseId) {
       semesterId +
       '&courseinfo=' +
       systemId,
+    headers: {
+      Cookie: `PHPSESSID=${cookie};`,
+      'User-Agent': 'precourser (http://precourser.io)'
+    },
     transform: cheerio.load
   })
     .then(function($) {
@@ -322,7 +326,8 @@ const scrapeInstructor = function(instructorId) {
     // on the webpage...
     if (
       !instructor ||
-      instructor.fullName === instructor.fullName.toLowerCase()
+      (instructor.fullName === instructor.fullName.toLowerCase() &&
+        !/\s/g.test(instructor.fullName))
     ) {
       // construct from course page info
       if (courseFullName && courseFullName !== courseFullName.toLowerCase()) {
@@ -405,12 +410,18 @@ const scrapeCourseUpdate = function(courseId) {
     // order of importance: the first one found will be extracted
     const ORDER = [
       'Overall Quality of the Course',
+      'Quality of Course',
       'Feedback for other students',
+      'Recommend to Other Students',
       'Quality of Experience',
       'Lectures',
+      'Quality of Lectures',
       'Seminars',
+      'Quality of Seminars',
       'Classes',
-      'Papers, Reports, Problem Sets, Examinations'
+      'Quality of Classes',
+      'Papers, Reports, Problem Sets, Examinations',
+      'Quality of Written Assignments'
     ];
 
     // return undefined if no numeric evaluations or evaluations from past semester

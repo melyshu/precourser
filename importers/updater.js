@@ -27,4 +27,4 @@ const loop = () => {
     });
 };
 
-loop();
+// loop(); // no scraping for now
