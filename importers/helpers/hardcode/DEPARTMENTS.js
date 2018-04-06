@@ -11,6 +11,7 @@ module.exports = [
   { _id: 'ARA', name: 'Arabic' },
   { _id: 'ARC', name: 'Architecture' },
   { _id: 'ART', name: 'Art and Archaeology' },
+  { _id: 'ASA', name: 'Asian American Studies' },
   { _id: 'AST', name: 'Astrophysical Sciences' },
   { _id: 'ATL', name: 'Atelier' },
   { _id: 'BCS', name: 'Bosnian-Croatian-Serbian' },
@@ -97,6 +98,7 @@ module.exports = [
   { _id: 'SML', name: 'Statistics and Machine Learning' },
   { _id: 'SOC', name: 'Sociology' },
   { _id: 'SPA', name: 'Spanish' },
+  { _id: 'SPO', name: 'Spanish' }, // is this a typo?
   { _id: 'STC', name: 'Science and Technology Council' },
   { _id: 'SWA', name: 'Swahili' },
   { _id: 'THR', name: 'Theater' },
