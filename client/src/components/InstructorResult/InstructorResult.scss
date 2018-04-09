@@ -13,7 +13,7 @@
   border: $border solid $empty;
 
   .InstructorResult-header {
-    padding: $padding/3;
+    padding: $padding/3 $padding/2;
 
     &:hover {
       cursor: pointer;

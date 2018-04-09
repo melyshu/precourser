@@ -45,7 +45,13 @@ scheduleSchema.query.getFullAndExec = function() {
     .populate({
       path: 'courses',
       select: mongoose.model('Course').briefSelector,
-      populate: { path: 'sections' }
+      populate: [
+        { path: 'sections' },
+        {
+          path: 'instructors',
+          select: mongoose.model('Instructor').minimalSelector
+        }
+      ]
     })
     .populate({
       path: 'colors',

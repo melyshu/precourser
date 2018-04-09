@@ -192,6 +192,7 @@ courseSchema.statics.briefSelector =
 courseSchema.query.getBriefAndExec = function() {
   return this.select(mongoose.model('Course').briefSelector)
     .populate('sections')
+    .populate('instructors')
     .lean()
     .exec();
 };

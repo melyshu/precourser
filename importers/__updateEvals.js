@@ -65,6 +65,10 @@ scraper.scrapeAll(
   COURSE_EVALUATION_THREADS
 );*/
 
+//* DEPARTMENTS
+scraper.scrapeDepartments();
+//*/
+
 /* FALL17 EVALS
 Course.find({ semester: LAST_SEMESTER_WITH_EVALUATIONS })
   .lean()

@@ -28,10 +28,10 @@
   }
 
   .CourseResult-main {
-    flex: 1 1 3*$block;
+    flex: 1 1 4*$block;
     font-size: 1em;
 
-    padding: $padding/3;
+    padding: $padding/3 $padding/2;
 
     display: flex;
     flex-flow: column nowrap;
@@ -53,13 +53,19 @@
 
     cursor: pointer;
 
+    &.CourseResult-select,
+    &.CourseResult-unselect {
+      width: 0;
+    }
+
     &:hover {
       color: $empty;
       background: $orange;
     }
 
     &.CourseResult-remove,
-    &.CourseResult-unsave {
+    &.CourseResult-unsave,
+    &.CourseRating-unselect {
       &:hover {
         color: $empty;
         background: $default;
