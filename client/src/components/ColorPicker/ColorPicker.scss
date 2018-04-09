@@ -2,8 +2,8 @@
 
 .ColorPicker {
   flex: 0 0 auto;
-  width: $padding/3;
-  margin: $padding/3 0 $padding/3 $padding/3;
+  width: ($padding/3-$border);
+  margin: $padding/3 (-$padding/6) $padding/3 $padding/3;
   position: relative;
 
   &:hover {

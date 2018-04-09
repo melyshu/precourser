@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import FaStar from 'react-icons/lib/fa/star';
+import FaInfoCircle from 'react-icons/lib/fa/info-circle';
+import FaClose from 'react-icons/lib/fa/close';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaMinus from 'react-icons/lib/fa/minus';
 import CourseSummary from '../CourseSummary/CourseSummary';
@@ -90,6 +92,23 @@ class CourseResult extends Component {
             showSemester={showSemester}
           />
         </div>
+        {showButtons
+          ? <button
+              title={
+                selected ? 'Hide course information' : 'Show course information'
+              }
+              className={
+                'CourseResult-button CourseResult-' +
+                (selected ? 'unselect' : 'select')
+              }
+              onClick={e => {
+                (selected ? onUnselectCourse : onSelectCourse)(course._id);
+                e.stopPropagation();
+              }}
+            >
+              {selected ? <FaClose /> : <FaInfoCircle />}
+            </button>
+          : null}
         {validButton
           ? <button
               title={

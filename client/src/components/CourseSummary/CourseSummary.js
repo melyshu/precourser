@@ -33,8 +33,14 @@ class CourseSummary extends Component {
             ' / ' + crossListing.department + crossListing.catalogNumber
         )
         .join('') +
+      ` (${semesterLookup[course.semester].name})\n` +
+      course.title +
       '\n' +
-      course.title;
+      (!showSemester
+        ? course.instructors
+            .map(instructor => instructor.fullName)
+            .join(', ') || '\u2013'
+        : '');
 
     return (
       <div className="CourseSummary" title={title}>
@@ -117,7 +123,7 @@ class CourseSummary extends Component {
             {showInstructors
               ? course.instructors
                   .map(instructor => instructor.fullName)
-                  .join(', ')
+                  .join(', ') || '\u2013'
               : course.title}
           </span>
           <span className="CourseSummary-stretch" />
@@ -127,7 +133,13 @@ class CourseSummary extends Component {
             ? <span className="CourseSummary-semester">
                 {semesterLookup[course.semester].name}
               </span>
-            : null}
+            : !showInstructors
+              ? <span className="CourseSummary-instructors">
+                  {course.instructors
+                    .map(instructor => instructor.fullName)
+                    .join(', ') || '\u2013'}
+                </span>
+              : null}
           <span className="CourseSummary-stretch" />
           <TimeAgo now={now} then={new Date(course.lastModified)} />
           <span

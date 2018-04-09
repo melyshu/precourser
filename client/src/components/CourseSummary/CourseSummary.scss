@@ -4,6 +4,7 @@
   &:hover {
     .CourseSummary-bottom .TimeAgo {
       max-width: $block;
+      margin-left: 5*$border;
     }
   }
 
@@ -30,7 +31,7 @@
     align-items: flex-end;
 
     .CourseSummary-listing {
-      font-size: 1.1em; // on top of the 0.6em;
+      font-size: 1.05em; // on top of the 0.6em;
       margin-left: 0;
       font-weight: bolder;
       color: $full;
@@ -105,10 +106,11 @@
   .CourseSummary-middle {
     .CourseSummary-title {
       margin-left: 0;
-      font-size: 0.8em;
+      font-size: 0.75em;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: $full;
     }
   }
 
@@ -116,15 +118,21 @@
     font-size: 0.6em;
     justify-content: flex-end;
     align-items: stretch;
+    color: $default;
 
-    .CourseSummary-semester {
+    .CourseSummary-semester,
+    .CourseSummary-instructors {
       margin-left: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .TimeAgo {
       max-width: 0;
       overflow: hidden;
-      transition: max-width 0.5s ease;
+      transition: max-width 0.5s ease, margin-left 0.5s ease;
+      margin: 0;
     }
 
     .CourseSummary-status {
@@ -135,6 +143,7 @@
 
       &.CourseSummary-status-open {
         color: $success;
+        margin: 0;
       }
 
       &.CourseSummary-status-closed {

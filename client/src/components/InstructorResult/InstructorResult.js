@@ -45,6 +45,7 @@ class InstructorResult extends Component {
     this.fetchJson(`/api/instructor/${instructorId}`).then(object => {
       object.loaded = true;
       this.setState(object);
+      console.log(object);
 
       setTimeout(() => {
         this.setState({ expanded: true });

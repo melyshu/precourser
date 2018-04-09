@@ -65,7 +65,13 @@ router.all('/:fileName', function(req, res) {
               const meeting = meetings[k];
 
               const start = new Date(semesterStart);
-              const dayOffset = (7 + meeting.days[0] - start.getDay()) % 7;
+              let dayOffset = 7;
+              for (let l = 0; l < meeting.days.length; l++) {
+                const day = meeting.days[l];
+                const offset = (7 + day - start.getDay()) % 7;
+                if (offset < dayOffset) dayOffset = offset;
+              }
+
               start.setDate(start.getDate() + dayOffset);
               start.setUTCHours(meeting.startTime / 60);
               start.setMinutes(meeting.startTime % 60, 0, 0);

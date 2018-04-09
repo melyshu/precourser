@@ -26,6 +26,8 @@ instructorSchema.virtual('courses', {
   justOne: false
 });
 
+instructorSchema.statics.minimalSelector = '_id fullName';
+
 instructorSchema.statics.briefSelector = '-courses';
 
 instructorSchema.statics.fullSelector = '';
@@ -42,7 +44,7 @@ instructorSchema.query.getFullAndExec = function() {
       path: 'courses',
       select: mongoose.model('Course').briefSelector,
       options: { sort: '-semester' },
-      populate: { path: 'sections' }
+      populate: { path: 'sections' } // mongoose won't populate instructors :(
     })
     .lean()
     .exec();

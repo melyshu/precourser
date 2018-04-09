@@ -23,7 +23,13 @@ userSchema.query.getFullAndExec = function() {
     .populate({
       path: 'savedCourses',
       select: mongoose.model('Course').briefSelector,
-      populate: { path: 'sections' }
+      populate: [
+        { path: 'sections' },
+        {
+          path: 'instructors',
+          select: mongoose.model('Instructor').minimalSelector
+        }
+      ]
     })
     .lean()
     .exec();

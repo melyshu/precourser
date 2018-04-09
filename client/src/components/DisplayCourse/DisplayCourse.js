@@ -4,7 +4,7 @@ import FaStar from 'react-icons/lib/fa/star';
 import FaClose from 'react-icons/lib/fa/close';
 import FaListAlt from 'react-icons/lib/fa/list-alt';
 import FaBarChart from 'react-icons/lib/fa/bar-chart';
-import FaHome from 'react-icons/lib/fa/home';
+import FaExternalLink from 'react-icons/lib/fa/external-link';
 import CourseSummary from '../CourseSummary/CourseSummary';
 import DisplayCourseDetails from '../DisplayCourseDetails/DisplayCourseDetails';
 import SidePane from '../SidePane/SidePane';
@@ -50,13 +50,6 @@ class DisplayCourse extends Component {
           </div>
           <div className="DisplayCourse-buttons">
             <button
-              className="DisplayCourse-button DisplayCourse-close"
-              title="Hide course information"
-              onClick={onUnselectCourse.bind(null, selectedCourse._id)}
-            >
-              <FaClose />
-            </button>
-            <button
               className={
                 'DisplayCourse-button ' +
                 (saved ? 'DisplayCourse-unsave' : 'DisplayCourse-save')
@@ -69,7 +62,6 @@ class DisplayCourse extends Component {
             >
               <FaStar />
             </button>
-            <div className="DisplayCourse-stretch" />
             <ReactGA.OutboundLink
               className="DisplayCourse-button"
               title="Registrar course information page"
@@ -99,9 +91,17 @@ class DisplayCourse extends Component {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  <FaHome />
+                  <FaExternalLink />
                 </ReactGA.OutboundLink>
               : null}
+            <div className="DisplayCourse-stretch" />
+            <button
+              className="DisplayCourse-button DisplayCourse-close"
+              title="Hide course information"
+              onClick={onUnselectCourse.bind(null, selectedCourse._id)}
+            >
+              <FaClose />
+            </button>
           </div>
           <div className="DisplayCourse-content">
             <DisplayCourseDetails
