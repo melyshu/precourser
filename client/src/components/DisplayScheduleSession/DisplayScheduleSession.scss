@@ -2,7 +2,7 @@
 
 .DisplayScheduleSession {
   position: absolute;
-  font-size: 0.4rem;
+  font-size: 0.5rem;
   padding: 0 $border;
   overflow: hidden;
 
@@ -23,12 +23,12 @@
 
     .DisplayScheduleSession-listing {
       font-weight: bolder;
-      margin-right: 0.1rem;
+      margin-right: 3*$border;
     }
 
     .DisplayScheduleSession-section {
       flex: 1 1 auto;
-      margin-right: 0.1rem;
+      margin-right: 3*$border;
     }
 
     .DisplayScheduleSession-seats {
