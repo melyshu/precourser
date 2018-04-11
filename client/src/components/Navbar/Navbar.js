@@ -18,8 +18,9 @@ https://stackoverflow.com/questions/29267773/how-to-post-google-forms-data-via-j
 */
 
 const BASE_URL = 'https://docs.google.com/forms/d/e/';
-const FORM_KEY = '1FAIpQLSe8rcxHhUEkKIi5BsCBbwnJTsbQovNoO9A-HCFXTE732ZYG0w';
-const ENTRY_ID = 'entry.438515020';
+const FORM_KEY = '1FAIpQLSfsJpCwzmklLlp4ziUqsAwLOQ3M9b3gRUQisMyoh-qPBqRYew';
+const NETID_ENTRY = 'entry.1377308274';
+const TEXT_ENTRY = 'entry.438515020';
 
 class Navbar extends Component {
   render() {
@@ -45,7 +46,7 @@ class Navbar extends Component {
       });
 
       const feedback = encodeURIComponent(text);
-      const url = `${BASE_URL}${FORM_KEY}/formResponse?${ENTRY_ID}=${feedback}`;
+      const url = `${BASE_URL}${FORM_KEY}/formResponse?${NETID_ENTRY}=${user._id}&${TEXT_ENTRY}=${feedback}`;
 
       fetch(url, { method: 'POST' }).catch(err => {
         // ignore if it's a cors issue, it goes through anyway
