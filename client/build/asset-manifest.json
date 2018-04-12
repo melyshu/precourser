@@ -1,8 +1,17 @@
 {
-  "main.css": "static/css/main.80309651.css",
-  "main.css.map": "static/css/main.80309651.css.map",
-  "main.js": "static/js/main.4e610598.js",
-  "main.js.map": "static/js/main.4e610598.js.map",
+  "main.css": "static/css/main.b864f81d.css",
+  "main.css.map": "static/css/main.b864f81d.css.map",
+  "main.js": "static/js/main.15a32be6.js",
+  "main.js.map": "static/js/main.15a32be6.js.map",
   "static/media/background.jpg": "static/media/background.09f9bbad.jpg",
+  "static/media/demo_0.png": "static/media/demo_0.0484c000.png",
+  "static/media/demo_1.png": "static/media/demo_1.265fae14.png",
+  "static/media/demo_2.png": "static/media/demo_2.2050b609.png",
+  "static/media/demo_3.png": "static/media/demo_3.48aa1c44.png",
+  "static/media/demo_4.png": "static/media/demo_4.650e09f4.png",
+  "static/media/demo_5.png": "static/media/demo_5.f2763643.png",
+  "static/media/demo_6.png": "static/media/demo_6.9450555c.png",
+  "static/media/demo_7.png": "static/media/demo_7.c8e44487.png",
+  "static/media/demo_8.png": "static/media/demo_8.2c8fbb1c.png",
   "static/media/precourser.svg": "static/media/precourser.7b4575d9.svg"
 }

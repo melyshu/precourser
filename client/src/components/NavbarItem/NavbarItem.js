@@ -5,9 +5,16 @@ class NavbarItem extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      expanded: false
-    };
+    this.state = { expanded: false };
+
+    if (
+      props.demo &&
+      window.location.pathname !== '/home' &&
+      !localStorage.getItem('precourser-demo')
+    ) {
+      this.state = { expanded: true };
+      localStorage.setItem('precourser-demo', true);
+    }
 
     this.toggle = this.toggle.bind(this);
     this.collapse = this.collapse.bind(this);
@@ -45,6 +52,7 @@ class NavbarItem extends Component {
     const display = this.props.display;
     const description = this.props.description;
     const alignRight = this.props.alignRight;
+    const demo = this.props.demo;
     const children = this.props.children;
 
     const toggle = this.toggle;
@@ -64,16 +72,20 @@ class NavbarItem extends Component {
           {display}
         </button>
         {expanded
-          ? <div
-              className={
-                'NavbarItem-dropdown NavbarItem-align-' +
-                (alignRight ? 'right' : 'left')
-              }
-            >
-              {React.Children.map(children, child =>
+          ? demo
+            ? React.Children.map(children, child =>
                 React.cloneElement(child, { collapseParent: collapse })
-              )}
-            </div>
+              )
+            : <div
+                className={
+                  'NavbarItem-dropdown NavbarItem-align-' +
+                  (alignRight ? 'right' : 'left')
+                }
+              >
+                {React.Children.map(children, child =>
+                  React.cloneElement(child, { collapseParent: collapse })
+                )}
+              </div>
           : null}
       </div>
     );

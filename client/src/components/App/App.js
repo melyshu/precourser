@@ -269,6 +269,7 @@ class App extends Component {
       `/api/schedule/${this.state.selectedSchedule._id}/course/${courseId}`,
       { method: 'DELETE' }
     );
+    this.handleMouseOutCourse(courseId);
   }
 
   handleAddSectionToSchedule(sectionId) {

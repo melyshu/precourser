@@ -44,7 +44,7 @@ class DisplayCourseDetails extends Component {
             {grading.map(item =>
               <tr key={item.component} className="DisplayCourseDetails-grading">
                 <td className="DisplayCourseDetails-grading-percent">
-                  {item.percent}
+                  {`${item.percent}%`}
                 </td>
                 <td className="DisplayCourseDetails-grading-component">
                   {item.component}
