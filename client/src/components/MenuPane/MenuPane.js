@@ -166,7 +166,7 @@ class MenuPane extends Component {
     };
 
     const instructorSortName = (s, a, b) => {
-      return s * ((a.fullName > b.fullName) - (b.fullName - a.fullName));
+      return s * ((a.fullName > b.fullName) - (b.fullName > a.fullName));
     };
 
     const instructorSortRating = (s, a, b) => {

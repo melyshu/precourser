@@ -1,0 +1,96 @@
+@import '../../common.scss';
+
+.Demo {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background-color: rgba($full, 0.5);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 2000;
+
+  .Demo-popup {
+    box-sizing: border-box;
+
+    flex: 0 0 auto;
+    width: 80%;
+    height: 80%;
+
+    margin: $block;
+    padding: $block;
+    background-color: $empty;
+    border-radius: 2*$border;
+    border: $border solid $orange;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+
+    overflow: hidden;
+
+    .Demo-top {
+      flex: 1 1 auto;
+      //align-self: center;
+      overflow: hidden;
+      background-size: contain;
+      background-position: center center;
+      background-repeat: no-repeat;
+
+      .Demo-img {
+        height: auto;
+        width: auto;
+        max-height: 100%;
+        max-width: 100%;
+      }
+    }
+
+    .Demo-text {
+      flex: 0 0 auto;
+      margin-top: $padding;
+      border-top: $border solid $orange;
+      padding: $padding 0;
+
+      color: $full;
+    }
+
+    .Demo-buttons {
+      flex: 0 0 auto;
+
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-end;
+      align-items: stretch;
+
+      .Demo-page {
+        line-height: $block;
+        padding: 0 $padding;
+      }
+
+      .Demo-button {
+        padding: 0 $padding;
+        color: $orange;
+        cursor: pointer;
+        font-size: 0.8rem;
+        height: $block;
+
+        &:hover {
+          background-color: $orange;
+          color: $empty;
+        }
+
+        &.Demo-button-disabled {
+          color: $half;
+          cursor: default;
+          background-color: inherit;
+        }
+      }
+    }
+  }
+}

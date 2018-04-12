@@ -4,11 +4,13 @@ import MdArrowDropDown from 'react-icons/lib/md/arrow-drop-down';
 import MdEdit from 'react-icons/lib/md/edit';
 import MdAddCircleOutline from 'react-icons/lib/md/add-circle-outline';
 import MdDelete from 'react-icons/lib/md/delete';
-import MdFeedback from 'react-icons/lib/md/feedback';
 import MdFileDownload from 'react-icons/lib/md/file-download';
+import MdFeedback from 'react-icons/lib/md/feedback';
+import MdHelpOutline from 'react-icons/lib/md/help-outline';
 import NavbarItem from '../NavbarItem/NavbarItem';
 import NavbarDropdown from '../NavbarDropdown/NavbarDropdown';
 import NavbarInput from '../NavbarInput/NavbarInput';
+import Demo from '../Demo/Demo';
 import Logo from '../../images/precourser.svg';
 import './Navbar.css';
 
@@ -188,8 +190,16 @@ class Navbar extends Component {
             ]}
         <div className="Navbar-stretch" />
         <NavbarItem
+          display={<MdHelpOutline />}
+          description="Help"
+          alignRight={true}
+          demo={true}
+        >
+          <Demo />
+        </NavbarItem>
+        <NavbarItem
           display={<MdFeedback />}
-          description={'Feedback'}
+          description="Feedback"
           alignRight={true}
         >
           <NavbarInput
