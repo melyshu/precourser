@@ -14,6 +14,7 @@ import FaCircleONotch from 'react-icons/lib/fa/circle-o-notch';
 import SideMenu from '../SideMenu/SideMenu';
 import CourseResult from '../CourseResult/CourseResult';
 import InstructorResult from '../InstructorResult/InstructorResult';
+import FilterSelector from '../FilterSelector/FilterSelector';
 import './MenuPane.css';
 
 class MenuPane extends Component {
@@ -105,13 +106,17 @@ class MenuPane extends Component {
 
     const renderInput = tab => {
       if (tab > 1) return;
-      return (
+
+      const input = (
         <input
           key={tab}
           className="SideMenu-input"
           type="text"
           value={tab ? instructorSearch : courseSearch}
-          onChange={tab ? onChangeInstructorSearch : onChangeCourseSearch}
+          onChange={e =>
+            (tab ? onChangeInstructorSearch : onChangeCourseSearch)(
+              e.target.value
+            )}
           onKeyDown={handleKeyDown(tab)}
           placeholder="search"
           autoFocus={true}
@@ -120,21 +125,39 @@ class MenuPane extends Component {
           }}
         />
       );
-    };
 
-    const renderIcon = tab => {
-      if (tab > 1) return;
+      let icon = null;
       if (
         (tab === 0 && waitingCourseSearch) ||
         (tab === 1 && waitingInstructorSearch)
       ) {
-        return <FaEllipsisH className="SideMenu-waiting" />;
+        icon = <FaEllipsisH className="SideMenu-waiting" />;
       } else if (
         (tab === 0 && loadingCourseSearch) ||
         (tab === 1 && loadingInstructorSearch)
       ) {
-        return <FaCircleONotch className="SideMenu-loading" />;
+        icon = <FaCircleONotch className="SideMenu-loading" />;
       }
+
+      const filter =
+        tab === 0
+          ? <FilterSelector
+              selectedSemester={selectedSemester}
+              departmentLookup={departmentLookup}
+              distributionLookup={distributionLookup}
+              pdfLookup={pdfLookup}
+              auditLookup={auditLookup}
+              onChangeCourseSearch={onChangeCourseSearch}
+            />
+          : null;
+
+      return (
+        <div className="SideMenu-header">
+          {input}
+          {icon}
+          {filter}
+        </div>
+      );
     };
 
     // s is sign in sorting functions
@@ -275,7 +298,6 @@ class MenuPane extends Component {
         sortLabels={sortLabels}
         sortDescriptions={sortDescriptions}
         renderInput={renderInput}
-        renderIcon={renderIcon}
         renderContent={renderContent}
         captionNouns={captionNouns}
         edge="left"

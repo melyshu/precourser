@@ -142,8 +142,7 @@ class App extends Component {
     );
   }
 
-  handleChangeCourseSearch(event) {
-    const query = event.target.value;
+  handleChangeCourseSearch(query) {
     const semesterId = this.state.selectedSemester;
 
     clearTimeout(this.searchTimeout);
@@ -298,9 +297,7 @@ class App extends Component {
     );
   }
 
-  handleChangeInstructorSearch(event) {
-    const query = event.target.value;
-
+  handleChangeInstructorSearch(query) {
     clearTimeout(this.searchTimeout);
 
     if (query.length < 1) {
@@ -497,10 +494,10 @@ class App extends Component {
       LA: 'Literature and the Arts',
       SA: 'Social Analysis',
       QR: 'Quantitative Reasoning',
-      ST: 'Science and Technology', // deprecated
+      //ST: 'Science and Technology', // deprecated
       STL: 'Science and Technology with Laboratory',
       STN: 'Science and Technology without Laboratory',
-      STX: 'Science and Technology', // deprecated
+      //STX: 'Science and Technology', // deprecated
       W: 'Writing'
     };
 
@@ -512,9 +509,9 @@ class App extends Component {
     };
 
     const auditLookup = {
-      AUDIT: 'Audit available',
-      NAUDIT: 'No audit',
-      XAUDIT: 'No audit data'
+      A: 'Audit available',
+      NA: 'No audit',
+      XA: 'No audit data'
     };
 
     const urlCourseId = this.props.match.params.courseId;
