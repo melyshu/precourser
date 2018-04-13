@@ -13,7 +13,7 @@
   color: $default;
   background: $empty;
   box-sizing: border-box;
-  overflow: hidden;
+  //overflow: hidden;
 
   &.SideMenu-left {
     border-right: $border solid $half;
@@ -102,15 +102,15 @@
 
   .SideMenu-header {
     flex: 0 0 $block;
-    padding: 0 $padding;
     border-bottom: $border solid $empty;
 
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-end;
-    align-items: center;
+    align-items: stretch;
 
     .SideMenu-input {
+      padding-left: $padding;
       font-size: 0.8rem;
       flex: 1 1 auto;
       width: 50%;
@@ -122,7 +122,8 @@
     .SideMenu-loading {
       flex: 0 0 auto;
       font-size: 0.7rem;
-      margin-left: $padding;
+      align-self: center;
+      margin: 0 $padding;
       color: $half;
     }
 

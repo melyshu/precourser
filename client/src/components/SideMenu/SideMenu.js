@@ -96,7 +96,6 @@ class SideMenu extends Component {
     const sortLabels = this.props.sortLabels;
     const sortDescriptions = this.props.sortDescriptions;
     const renderInput = this.props.renderInput;
-    const renderIcon = this.props.renderIcon;
     const renderContent = this.props.renderContent;
     const captionNouns = this.props.captionNouns;
     const edge = this.props.edge;
@@ -140,7 +139,6 @@ class SideMenu extends Component {
     }
 
     const input = renderInput(tab);
-    const icon = renderIcon(tab);
     const content = renderContent(tab, sort, sign);
 
     const noun = captionNouns[tab];
@@ -189,12 +187,7 @@ class SideMenu extends Component {
           {tabs}
           <div className="SideMenu-stretch" />
         </div>
-        {input
-          ? <div className="SideMenu-header">
-              {input}
-              {icon}
-            </div>
-          : null}
+        {input}
         <div className="SideMenu-buttons SideMenu-sorts">
           <div className="SideMenu-caption" title={caption}>
             {caption}

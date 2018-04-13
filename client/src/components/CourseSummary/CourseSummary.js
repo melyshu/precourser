@@ -90,7 +90,7 @@ class CourseSummary extends Component {
             {course.audit
               ? <span
                   className={'CourseSummary-' + course.audit.toLowerCase()}
-                  title={auditLookup[course.audit]}
+                  title={auditLookup[course.audit.slice(0, -4)]}
                 >
                   {course.audit.slice(0, -4)}
                 </span>

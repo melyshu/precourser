@@ -1,0 +1,135 @@
+@import '../../common.scss';
+
+.FilterSelector {
+  flex: 0 1 $block;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: stretch;
+  position: relative;
+
+  .FilterSelector-toggle {
+    flex: 1 1 0;
+    cursor: pointer;
+    text-align: center;
+
+    &:hover {
+      background-color: $orange;
+      color: $empty;
+    }
+
+    &.FilterSelector-expanded {
+      color: $orange;
+
+      &:hover {
+        background-color: $default;
+        color: $empty;
+      }
+    }
+  }
+
+  .FilterSelector-popup {
+    position: absolute;
+    left: 100%;
+    top: 0;
+    z-index: 400;
+    font-size: 0.7rem;
+
+    background-color: $empty;
+    border-radius: 2*$border;
+    border: $border solid $orange;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+
+    width: 45vw;
+    height: 50vh;
+
+    @media (max-width: $minwidth) {
+      width: $minwidth*0.45;
+    }
+
+    @media (max-height: $minheight) {
+      height: $minheight*0.5;
+    }
+
+    .FilterSelector-main {
+      flex: 1 1 auto;
+
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: stretch;
+      overflow: hidden;
+
+      .FilterSelector-menu {
+        flex: 0 0 auto;
+
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        box-sizing: content-box;
+
+        overflow-y: auto;
+
+        border-right: $border solid $half;
+
+        .FilterSelector-menu-item {
+          flex: 0 0 $block;
+          line-height: $block;
+          padding: 0 $padding;
+
+          cursor: pointer;
+          &.FilterSelector-menu-selected {
+            color: $orange;
+          }
+
+          &:hover {
+            background-color: $orange;
+            color: $empty;
+          }
+        }
+      }
+
+      .FilterSelector-filters {
+        flex: 1 1 auto;
+
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        align-content: flex-start;
+        align-items: stretch;
+        overflow-y: auto;
+
+        .FilterSelector-filter {
+          flex: 0 0 $block;
+          text-align: center;
+          height: $block;
+          line-height: $block;
+
+          cursor: pointer;
+          &:hover {
+            background-color: $orange;
+            color: $empty;
+          }
+
+        }
+      }
+    }
+
+    .FilterSelector-description {
+      flex: 0 0 $block;
+      line-height: $block;
+      border-top: $border solid $half;
+      padding: 0 $padding;
+      font-size: 0.8em;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

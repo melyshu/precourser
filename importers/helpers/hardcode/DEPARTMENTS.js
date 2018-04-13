@@ -18,7 +18,7 @@ module.exports = [
   { _id: 'CBE', name: 'Chemical and Biological Engineering' },
   { _id: 'CEE', name: 'Civil and Environmental Engineering' },
   { _id: 'CGS', name: 'Cognitive Science' },
-  { _id: 'CHE', name: 'Chemical Engineering' }, // this is a guess
+  //{ _id: 'CHE', name: 'Chemical Engineering' }, // this is a guess
   { _id: 'CHI', name: 'Chinese' },
   { _id: 'CHM', name: 'Chemistry' },
   { _id: 'CHV', name: 'Center for Human Values' },
@@ -67,7 +67,7 @@ module.exports = [
   { _id: 'LAT', name: 'Latin' },
   { _id: 'LCA', name: 'Lewis Center for the Arts' },
   { _id: 'LIN', name: 'Linguistics' },
-  { _id: 'MAE', name: 'Mech and Aerospace Engineering' },
+  { _id: 'MAE', name: 'Mechanical and Aerospace Engineering' },
   { _id: 'MAT', name: 'Mathematics' },
   { _id: 'MED', name: 'Medieval Studies' },
   { _id: 'MOD', name: 'Media and Modernity' },
@@ -98,7 +98,7 @@ module.exports = [
   { _id: 'SML', name: 'Statistics and Machine Learning' },
   { _id: 'SOC', name: 'Sociology' },
   { _id: 'SPA', name: 'Spanish' },
-  { _id: 'SPO', name: 'Spanish' }, // is this a typo?
+  //{ _id: 'SPO', name: 'Spanish' }, // is this a typo?
   { _id: 'STC', name: 'Science and Technology Council' },
   { _id: 'SWA', name: 'Swahili' },
   { _id: 'THR', name: 'Theater' },
@@ -109,7 +109,7 @@ module.exports = [
   { _id: 'URB', name: 'Urban Studies' },
   { _id: 'URD', name: 'Urdu' },
   { _id: 'VIS', name: 'Visual Arts' },
-  { _id: 'WOM', name: 'Gender Studies' }, // this is a guess
+  //{ _id: 'WOM', name: 'Gender Studies' }, // this is a guess
   { _id: 'WRI', name: 'Princeton Writing Program' },
   { _id: 'WWS', name: 'Woodrow Wilson School' }
 ];

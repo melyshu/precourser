@@ -11,6 +11,8 @@ import pic5 from '../../images/demo_5.png';
 import pic6 from '../../images/demo_6.png';
 import pic7 from '../../images/demo_7.png';
 import pic8 from '../../images/demo_8.png';
+import pic9 from '../../images/demo_9.png';
+import pic10 from '../../images/demo_10.png';
 
 const PAGES = [
   {
@@ -21,42 +23,52 @@ const PAGES = [
   {
     image: pic1,
     text:
-      'Enter any search terms in the search bar. You can search by title, department, distribution, P/D/F options and more!'
+      'Enter any search terms in the search bar. You can search by title, department, and more!'
   },
   {
     image: pic2,
     text:
-      'Click on a result to show/hide course information. Click the buttons to add a course to your schedule, or to save it.'
+      'Click on the filter to explore all the search options: departments, distributions, P/D/F and audit options.'
   },
   {
     image: pic3,
     text:
-      'The courses added to your schedule will appear to the right. Click on a section to select it for your schedule.'
+      'Click on a result to show/hide course information. Click the buttons to add a course to your schedule, or to save it.'
   },
   {
     image: pic4,
     text:
-      'Click the buttons at the top of the page to change semester or to add/rename/delete schedules.'
+      'The courses added to your schedule will appear to the right. Click on a section to select it for your schedule.'
   },
   {
     image: pic5,
     text:
-      'Click on the buttons at the top of the search pane to search for instructors, or view your saved/selected courses.'
+      'Click the buttons at the top of the page to change semester or to add/rename/delete schedules.'
   },
   {
     image: pic6,
     text:
-      'Click on an instructor result to display their contact information and all the courses they have taught.'
+      'Click on the buttons at the top of the search pane to search for instructors, or view your saved/selected courses.'
   },
   {
     image: pic7,
     text:
-      "Click on these buttons to save the course or access the registrar's official course offering pages."
+      'Click on an instructor result to display their contact information and all the courses they have taught.'
   },
   {
     image: pic8,
     text:
-      'You can use the link provided to export your precourser schedule into Google Calendar. Happy course selection!'
+      "These buttons redirect you to the registrar's course offering pages. The cross hides the course information page."
+  },
+  {
+    image: pic9,
+    text:
+      'You can copy the link provided to export your precourser schedule into Google Calendar, or to download it in iCal format.'
+  },
+  {
+    image: pic10,
+    text:
+      'If you have any comments or thoughts please use the feedback form :) Happy course selection!'
   }
 ];
 

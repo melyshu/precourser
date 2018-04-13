@@ -157,6 +157,10 @@ class SidePane extends Component {
         );
     };
 
+    const renderFilter = tab => {
+      return;
+    };
+
     const keys = ['semester', 'instructor'];
 
     return (
@@ -168,6 +172,7 @@ class SidePane extends Component {
         renderInput={renderInput}
         renderIcon={renderIcon}
         renderContent={renderContent}
+        renderFilter={renderFilter}
         captionNouns={captionNouns}
         edge="right"
         keys={keys}
