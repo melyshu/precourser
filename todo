@@ -1,7 +1,20 @@
 BUGS
 
+load root '/' from page history (back/forward) does not work
+
+
+
 THINGS TO IMPROVE
 
-search stuff
+search stuff (cee 5)
 
-walkthroughs / demos
+walkthrough close button
+course information close button
+
+restructure scraping infrastructure
+
+i'm feeling lucky
+
+P99 courses
+
+autoselect only sections

@@ -56,6 +56,8 @@ const COURSE_UPDATE_THREADS = 30;
 // runs at about 948 / min or 1 / 63 ms
 const INSTRUCTOR_UPDATE_INTERVAL = 50;
 const INSTRUCTOR_UPDATE_THREADS = 30;
+
+const DELAY_FACTOR = 2;
 /*
 scraper.scrapeAll(
   scraper.scrapeCourseEvaluation,
@@ -65,7 +67,7 @@ scraper.scrapeAll(
   COURSE_EVALUATION_THREADS
 );*/
 
-//* DEPARTMENTS
+/* DEPARTMENTS
 scraper.scrapeDepartments();
 //*/
 
@@ -93,16 +95,17 @@ scraper.scrapeAll(
   SEMESTER_THREADS
 ); //*/
 
-/* FALL19 COURSES
-Semester.findById('1192').lean().then(function(semester) {
-  return scraper.scrapeAll(
-    scraper.scrapeCourseDetail,
-    semester.courses,
-    'courseDetail',
-    COURSE_DETAIL_INTERVAL,
-    COURSE_DETAIL_THREADS
-  );
-}); //*/
+//* FALL18 COURSES
+module.exports = () =>
+  Semester.findById('1192').lean().then(function(semester) {
+    return scraper.scrapeAll(
+      scraper.scrapeCourseDetail,
+      semester.courses,
+      'courseDetail',
+      COURSE_DETAIL_INTERVAL * DELAY_FACTOR,
+      COURSE_DETAIL_THREADS
+    );
+  }); //*/
 
 /* INSTRUCTORS
 Course.find().lean().distinct('instructors').then(function(instructorIds) {

@@ -3,6 +3,13 @@
 */
 
 require('../config.js');
+const update = require('./__updateEvals.js');
+const SCRAPING_INTERVAL = 1000 * 60 * 60 * 4; // every four hours
+
+update();
+setInterval(update, SCRAPING_INTERVAL);
+
+/*
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'));
 const updateDatabase = require('./importer.js').updateDatabase;
@@ -28,3 +35,4 @@ const loop = () => {
 };
 
 // loop(); // no scraping for now
+*/
