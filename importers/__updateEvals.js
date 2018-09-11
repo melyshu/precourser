@@ -97,15 +97,25 @@ scraper.scrapeAll(
 
 //* FALL18 COURSES
 module.exports = () =>
-  Semester.findById('1192').lean().then(function(semester) {
-    return scraper.scrapeAll(
-      scraper.scrapeCourseDetail,
-      semester.courses,
-      'courseDetail',
-      COURSE_DETAIL_INTERVAL * DELAY_FACTOR,
-      COURSE_DETAIL_THREADS
-    );
-  }); //*/
+  scraper
+    .scrapeAll(
+      scraper.scrapeSemester,
+      ['1192'],
+      'semester',
+      SEMESTER_INTERVAL,
+      SEMESTER_THREADS
+    )
+    .then(() =>
+      Semester.findById('1192').lean().then(function(semester) {
+        return scraper.scrapeAll(
+          scraper.scrapeCourseDetail,
+          semester.courses,
+          'courseDetail',
+          COURSE_DETAIL_INTERVAL * DELAY_FACTOR,
+          COURSE_DETAIL_THREADS
+        );
+      })
+    ); //*/
 
 /* INSTRUCTORS
 Course.find().lean().distinct('instructors').then(function(instructorIds) {
