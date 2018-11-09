@@ -232,6 +232,8 @@ const scrapeCourseEvaluation = function(courseId) {
   const semesterId = courseId.substring(0, 4);
   const systemId = courseId.substring(4);
 
+  const cookie = 'ST-499426-IAgihIkkwVCnacv27AzH-auth-a';
+
   /*
   Fetch webpage and parse
   */

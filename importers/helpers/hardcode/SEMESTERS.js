@@ -14,6 +14,7 @@ Some hints:
 
 // prettier-ignore
 module.exports = [
+  { _id: '1194', name: 'Spring 2019', abbr: 'S19', startDate: '2019-02-04', endDate: '2019-05-03' },
   { _id: '1192', name:   'Fall 2018', abbr: 'F18', startDate: '2018-09-12', endDate: '2018-12-14' },
   { _id: '1184', name: 'Spring 2018', abbr: 'S18', startDate: '2018-02-05', endDate: '2018-05-04' },
   { _id: '1182', name:   'Fall 2017', abbr: 'F17', startDate: '2017-09-13', endDate: '2017-12-15' },

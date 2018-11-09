@@ -14,7 +14,7 @@ const Instructor = require('../models/Instructor.js');
 
 // VARIABLES THAT NEED TO BE KEPT UP TO DATE
 const CURRENT_SEMESTER = '1184';
-const LAST_SEMESTER_WITH_EVALUATIONS = '1182';
+const LAST_SEMESTER_WITH_EVALUATIONS = '1184';
 // prettier-ignore
 const SEMESTERS = [ // see ./hardcode/SEMESTERS.js for more details
   '1192',
@@ -71,7 +71,7 @@ scraper.scrapeAll(
 scraper.scrapeDepartments();
 //*/
 
-/* FALL17 EVALS
+/* SPR18 EVALS #1
 Course.find({ semester: LAST_SEMESTER_WITH_EVALUATIONS })
   .lean()
   .distinct('_id')
@@ -86,6 +86,18 @@ Course.find({ semester: LAST_SEMESTER_WITH_EVALUATIONS })
     );
   }); //*/
 
+/* SPR18 UPDATE #2
+Course.find().lean().distinct('_id').then(function(courseIds) {
+  // update course ratings
+  return scraper.scrapeAll(
+    scraper.scrapeCourseUpdate,
+    courseIds,
+    'courseUpdate',
+    COURSE_UPDATE_INTERVAL,
+    COURSE_UPDATE_THREADS
+  );
+}); //*/
+
 /* FALL 18 COURSELIST
 scraper.scrapeAll(
   scraper.scrapeSemester,
@@ -95,18 +107,18 @@ scraper.scrapeAll(
   SEMESTER_THREADS
 ); //*/
 
-//* FALL18 COURSES
+//* SPR18 COURSES #3
 module.exports = () =>
   scraper
     .scrapeAll(
       scraper.scrapeSemester,
-      ['1192'],
+      ['1194'],
       'semester',
       SEMESTER_INTERVAL,
       SEMESTER_THREADS
     )
     .then(() =>
-      Semester.findById('1192').lean().then(function(semester) {
+      Semester.findById('1194').lean().then(function(semester) {
         return scraper.scrapeAll(
           scraper.scrapeCourseDetail,
           semester.courses,
@@ -115,7 +127,36 @@ module.exports = () =>
           COURSE_DETAIL_THREADS
         );
       })
-    ); //*/
+    )
+    .then(() =>
+      Course.find()
+        .lean()
+        .distinct('instructors')
+        .then(function(instructorIds) {
+          // scrape instructors
+          return scraper.scrapeAll(
+            scraper.scrapeInstructor,
+            instructorIds,
+            'instructor',
+            INSTRUCTOR_INTERVAL,
+            INSTRUCTOR_THREADS
+          );
+        })
+    );
+
+//*/
+
+/* SPR18 UPDATE #4
+Course.find({ semester: '1194' }).lean().distinct('_id').then(function(courseIds) {
+  // update course ratings
+  return scraper.scrapeAll(
+    scraper.scrapeCourseUpdate,
+    courseIds,
+    'courseUpdate',
+    COURSE_UPDATE_INTERVAL,
+    COURSE_UPDATE_THREADS
+  );
+}); //*/
 
 /* INSTRUCTORS
 Course.find().lean().distinct('instructors').then(function(instructorIds) {
