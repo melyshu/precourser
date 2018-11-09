@@ -4,7 +4,7 @@
 
 require('../config.js');
 const update = require('./__updateEvals.js');
-const SCRAPING_INTERVAL = 1000 * 60 * 60 * 4; // every four hours
+const SCRAPING_INTERVAL = 1000 * 60 * 60 * 24; // every 24 hours
 
 update();
 setInterval(update, SCRAPING_INTERVAL);
