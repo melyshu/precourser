@@ -259,7 +259,7 @@ class DisplayScheduleDay extends Component {
               onMouseOutSection={onMouseOutSection}
               minTime={minTime}
               maxTime={maxTime}
-              key={entry.session.section._id}
+              key={i + '.' + j}
               session={entry.session}
               position={position}
             />
