@@ -121,19 +121,20 @@
     .Home-footer-left,
     .Home-footer-right {
       position: fixed;
-      bottom: 0;
-      font-size: 0.4rem;
+      bottom: $border;
+      font-size: 0.5rem;
       color: $empty;
       padding: $border;
       text-shadow: 0 0 $shadow $full, 0 0 $shadow $full;
+      text-align: left;
     }
 
     .Home-footer-right {
-      right: 0;
+      right: $border;
     }
 
     .Home-footer-left {
-      left: 0;
+      left: $border;
     }
   }
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactGA from 'react-ga';
 import Navbar from '../Navbar/Navbar';
+import Bubble from '../Bubble/Bubble';
 import Logo from '../../images/precourser.svg';
 import './Home.css';
 
@@ -43,18 +44,32 @@ class Home extends Component {
               analyzed to improve this service.
             </div>
           </div>
-          <div className="Home-footer-right">
-            code by{' '}
-            <a className="Home-link" href="mailto:mshu@princeton.edu">
-              mshu
-            </a>
-          </div>
+          <div className="Home-footer-right" />
           <div className="Home-footer-left">
-            logo by{' '}
-            <a className="Home-link" href="mailto:linht@princeton.edu">
-              linht
-            </a>
+            <div>
+              logo by{' '}
+              <a className="Home-link" href="mailto:linht@princeton.edu">
+                linht
+              </a>
+            </div>
+            <div>
+              code by{' '}
+              <a className="Home-link" href="mailto:mshu@princeton.edu">
+                mshu
+              </a>
+            </div>
+            <div>
+              <a
+                className="Home-link"
+                href="https://github.com/melyshu/precourser"
+              >
+                github repo
+              </a>
+            </div>
           </div>
+        </div>
+        <div>
+        <Bubble />
         </div>
       </div>
     );

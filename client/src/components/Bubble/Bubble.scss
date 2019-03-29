@@ -1,0 +1,55 @@
+@import '../../common.scss';
+
+.Bubble {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+
+  max-width: 6*$block;
+  margin: $padding;
+
+  background: rgba($empty, 0.9);
+  padding: $padding;
+  border-radius: 2*$border;
+  border: $border solid $orange;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: stretch;
+
+  font-size: 0.8rem;
+
+  z-index: 10000;
+
+  .Bubble-top {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $padding;
+
+    .Bubble-title {
+      color: $full;
+      font-weight: bolder;
+    }
+
+    .Bubble-button {
+
+      color: $default;
+      cursor: pointer;
+      text-decoration: none;
+      align-self: flex-start;
+
+      &:hover {
+        cursor: pointer;
+        color: $orange;
+      }
+    }
+  }
+
+  .Bubble-content {
+    color: $default;
+    font-size: 0.7rem;
+  }
+}
