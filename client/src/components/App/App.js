@@ -4,6 +4,7 @@ import Navbar from '../Navbar/Navbar';
 import MenuPane from '../MenuPane/MenuPane';
 import DisplayPane from '../DisplayPane/DisplayPane';
 import Virtual from '../Virtual/Virtual';
+import Bubble from '../Bubble/Bubble';
 import './App.css';
 
 const HOVER_TIMEOUT_DELAY = 200;
@@ -605,6 +606,7 @@ class App extends Component {
             onMouseOutSection={handleMouseOutSection}
           />
         </div>
+        <Bubble />
       </div>
     );
   }
