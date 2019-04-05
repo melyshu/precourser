@@ -5,7 +5,7 @@
   right: 0;
   bottom: 0;
 
-  max-width: 6*$block;
+  max-width: 8*$block;
   margin: $padding;
 
   background: rgba($empty, 0.9);
@@ -51,5 +51,14 @@
   .Bubble-content {
     color: $default;
     font-size: 0.7rem;
+
+    .Bubble-link {
+      color: $orange;
+      text-decoration: none;
+      &:hover {
+        font-weight: bolder;
+        cursor: pointer;
+      }
+    }
   }
 }
