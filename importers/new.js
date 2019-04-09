@@ -24,45 +24,47 @@ const INSTRUCTOR_UPDATE_THREADS = 30;
 
 const DELAY_FACTOR = 2;
 
-// Semester.findById('1202').lean().then(function(semester) {
-//   return scraper.scrapeAll(
-//     scraper.scrapeCourseUpdate,
-//     semester.courses,
-//     'courseUpdate',
-//     COURSE_UPDATE_INTERVAL * DELAY_FACTOR,
-//     COURSE_UPDATE_THREADS
-//   );
-// });
-
-// scraper
-//   .scrapeAll(
-//     scraper.scrapeSemester,
-//     ['1202'],
-//     'semester',
-//     SEMESTER_INTERVAL,
-//     SEMESTER_THREADS
-//   )
-//   .then(() =>
-//     Semester.findById('1202').lean().then(function(semester) {
-//       return scraper.scrapeAll(
-//         scraper.scrapeCourseDetail,
-//         semester.courses,
-//         'courseDetail',
-//         COURSE_DETAIL_INTERVAL * DELAY_FACTOR,
-//         COURSE_DETAIL_THREADS
-//       );
-//     })
-//   );
-
-Instructor.find()
-  .lean()
-  .distinct('_id')
-  .then(instructorIds =>
-    scraper.scrapeAll(
-      scraper.scrapeInstructorUpdate,
-      instructorIds,
-      'instructorUpdate',
-      INSTRUCTOR_UPDATE_INTERVAL,
-      INSTRUCTOR_UPDATE_THREADS
-    )
+scraper
+  .scrapeAll(
+    scraper.scrapeSemester,
+    ['1202'],
+    'semester',
+    SEMESTER_INTERVAL,
+    SEMESTER_THREADS
+  )
+  .then(() =>
+    Semester.findById('1202').lean().then(function(semester) {
+      return scraper.scrapeAll(
+        scraper.scrapeCourseDetail,
+        semester.courses,
+        'courseDetail',
+        COURSE_DETAIL_INTERVAL * DELAY_FACTOR,
+        COURSE_DETAIL_THREADS
+      );
+    })
+  )
+  .then(() =>
+    Semester.findById('1202').lean().then(function(semester) {
+      return scraper.scrapeAll(
+        scraper.scrapeCourseUpdate,
+        semester.courses,
+        'courseUpdate',
+        COURSE_UPDATE_INTERVAL * DELAY_FACTOR,
+        COURSE_UPDATE_THREADS
+      );
+    })
+  )
+  .then(() =>
+    Instructor.find()
+      .lean()
+      .distinct('_id')
+      .then(instructorIds =>
+        scraper.scrapeAll(
+          scraper.scrapeInstructorUpdate,
+          instructorIds,
+          'instructorUpdate',
+          INSTRUCTOR_UPDATE_INTERVAL,
+          INSTRUCTOR_UPDATE_THREADS
+        )
+      )
   );
