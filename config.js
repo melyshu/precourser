@@ -38,3 +38,6 @@ const host = process.env.HOST || 'http://localhost:4000';
 const port = process.env.PORT || 4000;
 module.exports.host = host;
 module.exports.port = port;
+
+const auth_key = process.env.AUTH_KEY;
+module.exports.auth_key = auth_key;

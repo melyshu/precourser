@@ -1,33 +1,34 @@
 
 // TEMPORARY FILE USED TO SCRAPE MANUALLY 2018-04-06
 
+
 require('../config.js');
 const logger = require('./log/logger.js');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
-const scraper = require('./helpers/scraper.js');
+const scraper = require('./new/scraper.js');
 
 const Semester = require('../models/Semester.js');
 const Course = require('../models/Course.js');
 const Instructor = require('../models/Instructor.js');
 
 // VARIABLES THAT NEED TO BE KEPT UP TO DATE
-const CURRENT_SEMESTER = '1184';
-const LAST_SEMESTER_WITH_EVALUATIONS = '1184';
-// prettier-ignore
-const SEMESTERS = [ // see ./hardcode/SEMESTERS.js for more details
-  '1192',
-  '1184', '1182',
-  '1174', '1172',
-  '1164', '1162',
-  '1154', '1152',
-  '1144', '1142',
-  '1134', '1132',
-  '1124', '1122',
-  '1114', '1112',
-  '1104', '1102'
-];
+// const CURRENT_SEMESTER = '1184';
+// const LAST_SEMESTER_WITH_EVALUATIONS = '1184';
+// // prettier-ignore
+// const SEMESTERS = [ // see ./hardcode/SEMESTERS.js for more details
+//   '1192',
+//   '1184', '1182',
+//   '1174', '1172',
+//   '1164', '1162',
+//   '1154', '1152',
+//   '1144', '1142',
+//   '1134', '1132',
+//   '1124', '1122',
+//   '1114', '1112',
+//   '1104', '1102'
+// ];
 
 // scraper fine-tuning
 // interval: minimum delay between requests in milliseconds

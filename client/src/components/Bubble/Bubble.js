@@ -19,7 +19,7 @@ class Bubble extends Component {
     return (
       <div className="Bubble">
         <div className="Bubble-top">
-          <div className="Bubble-title">Update</div>
+          <div className="Bubble-title">Thanks for your patience!</div>
           <FaClose
             className="Bubble-button"
             onClick={() => {
@@ -28,10 +28,13 @@ class Bubble extends Component {
           />
         </div>
         <div className="Bubble-content">
-          Due to the new Registrar website, precourser will take longer than
-          usual to update for the 2019-2020 Fall semester. There are plans to
-          merge precourser with the other TigerApps course selection tools. If
-          you would be interested in joining this effort please fill out{' '}
+          Finally, the Registrar's new website has been tamed and courses for
+          the 2019-2020 Fall semester are up! If you notice anything odd please
+          use the feedback form in the top right of the window. Also, please
+          note that there are potential plans to merge precourser with the other
+          TigerApps course selection tools this upcoming summer, so regularly
+          save any valuable user data as a precautionary measure. If you would
+          be interested in joining this effort please fill out{' '}
           <a
             className="Bubble-link"
             href="https://forms.gle/5iSPAhoJMVMSPeuC6"
@@ -39,7 +42,7 @@ class Bubble extends Component {
             target="_blank"
           >
             this form
-          </a>.
+          </a>!
         </div>
       </div>
     );
