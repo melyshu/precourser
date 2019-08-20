@@ -19,7 +19,7 @@ class Bubble extends Component {
     return (
       <div className="Bubble">
         <div className="Bubble-top">
-          <div className="Bubble-title">Thanks for your patience!</div>
+          <div className="Bubble-title">Note</div>
           <FaClose
             className="Bubble-button"
             onClick={() => {
@@ -28,21 +28,26 @@ class Bubble extends Component {
           />
         </div>
         <div className="Bubble-content">
-          Finally, the Registrar's new website has been tamed and courses for
-          the 2019-2020 Fall semester are up! If you notice anything odd please
-          use the feedback form in the top right of the window. Also, please
-          note that there are potential plans to merge precourser with the other
-          TigerApps course selection tools this upcoming summer, so regularly
-          save any valuable user data as a precautionary measure. If you would
-          be interested in joining this effort please fill out{' '}
+          Please note that for the foreseeable future, precourser will not be
+          updated, but will still be available at{' '}
           <a
             className="Bubble-link"
-            href="https://forms.gle/5iSPAhoJMVMSPeuC6"
+            href="https:/precourser.herokuapp.com"
             rel="noopener noreferrer"
             target="_blank"
           >
-            this form
-          </a>!
+            precourser.herokuapp.com
+          </a>
+          . The codebase is publicly available{' '}
+          <a
+            className="Bubble-link"
+            href="https://github.com/melyshu/precourser"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            here
+          </a>
+          .
         </div>
       </div>
     );

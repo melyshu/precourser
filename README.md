@@ -1,5 +1,7 @@
 # precourser
 
+Apologies for lack of real documentation, please reach out to mshu@alumni.princeton.edu for help.
+
 ## setup
 
 - install node, npm
